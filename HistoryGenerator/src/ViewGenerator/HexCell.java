@@ -2,6 +2,7 @@ package ViewGenerator;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.stage.Stage;
 
@@ -15,12 +16,12 @@ public class HexCell extends Application {
    */
 
   private Double[] createPoints(int center, double zoom) {
-    double verticalOffset = ((center / 10) * 100) + 20;
-    double horizontalOffset = ((center % 10) * 100) + 20;
-    double sideLength = zoom * 20.0;
+    double verticalOffset = ((center / 10) * 25) + 20;
+    double horizontalOffset = ((center % 10) * 90) + 20;
+    double sideLength = zoom * 30.0;
 
     if((center / 10) % 2 == 1) {
-      horizontalOffset += 20;
+      horizontalOffset += 45;
     }
 
     double rad3 = Math.sqrt(3);
@@ -78,6 +79,12 @@ public class HexCell extends Application {
     Polygon polygon9 = createHex(9, 1.0);
     Polygon polygon10 = createHex(10, 1.0);
     Polygon polygon11 = createHex(11, 1.0);
+
+
+    polygon0.setFill(Color.BLUE);
+    polygon1.setFill(Color.BLUE);
+    polygon10.setFill(javafx.scene.paint.Color.RED);
+    polygon11.setFill(javafx.scene.paint.Color.RED);
     //Creating a Group object
     Group root = new Group();
 
@@ -94,6 +101,7 @@ public class HexCell extends Application {
     root.getChildren().add(polygon9);
     root.getChildren().add(polygon10);
     root.getChildren().add(polygon11);
+
 
     //Creating a scene object
     Scene scene = new Scene(root, 1000, 1000);
