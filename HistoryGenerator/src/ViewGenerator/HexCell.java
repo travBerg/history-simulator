@@ -62,46 +62,31 @@ public class HexCell extends Application {
     return polygon;
   }
 
+  private Group addHexes(Group root, int numHexes) {
+
+    for(int i = 0; i < numHexes; i++) {
+      Polygon cell = createHex(i, 1.0);
+      if((i / 10) % 2 == 1) {
+        cell.setFill(Color.BLUE);
+      }
+      else {
+        cell.setFill(Color.RED);
+      }
+      cell.setStroke(Color.BLACK);
+      root.getChildren().add(cell);
+    }
+
+    return root;
+  }
 
 
   @Override
   public void start(Stage stage) {
-    //Creating a Polygon
-    Polygon polygon0 = createHex(0, 1.0);
-    Polygon polygon1 = createHex(1, 1.0);
-    Polygon polygon2 = createHex(2, 1.0);
-    Polygon polygon3 = createHex(3, 1.0);
-    Polygon polygon4 = createHex(4, 1.0);
-    Polygon polygon5 = createHex(5, 1.0);
-    Polygon polygon6 = createHex(6, 1.0);
-    Polygon polygon7 = createHex(7, 1.0);
-    Polygon polygon8 = createHex(8, 1.0);
-    Polygon polygon9 = createHex(9, 1.0);
-    Polygon polygon10 = createHex(10, 1.0);
-    Polygon polygon11 = createHex(11, 1.0);
-
-
-    polygon0.setFill(Color.BLUE);
-    polygon1.setFill(Color.BLUE);
-    polygon10.setFill(javafx.scene.paint.Color.RED);
-    polygon11.setFill(javafx.scene.paint.Color.RED);
     //Creating a Group object
     Group root = new Group();
 
-    //adds second polygon to the view.
-    root.getChildren().add(polygon0);
-    root.getChildren().add(polygon1);
-    root.getChildren().add(polygon2);
-    root.getChildren().add(polygon3);
-    root.getChildren().add(polygon4);
-    root.getChildren().add(polygon5);
-    root.getChildren().add(polygon6);
-    root.getChildren().add(polygon7);
-    root.getChildren().add(polygon8);
-    root.getChildren().add(polygon9);
-    root.getChildren().add(polygon10);
-    root.getChildren().add(polygon11);
 
+    root = addHexes(root, 1000);
 
     //Creating a scene object
     Scene scene = new Scene(root, 1000, 1000);
