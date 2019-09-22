@@ -14,8 +14,11 @@ public class HeightMap implements ITerrainMap {
     int weight;
     int addWeight;
     ArrayList<ArrayList<Integer>> board = new ArrayList<>();
+    //Random generator
+    Random ran;
 
     public HeightMap() {
+        ran = new Random(999);
         this.r = 1;
         this.sConst = 5;
         this.s = (int) Math.pow(2, sConst) + 1;
@@ -30,7 +33,8 @@ public class HeightMap implements ITerrainMap {
         }
     }
 
-    public HeightMap(double r, int sConst, int weight, int addWeight) {
+    public HeightMap(double r, int sConst, int weight, int addWeight, int seed) {
+        ran = new Random(seed);
         this.r = r;
         this.sConst = sConst;
         this.s = (int) Math.pow(2, sConst) + 1;
@@ -49,7 +53,6 @@ public class HeightMap implements ITerrainMap {
 
     @Override
     public ArrayList<ArrayList<Integer>> init() {
-        Random ran = new Random();
         //init corners with random ints from 0 - 4
         board.get(0).set(0, ran.nextInt(5));
         int tl = board.get(0).get(0);
@@ -67,16 +70,16 @@ public class HeightMap implements ITerrainMap {
 
         //first square step
         int arr1[] = new int[]{tl, tr, center};
-        int val = average(arr1) + (int)(Math.random() * ((r - (0 - r)) + 1) + (0 - r));
+        int val = calculateValue(arr1, r);
         board.get(0).set(s / 2, val);
         int arr2[] = new int[]{tl, bl, center};
-        val = average(arr2) + (int)(Math.random() * ((r - (0 - r)) + 1) + (0 - r));
+        val = calculateValue(arr2, r);
         board.get(s / 2).set(0, val);
         int arr3[] = new int[]{tr, br, center};
-        val = average(arr3) + (int)(Math.random() * ((r - (0 - r)) + 1) + (0 - r));
+        val = calculateValue(arr3, r);
         board.get(s / 2).set(s - 1, val);
         int arr4[] = new int[]{bl, br, center};
-        val = average(arr4) + (int)(Math.random() * ((r - (0 - r)) + 1) + (0 - r));
+        val = calculateValue(arr4, r);
         board.get(s - 1).set(s / 2, val);
 
         step(0, s / 2, 0, s / 2, r);
@@ -98,7 +101,7 @@ public class HeightMap implements ITerrainMap {
 
         //center (diamond step)
         int arr[] = new int[]{tl, tr, bl, br};
-        int center = average(arr) + (int)(Math.random() * ((r - (0 - r)) + 1) + (0 - r));
+        int center = calculateValue(arr, r);
 
         int mRow = bRow - ((bRow - tRow) / 2);
         int mCol = rCol - ((rCol - lCol) / 2);
@@ -106,16 +109,16 @@ public class HeightMap implements ITerrainMap {
 
         //square step
         int arr1[] = new int[]{tl, tr, center};
-        int val = average(arr1) + (int)(Math.random() * ((r - (0 - r)) + 1) + (0 - r));
+        int val = calculateValue(arr1, r);
         board.get(tRow).set(mCol, val);
         int arr2[] = new int[]{tl, bl, center};
-        val = average(arr2) + (int)(Math.random() * ((r - (0 - r)) + 1) + (0 - r));
+        val = calculateValue(arr2, r);
         board.get(mRow).set(lCol, val);
         int arr3[] = new int[]{tr, br, center};
-        val = average(arr3) + (int)(Math.random() * ((r - (0 - r)) + 1) + (0 - r));
+        val = calculateValue(arr3, r);
         board.get(mRow).set(rCol, val);
         int arr4[] = new int[]{bl, br, center};
-        val = average(arr4) + (int)(Math.random() * ((r - (0 - r)) + 1) + (0 - r));
+        val = calculateValue(arr4, r);
         board.get(bRow).set(mCol, val);
 
         if(lCol >= (mCol - 1) || tRow >= (mRow - 1)) {
@@ -126,6 +129,17 @@ public class HeightMap implements ITerrainMap {
             step(mRow, bRow, lCol, mCol, r);
             step(mRow, bRow, mCol, rCol, r);
         }
+    }
+
+    public Integer calculateValue(int[] arr, double r) {
+        //average plus a random
+        int val = average(arr) + (int)(ran.nextGaussian() * ((r - (0 - r)) + 1) + (0 - r));
+        if (val < 0) {
+            val = 0;
+        } else if (val > 4){
+            val = 4;
+        }
+        return val;
     }
 
     public Integer average(int[] nums) {

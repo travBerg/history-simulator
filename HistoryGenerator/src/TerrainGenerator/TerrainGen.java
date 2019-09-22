@@ -14,6 +14,7 @@ public class TerrainGen implements IGenerator{
     HashMap<String, String> rawTerrain;
     HashMap<String, String> terrain;
     HashMap<String, String> csvMap;
+    int seed;
 
     /**
      * This is the constructor with most settings for customizing terrain
@@ -23,14 +24,15 @@ public class TerrainGen implements IGenerator{
      * @param nVar noise variance for the temp map
      * @param nMean noise mean for the temp map (can bring average temp higher or lower)
      */
-    public TerrainGen(int size, double r, int poles, double nVar, double nMean){
-        this.heightMap = new HeightMap(1, size, 0, 0);
+    public TerrainGen(int size, double r, int poles, double nVar, double nMean, int seed){
+        this.seed = seed;
+        this.heightMap = new HeightMap(1, size, 0, 0, seed);
         this.heightMap.init();
         //THIS IS TEMPORARY UNTIL RAINMAP GETS UPDATED
-        this.rainMap = new HeightMap(1, size, 0, 0);
+        this.rainMap = new HeightMap(1, size, 0, 0, seed);
         this.rainMap.init();
         //temp map
-        this.tempMap = new TempMap(size, 2, 0.5, 0);
+        this.tempMap = new TempMap(size, 2, 0.5, 0, seed);
         this.tempMap.init();
 
         this.rawTerrain = new HashMap<>();
@@ -38,14 +40,15 @@ public class TerrainGen implements IGenerator{
         this.terrain = this.create(this.heightMap, this.rainMap, this.tempMap);
     }
 
-    public TerrainGen(int size){
-        this.heightMap = new HeightMap(1, size, 0, 0);
+    public TerrainGen(int size, int seed){
+        this.seed = seed;
+        this.heightMap = new HeightMap(2, size, 0, 0, seed);
         this.heightMap.init();
         //THIS IS TEMPORARY UNTIL RAINMAP GETS UPDATED
-        this.rainMap = new HeightMap(1, size, 0, 0);
+        this.rainMap = new HeightMap(2, size, 0, 0, seed);
         this.rainMap.init();
         //temp map
-        this.tempMap = new TempMap(size, 2, 0.5, 0);
+        this.tempMap = new TempMap(size, 2, 0.5, 0, seed);
         this.tempMap.init();
 
         this.rawTerrain = new HashMap<>();
@@ -98,9 +101,16 @@ public class TerrainGen implements IGenerator{
     public HashMap<String,String> loadCSVs() {
         HashMap<String,String> map = new HashMap<>();
         //list of all csvs
-        String[] files = {"src\\TerrainGenerator\\Resources\\Height0.csv", "src\\TerrainGenerator\\Resources\\Height1.csv",
-                "src\\TerrainGenerator\\Resources\\Height2.csv", "src\\TerrainGenerator\\Resources\\Height3.csv",
-                "src\\TerrainGenerator\\Resources\\Height4.csv"};
+        String[] rawfiles = {"HistoryGenerator/src/TerrainGenerator/Resources/Height0.csv", "HistoryGenerator/src/TerrainGenerator/Resources/Height1.csv",
+                "HistoryGenerator/src/TerrainGenerator/Resources/Height2.csv", "HistoryGenerator/src/TerrainGenerator/Resources/Height3.csv",
+                "HistoryGenerator/src/TerrainGenerator/Resources/Height4.csv"};
+
+        ArrayList<String> files = new ArrayList<>();
+        for (String f:rawfiles) {
+            f = f.replace("/", File.separator);
+            files.add(f);
+        }
+
         //general working dir
         String workingDirectory = System.getProperty("user.dir");
         //height accumulator since its a while loop
@@ -136,10 +146,16 @@ public class TerrainGen implements IGenerator{
             for(int y = 0; y < s; y++) {
                 String key = Integer.toString(x) + "|" + Integer.toString(y);
                 out += terrain.get(key) + " ";
-
+                if(terrain.get(key) == null) {
+                    System.out.println("ERROR: " + key);
+                }
             }
             out += "\n";
         }
         return out;
+    }
+
+    public HashMap<String, String> returnProduct() {
+        return this.terrain;
     }
 }

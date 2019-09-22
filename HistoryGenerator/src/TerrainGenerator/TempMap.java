@@ -17,8 +17,10 @@ public class TempMap implements ITerrainMap {
     //noise mean
     double nMean;
     ArrayList<ArrayList<Integer>> board = new ArrayList<>();
+    Random r;
 
     public TempMap() {
+        this.r = new Random(999);
         this.sConst = 5;
         this.s = (int) Math.pow(2, sConst) + 1;
         this.poles = 2;
@@ -33,7 +35,8 @@ public class TempMap implements ITerrainMap {
         }
     }
 
-    public TempMap(int sConst, int poles, double nVar, double nMean) {
+    public TempMap(int sConst, int poles, double nVar, double nMean, int seed) {
+        this.r = new Random(seed);
         this.sConst = sConst;
         this.s = (int) Math.pow(2, sConst) + 1;
         this.poles = poles;
@@ -50,7 +53,6 @@ public class TempMap implements ITerrainMap {
 
     @Override
     public ArrayList<ArrayList<Integer>> init() {
-        Random r = new Random();
         //North pole (northern hemisphere)
         for(int x = 0; x < s; x++) {
             double mod = 0;

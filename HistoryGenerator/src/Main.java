@@ -12,7 +12,7 @@ public class Main {
         //ITerrainMap tempMap = new TempMap();
         //tempMap.init();
         //System.out.println(tempMap.render());
-        IGenerator generator = new TerrainGen(7);
+        IGenerator generator = new TerrainGen(7, 690);
         System.out.println(((TerrainGen) generator).render());
     }
 
