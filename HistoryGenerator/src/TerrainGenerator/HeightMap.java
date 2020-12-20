@@ -33,11 +33,10 @@ public class HeightMap implements ITerrainMap {
         }
     }
 
-    public HeightMap(double r, int sConst, int weight, int addWeight, int seed) {
+    public HeightMap(double r, int size, int weight, int addWeight, int seed) {
         ran = new Random(seed);
         this.r = r;
-        this.sConst = sConst;
-        this.s = (int) Math.pow(2, sConst) + 1;
+        this.s = size;
         this.weight = weight;
         this.addWeight = addWeight;
         for(int x = 0; x < s; x++) {

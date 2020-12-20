@@ -35,10 +35,9 @@ public class TempMap implements ITerrainMap {
         }
     }
 
-    public TempMap(int sConst, int poles, double nVar, double nMean, int seed) {
+    public TempMap(int size, int poles, double nVar, double nMean, int seed) {
         this.r = new Random(seed);
-        this.sConst = sConst;
-        this.s = (int) Math.pow(2, sConst) + 1;
+        this.s = size;
         this.poles = poles;
         this.nVar = nVar;
         this.nMean = nMean;

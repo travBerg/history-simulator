@@ -12,7 +12,8 @@ public class TerrainGen implements IGenerator{
     ITerrainMap rainMap;
     ITerrainMap tempMap;
     HashMap<String, String> rawTerrain;
-    HashMap<String, String> terrain;
+    //Map of location to terrain type and HeightRainTemp number
+    HashMap<String, ArrayList<String>> terrain;
     HashMap<String, String> csvMap;
     int seed;
 
@@ -45,7 +46,7 @@ public class TerrainGen implements IGenerator{
         this.heightMap = new HeightMap(2, size, 0, 0, seed);
         this.heightMap.init();
         //THIS IS TEMPORARY UNTIL RAINMAP GETS UPDATED
-        this.rainMap = new HeightMap(2, size, 0, 0, seed);
+        this.rainMap = new HeightMap(2, size, 0, 0, seed + 10);
         this.rainMap.init();
         //temp map
         this.tempMap = new TempMap(size, 2, 0.5, 0, seed);
@@ -66,8 +67,10 @@ public class TerrainGen implements IGenerator{
         this.terrain = this.create(this.heightMap, this.rainMap, this.tempMap);
     }
 
-    public HashMap<String, String> create(ITerrainMap hmap, ITerrainMap rmap, ITerrainMap tmap){
-        HashMap<String, String> map = new HashMap<>();
+    //Creates map of location to list with biome code (from csv) and the HeightRainTemp number
+    //This map is what starts World generation
+    public HashMap<String, ArrayList<String>> create(ITerrainMap hmap, ITerrainMap rmap, ITerrainMap tmap){
+        HashMap<String, ArrayList<String>> map = new HashMap<>();
         //compile the terrain data into one map
         for (int hR = 0; hR < hmap.getBoard().size(); hR++) {
             for (int hC = 0; hC < hmap.getBoard().size(); hC++) {
@@ -80,12 +83,15 @@ public class TerrainGen implements IGenerator{
                 val += Integer.toString(tmap.getBoard().get(hR).get(hC));
                 this.rawTerrain.put(key,val);
                 String type = csvMap.get(val);
-                map.put(key, type);
+                final ArrayList<String> terr = new ArrayList<>();
+                terr.add(type);
+                terr.add(val);
+                map.put(key, terr);
             }
         }
 
-        System.out.println(rawTerrain);
-        System.out.println(map);
+        //System.out.println(rawTerrain);
+        //System.out.println(map);
 
         return map;
     }
@@ -155,7 +161,7 @@ public class TerrainGen implements IGenerator{
         return out;
     }
 
-    public HashMap<String, String> returnProduct() {
+    public HashMap<String, ArrayList<String>> returnProduct() {
         return this.terrain;
     }
 }
