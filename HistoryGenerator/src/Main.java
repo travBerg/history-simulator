@@ -7,7 +7,7 @@ public class Main {
 
         //IGenerator generator = new TerrainGen(7, 690);
         //System.out.println(generator.render());
-        final World world = new World(690, 5, true);
+        final World world = new World(7, 3, true);
     }
 
 }

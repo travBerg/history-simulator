@@ -6,6 +6,6 @@ public class DeciduousHills extends Territory {
 
     @Override
     public String getCode() {
-        return "Deciduous Hills";
+        return CODE;
     }
 }

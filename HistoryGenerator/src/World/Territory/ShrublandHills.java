@@ -6,6 +6,6 @@ public class ShrublandHills extends Territory {
 
     @Override
     public String getCode() {
-        return "Shrubland Hills";
+        return CODE;
     }
 }

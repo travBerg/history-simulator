@@ -12,14 +12,14 @@ public class World implements IWorld{
     final int size;
     final int seed;
     final HashMap<String, Territory> territoryMap;
-    //final HashMap<Integer, Biome> biomes;
+    final HashMap<Integer, Biome> biomes;
 
     public World(final int seed, final int sizeCon, final boolean debug) {
         this.seed = seed;
         this.size = (int) Math.pow(2, sizeCon) + 1;
         final IGenerator generator = new TerrainGen(this.size, seed);
         this.territoryMap = createTerritoryMap(this.seed, generator.returnProduct());
-        //this.biomes = createBiomes(this.territoryMap);
+        this.biomes = createBiomes(this.territoryMap, debug);
         if (debug) {
             System.out.println("Size: " + this.size);
             System.out.println("Territories: " + this.size * this.size);
@@ -27,10 +27,15 @@ public class World implements IWorld{
             System.out.println(generator.render());
         }
     }
-    //Note: This is really stupid! Make a biome class! Go to bed!
-    //The territoryMap is a map of LocationString->Territory
-    public HashMap<Integer, Biome> createBiomes(final HashMap<String, Territory> territoryMap) {
+
+    /*
+        Return a hashmap with <integer, biome> (biome matched with key)
+        function that takes in a territory map and returns a map of the biomes
+     */
+    public HashMap<Integer, Biome> createBiomes(final HashMap<String, Territory> territoryMap, final boolean debug) {
+        //Map index to biome
         final HashMap<Integer, Biome> biomes = new HashMap<Integer, Biome>();
+        //Map ter location to biome index
         final HashMap<String, Integer> mapTer = new HashMap<String, Integer>();
         //TODO: This isnt the functional way to do this but I just want it to work so sort it out later
         int count = 0;
@@ -38,32 +43,83 @@ public class World implements IWorld{
             for(int col = 0; col < size; col++){
                 final String loc = row + "|" + col;
                 final Territory t = territoryMap.get(loc);
+                final Biome nuBiome;
                 //Existing biome
                 if(mapTer.containsKey(loc)) {
-                    final Biome nuBiome = biomes.get(mapTer.get(loc));
+                    nuBiome = biomes.get(mapTer.get(loc));
                 //New biome
                 } else {
-                    final Biome nuBiome = new Biome(t);
+                    nuBiome = new Biome(t, count);
                     biomes.put(count, nuBiome);
+                    mapTer.put(loc, count);
                     count++;
                 }
                 final int next = col + 1;
                 final int below = row + 1;
                 //check next
                 if(next < size) {
-                    if(territoryMap.get(row + "|" + next).getCode() == t.getCode()) {
+                    final String nextLoc = row + "|" + next;
+                    if(territoryMap.get(nextLoc).getCode() == t.getCode()) {
+                        if(mapTer.containsKey(nextLoc)) {
+                            //Join next's biome in map
+                            mapTer.put(loc, mapTer.get(nextLoc));
+                            //Add it to next's Biome object
+                            biomes.get(mapTer.get(nextLoc)).addLocation(loc);
+                        } else {
+                            //Add to next to our biome in map
+                            mapTer.put(nextLoc, nuBiome.getIndex());
+                            //Add it to Biome object
+                            nuBiome.addLocation(nextLoc);
+                        }
 
                     }
                 }
+                //check below
+                if(below < size) {
+                    final String belowLoc = below + "|" + col;
+                    if(territoryMap.get(belowLoc).getCode() == t.getCode()) {
+                        //Add to location->biomeid map
+                        mapTer.put(belowLoc, nuBiome.getIndex());
+                        //Add it to Biome object
+                        nuBiome.addLocation(belowLoc);
+                    }
+                }
+                //check
             }
+        }
+        if (debug) {
+            System.out.println(biomeDebugRender(mapTer, biomes));
         }
         return biomes;
     }
 
-    /*
-    Return a hashmap with <integer, biome> (biome matched with key)
-        function that takes in a territory map and returns a map of the biomes
-     */
+    public String biomeDebugRender(final HashMap<String, Integer> mapTer, final HashMap<Integer, Biome> biomes) {
+        String out = "Biome Map: \n";
+        for (int x = 0; x < size; x++) {
+            //if (x % 2 != 0) {
+            //    out = out + "   ";
+            //}
+            for (int y = 0; y < size; y++) {
+                String key = Integer.toString(x) + "|" + Integer.toString(y);
+                Biome b = biomes.get(mapTer.get(key));
+                String num;
+                if (b.index < 10) {
+                    num = "00" + b.index;
+                }
+                else if (b.index < 100) {
+                    num = "0" + b.index;
+                } else {
+                    num = "" + b.index;
+                }
+                out += "[" + num + "," + b.type + "]" + " ";
+                if(mapTer.get(key) == null) {
+                    System.out.println("ERROR: " + key);
+                }
+            }
+            out += "\n";
+        }
+        return out;
+    }
 
     public HashMap<String, Territory> createTerritoryMap(final int seed, final HashMap<String, ArrayList<String>> terrain) {
         final HashMap<String, Territory> tMap = new HashMap<String, Territory>();
