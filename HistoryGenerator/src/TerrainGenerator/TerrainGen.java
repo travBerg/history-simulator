@@ -27,13 +27,13 @@ public class TerrainGen implements IGenerator{
      */
     public TerrainGen(int size, double r, int poles, double nVar, double nMean, int seed){
         this.seed = seed;
-        this.heightMap = new HeightMap(1, size, 0, 0, seed);
+        this.heightMap = new HeightMap(r, size, 0, 0, seed);
         this.heightMap.init();
         //THIS IS TEMPORARY UNTIL RAINMAP GETS UPDATED
-        this.rainMap = new HeightMap(1, size, 0, 0, seed);
+        this.rainMap = new HeightMap(r, size, 0, 0, seed + 10);
         this.rainMap.init();
         //temp map
-        this.tempMap = new TempMap(size, 2, 0.5, 0, seed);
+        this.tempMap = new TempMap(size, poles, nVar, nMean, seed);
         this.tempMap.init();
 
         this.rawTerrain = new HashMap<>();

@@ -3,7 +3,12 @@ package World.Territory;
 import World.World;
 
 public interface ITerritory {
-    //TODO: This is just so very dumb you have hot marbles in your head, kid
-    //You changed half of these to do something braindead and don't you forget it
+    //The biome code for the territory
     public String getCode();
+    //The name of the territory
+    public String getName();
+    //The location of the territory
+    public String getLocation();
+    //Determine if territory has been discovered
+    public boolean isDiscovered();
 }

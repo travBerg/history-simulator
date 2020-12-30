@@ -16,6 +16,7 @@ public abstract class Territory implements ITerritory {
     final int rain;
     final int temp;
     final int size;
+    final boolean discovered;
     public Territory(final String location, final int seed, final String hrt, final int size) {
         this.seed = seed;
         this.location = location;
@@ -24,17 +25,22 @@ public abstract class Territory implements ITerritory {
         this.temp = Integer.parseInt(hrt.substring(2,3));
         this.neighbors = getNeighbors(location, size);
         this.size = size;
+        this.discovered = false;
     }
 
+    @Override
+    public boolean isDiscovered() { return discovered; }
+
+    @Override
     public String getLocation() { return location; }
 
-    public Pair<String, String> parseLocation(final String location) {
+    public static Pair<String, String> parseLocation(final String location) {
         String array[] = location.split("\\|");
         Pair<String, String> nuLocation = new Pair<>(array[0], array[1]);
         return nuLocation;
     }
 
-    public ArrayList<String> getNeighbors(final String location, final int size) {
+    public static ArrayList<String> getNeighbors(final String location, final int size) {
         Pair<String, String> coords = parseLocation(location);
         int row = Integer.parseInt(coords.getKey());
         int col = Integer.parseInt(coords.getValue());

@@ -1,0 +1,41 @@
+package World;
+
+import World.Territory.Territory;
+
+import java.util.ArrayList;
+
+public class Region implements IRegion {
+    private final ArrayList<String> locations;
+    private final String type;
+    private final int index;
+    private final String name;
+
+    public Region(Territory ter, int idx, ArrayList<String> locations) {
+        this.locations = locations;
+        //locations.add(ter.getLocation());
+        this.index = idx;
+        this.type = ter.getCode();
+        //TODO: Placeholder
+        this.name = "Unnamed Region";
+    }
+
+    @Override
+    public int getIndex() {
+        return this.index;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public String getType() {
+        return type;
+    }
+
+    @Override
+    public ArrayList<String> getLocations() {
+        return locations;
+    }
+}
