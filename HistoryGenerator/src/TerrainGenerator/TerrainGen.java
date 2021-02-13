@@ -41,7 +41,7 @@ public class TerrainGen implements IGenerator{
         this.terrain = this.create(this.heightMap, this.rainMap, this.tempMap);
     }
 
-    public TerrainGen(int size, int seed){
+    public TerrainGen(int size, int seed, int poles){
         this.seed = seed;
         this.heightMap = new HeightMap(2, size, 0, 0, seed);
         this.heightMap.init();
@@ -49,7 +49,7 @@ public class TerrainGen implements IGenerator{
         this.rainMap = new HeightMap(2, size, 0, 0, seed + 10);
         this.rainMap.init();
         //temp map
-        this.tempMap = new TempMap(size, 2, 0.5, 0, seed);
+        this.tempMap = new TempMap(size, poles, 0.5, 0, seed);
         this.tempMap.init();
 
         this.rawTerrain = new HashMap<>();

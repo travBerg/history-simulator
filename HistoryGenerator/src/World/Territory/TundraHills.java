@@ -3,9 +3,10 @@ package World.Territory;
 public class TundraHills extends Territory {
     public static final String CODE = "UH";
     public final String name;
+    public static final String BIOME = "Tundra Hills";
     public TundraHills(String location, int seed, String hrt, int size) {
         super(location, seed, hrt, size);
-        name = "Unnamed Tundra Hill Territory";
+        name = "Unnamed " + BIOME + " Territory";
     }
 
     @Override
@@ -15,4 +16,7 @@ public class TundraHills extends Territory {
 
     @Override
     public String getName() { return name; }
+
+    @Override
+    public String getBiome() { return BIOME; }
 }

@@ -3,9 +3,10 @@ package World.Territory;
 public class DeciduousForest extends Territory{
     public static final String CODE = "DF";
     public final String name;
+    public static final String BIOME = "Deciduous Forest";
     public DeciduousForest(String location, int seed, String hrt, int size) {
         super(location, seed, hrt, size);
-        name = "Unnamed Deciduous Forest Territory";
+        name = "Unnamed " + BIOME + " Territory";
     }
 
     @Override
@@ -15,4 +16,8 @@ public class DeciduousForest extends Territory{
 
     @Override
     public String getName() { return name; }
+
+    @Override
+    public String getBiome() { return BIOME; }
+
 }

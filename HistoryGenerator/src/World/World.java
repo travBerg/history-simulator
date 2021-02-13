@@ -18,19 +18,19 @@ public class World implements IWorld{
     final HashMap<String, Territory> territoryMap;
     final HashMap<Integer, Region> regions;
 
-    public World(final int seed, final int sizeCon, final boolean debug) {
+    public World(final int seed, final int sizeCon, final int poles, final boolean debug) {
         this.seed = seed;
         this.size = (int) Math.pow(2, sizeCon) + 1;
-        final IGenerator generator = new TerrainGen(this.size, seed);
+        final IGenerator generator = new TerrainGen(this.size, seed, poles);
         this.territoryMap = createTerritoryMap(this.seed, generator.returnProduct());
         this.regions = createRegions(this.territoryMap, debug);
         if (debug) {
-            System.out.println("Size: " + this.size);
+            System.out.println("Size: " + this.size + "x" + this.size);
             System.out.println("Territories: " + this.size * this.size);
             System.out.println("Regions: " + regions.size());
-            System.out.println("--------------------------------------------------------");
             //System.out.println(this.territoryMap.get("1|0"));
-            //System.out.println(generator.render());
+            System.out.println("Biome to hrt map:\n" + generator.render());
+            System.out.println("--------------------------------------------------------");
         }
     }
 
@@ -47,9 +47,11 @@ public class World implements IWorld{
             res.add(loc);
         }
 
+        /*
         //Get new positions
         final String row = loc.split("\\|")[0];
         final String col = loc.split("\\|")[1];
+        //TODO: BRO YOU MADE A NEIGHBORS FIELD ON EVERY TERRITORY WHY DIDNT YOU USE IT???
         //Make adjacents
         final String pAbove = (Integer.parseInt(row) - 1) + "|" + (Integer.parseInt(col) - 1);
         final String above = (Integer.parseInt(row) - 1) + "|" + col;
@@ -60,6 +62,8 @@ public class World implements IWorld{
         final String below = (Integer.parseInt(row) + 1) + "|" + col;
         final String nBelow = (Integer.parseInt(row) + 1) + "|" + (Integer.parseInt(col) + 1);
         final String[] locations = {pAbove, above, nAbove, prev, next, pBelow, below, nBelow};
+        */
+        final ArrayList<String> locations = territoryMap.get(loc).getNeighbors();
 
         for (String l:locations) {
             if (territoryMap.containsKey(l)) {
@@ -121,8 +125,10 @@ public class World implements IWorld{
     }
 
     public String biomeDebugRender(final HashMap<String, Integer> mapTer, final HashMap<Integer, Region> biomes) {
-        String out = "[WORLD DEBUG]------------------------------------------\nRegion/Biome Map: \n";
+        String out = "[WORLD DEBUG]------------------------------------------\n" +
+                "Region/Biome Map: (Note that index is off by one from number that will appear in explore view)\n";
         for (int x = 0; x < size; x++) {
+            //This is for hex view
             //if (x % 2 != 0) {
             //    out = out + "   ";
             //}

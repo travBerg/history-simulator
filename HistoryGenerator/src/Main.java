@@ -8,9 +8,10 @@ public class Main {
 
     public static void main(String[] args) {
 
-        //IGenerator generator = new TerrainGen(7, 690);
-        //System.out.println(generator.render());
-        final IWorld world = new World(7, 2, true);
+        //Looks like size 6 (65x65, 4225 territories) is the best we get rn.
+        //Otherwise it overflows while performing the biome search.
+        //May be able to fix this by limiting max biome size
+        final IWorld world = new World(69, 6, 1, true); //seed 7, size 2, poles 2
         final IView view = new DebugView();
         final IController controller = new Controller(world, view);
         controller.go();

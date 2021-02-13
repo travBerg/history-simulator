@@ -16,7 +16,7 @@ public class Region implements IRegion {
         this.index = idx;
         this.type = ter.getCode();
         //TODO: Placeholder
-        this.name = "Unnamed Region";
+        this.name = "Unnamed " + ter.getBiome() + " Region";
     }
 
     @Override
@@ -35,6 +35,7 @@ public class Region implements IRegion {
     }
 
     @Override
+    //TODO: These are actually territories so I should probably name them as such
     public ArrayList<String> getLocations() {
         return locations;
     }
