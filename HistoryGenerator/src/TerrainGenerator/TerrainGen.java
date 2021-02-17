@@ -149,6 +149,10 @@ public class TerrainGen implements IGenerator{
         String out = "";
         int s = heightMap.getBoard().size();
         for(int x = 0; x < s; x++) {
+            //This is for hex view
+            if (x % 2 != 0) {
+                out = out + "   ";
+            }
             for(int y = 0; y < s; y++) {
                 String key = Integer.toString(x) + "|" + Integer.toString(y);
                 out += terrain.get(key) + " ";

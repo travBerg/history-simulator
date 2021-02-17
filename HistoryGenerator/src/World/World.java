@@ -47,22 +47,6 @@ public class World implements IWorld{
             res.add(loc);
         }
 
-        /*
-        //Get new positions
-        final String row = loc.split("\\|")[0];
-        final String col = loc.split("\\|")[1];
-        //TODO: BRO YOU MADE A NEIGHBORS FIELD ON EVERY TERRITORY WHY DIDNT YOU USE IT???
-        //Make adjacents
-        final String pAbove = (Integer.parseInt(row) - 1) + "|" + (Integer.parseInt(col) - 1);
-        final String above = (Integer.parseInt(row) - 1) + "|" + col;
-        final String nAbove = (Integer.parseInt(row) - 1) + "|" + (Integer.parseInt(col) + 1);
-        final String prev = row +"|"+(Integer.parseInt(col) - 1);
-        final String next = row+"|"+(Integer.parseInt(col) + 1);
-        final String pBelow = (Integer.parseInt(row) + 1) + "|" + (Integer.parseInt(col) - 1);
-        final String below = (Integer.parseInt(row) + 1) + "|" + col;
-        final String nBelow = (Integer.parseInt(row) + 1) + "|" + (Integer.parseInt(col) + 1);
-        final String[] locations = {pAbove, above, nAbove, prev, next, pBelow, below, nBelow};
-        */
         final ArrayList<String> locations = territoryMap.get(loc).getNeighbors();
 
         for (String l:locations) {
@@ -129,9 +113,9 @@ public class World implements IWorld{
                 "Region/Biome Map: (Note that index is off by one from number that will appear in explore view)\n";
         for (int x = 0; x < size; x++) {
             //This is for hex view
-            //if (x % 2 != 0) {
-            //    out = out + "   ";
-            //}
+            if (x % 2 != 0) {
+                out = out + "   ";
+            }
             for (int y = 0; y < size; y++) {
                 String key = Integer.toString(x) + "|" + Integer.toString(y);
                 Region b = biomes.get(mapTer.get(key));
