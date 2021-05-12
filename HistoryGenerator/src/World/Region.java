@@ -1,6 +1,7 @@
 package World;
 
 import World.Territory.Territory;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 
@@ -38,5 +39,13 @@ public class Region implements IRegion {
     //TODO: These are actually territories so I should probably name them as such
     public ArrayList<String> getLocations() {
         return locations;
+    }
+
+    @Override
+    public JSONObject asJSON() {
+        //TODO Implement
+        JSONObject territoryJSON = new JSONObject();
+
+        return territoryJSON;
     }
 }

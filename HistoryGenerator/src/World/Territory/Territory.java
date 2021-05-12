@@ -3,6 +3,7 @@ package World.Territory;
 import TerrainGenerator.ITerrainMap;
 import World.World;
 import javafx.util.Pair;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -80,6 +81,14 @@ public abstract class Territory implements ITerritory {
             }
         }*/
         return neighbors;
+    }
+
+    @Override
+    public JSONObject asJSON() {
+        //TODO Implement
+        JSONObject territoryJSON = new JSONObject();
+
+        return territoryJSON;
     }
 
 }

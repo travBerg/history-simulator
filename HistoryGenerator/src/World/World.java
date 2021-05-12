@@ -7,10 +7,10 @@ import com.sun.security.jgss.InquireSecContextPermission;
 import javafx.util.Pair;
 
 import java.beans.PropertyEditorSupport;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Queue;
+import java.util.*;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class World implements IWorld{
     final int size;
@@ -299,5 +299,32 @@ public class World implements IWorld{
             res.add(pair);
         }
         return res;
+    }
+
+    @Override
+    public JSONObject asJSON() {
+        //TODO finalize function
+        JSONObject worldJSON = new JSONObject();
+        JSONArray territoriesJSON = new JSONArray();
+        JSONArray regionsJSON = new JSONArray();
+
+        //  final HashMap<String, Territory> territoryMap;
+        this.territoryMap.forEach((location, territory) -> {
+            JSONObject territoryJSON = new JSONObject();
+            territoryJSON.put("location", location);
+            territoryJSON.put("territory", territory.asJSON());
+            territoriesJSON.add(territoryJSON);
+        });
+
+
+        //  final HashMap<Integer, Region> regions;
+        this.regions.forEach((number, region) -> {
+            JSONObject regionJSON = new JSONObject();
+            regionJSON.put("number", number);
+            regionJSON.put("region", region.asJSON());
+            regionsJSON.add(regionJSON);
+        });
+
+        return worldJSON;
     }
 }
