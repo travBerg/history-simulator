@@ -325,6 +325,11 @@ public class World implements IWorld{
             regionsJSON.add(regionJSON);
         });
 
+        worldJSON.put("seed", this.seed);
+        worldJSON.put("size", this.size);
+        worldJSON.put("territories", territoriesJSON);
+        worldJSON.put("regions", regionsJSON);
+
         return worldJSON;
     }
 }
