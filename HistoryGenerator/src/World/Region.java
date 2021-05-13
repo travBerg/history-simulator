@@ -43,9 +43,11 @@ public class Region implements IRegion {
 
     @Override
     public JSONObject asJSON() {
-        //TODO Implement
         JSONObject territoryJSON = new JSONObject();
-
+        territoryJSON.put("locations", this.locations);
+        territoryJSON.put("type", this.type);
+        territoryJSON.put("index", this.index);
+        territoryJSON.put("name", this.name);
         return territoryJSON;
     }
 }

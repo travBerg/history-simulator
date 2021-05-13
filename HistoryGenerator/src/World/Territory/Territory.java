@@ -85,8 +85,16 @@ public abstract class Territory implements ITerritory {
 
     @Override
     public JSONObject asJSON() {
-        //TODO Implement
         JSONObject territoryJSON = new JSONObject();
+
+        territoryJSON.put("location" , this.location);
+        territoryJSON.put("height" , this.height);
+        territoryJSON.put("rain" , this.rain);
+        territoryJSON.put("temp" , this.temp);
+        territoryJSON.put("size" , this.size);
+        territoryJSON.put("discovered" , this.discovered);
+        territoryJSON.put("seed" , this.seed);
+        territoryJSON.put("neighbors" , this.neighbors);
 
         return territoryJSON;
     }
