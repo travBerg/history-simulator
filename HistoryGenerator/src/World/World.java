@@ -301,7 +301,7 @@ public class World implements IWorld{
         return res;
     }
 
-    @Override
+    @Override @SuppressWarnings("unchecked")
     public JSONObject asJSON() {
         //TODO finalize function
         JSONObject worldJSON = new JSONObject();
@@ -311,7 +311,11 @@ public class World implements IWorld{
         //  final HashMap<String, Territory> territoryMap;
         this.territoryMap.forEach((location, territory) -> {
             JSONObject territoryJSON = new JSONObject();
-            territoryJSON.put("location", location);
+            String[] splitLocation = location.split("\\|");
+            int row = Integer.parseInt(splitLocation[0]);
+            int col = Integer.parseInt(splitLocation[1]);
+            territoryJSON.put("col", col);
+            territoryJSON.put("row", row);
             territoryJSON.put("territory", territory.asJSON());
             territoriesJSON.add(territoryJSON);
         });
