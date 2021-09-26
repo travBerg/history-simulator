@@ -25,7 +25,7 @@ public abstract class Territory implements ITerritory {
         this.height = Integer.parseInt(hrt.substring(0,1));
         this.rain = Integer.parseInt(hrt.substring(1,2));
         this.temp = Integer.parseInt(hrt.substring(2,3));
-        this.neighbors = addNeighbors(location, size);
+        this.neighbors = TerritoryManager.addNeighbors(location, size);
         this.size = size;
         this.discovered = false;
     }
@@ -38,7 +38,7 @@ public abstract class Territory implements ITerritory {
 
     @Override
     public ArrayList<String> getNeighbors() { return neighbors; }
-
+  
     public static Pair<String, String> parseLocation(final String location) {
         String array[] = location.split("\\|");
         Pair<String, String> nuLocation = new Pair<>(array[0], array[1]);
@@ -116,5 +116,4 @@ public abstract class Territory implements ITerritory {
         territoryJSON.put("neighbors" , neighborsJSON);
         return territoryJSON;
     }
-
 }
