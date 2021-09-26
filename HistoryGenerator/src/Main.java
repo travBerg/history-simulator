@@ -15,7 +15,7 @@ public class Main {
 
         //poles: 0 = north pole, 1 = south pole, 2 = both poles
         final IWorld world = new World(760, 3, 2, true); //seed 7, size 2, poles 2
-        //System.out.println(world.asJSON());
+        System.out.println(world.asJSON());
         final IView view = new DebugView();
         final IController controller = new Controller(world, view);
         controller.go();

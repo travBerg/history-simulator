@@ -12,7 +12,8 @@ import java.util.regex.Pattern;
 public abstract class Territory implements ITerritory {
     final int seed;
     //row|column
-    final String location;
+    final int row;
+    final int col;
     final ArrayList<String> neighbors;
     final int height;
     final int rain;
@@ -22,7 +23,9 @@ public abstract class Territory implements ITerritory {
 
     public Territory(final String location, final int seed, final String hrt, final int size) {
         this.seed = seed;
-        this.location = location;
+        final Pair<Integer, Integer> loc = TerritoryManager.parseLocation(location);
+        this.row = loc.getKey();
+        this.col = loc.getValue();
         this.height = Integer.parseInt(hrt.substring(0,1));
         this.rain = Integer.parseInt(hrt.substring(1,2));
         this.temp = Integer.parseInt(hrt.substring(2,3));
@@ -36,7 +39,10 @@ public abstract class Territory implements ITerritory {
     public boolean isDiscovered() { return discovered; }
 
     @Override
-    public String getLocation() { return location; }
+    public final int getRow() { return row; }
+
+    @Override
+    public final int getCol() { return col; }
 
     @Override
     public ArrayList<String> getNeighbors() { return neighbors; }
@@ -45,11 +51,6 @@ public abstract class Territory implements ITerritory {
     public JSONObject asJSON() {
         JSONObject territoryJSON = new JSONObject();
         JSONArray neighborsJSON = new JSONArray();
-
-        //Break up current location into rows and columns
-        String[] splitLocation = this.location.split("\\|");
-        int row = Integer.parseInt(splitLocation[0]);
-        int col = Integer.parseInt(splitLocation[1]);
 
         //Break up neighbors into rows and columns
         for (String Neighborlocation: this.neighbors){
@@ -62,8 +63,8 @@ public abstract class Territory implements ITerritory {
             neighborsJSON.add(locationJSON);
         }
 
-        territoryJSON.put("row", row);
-        territoryJSON.put("col", col);
+        territoryJSON.put("row", this.row);
+        territoryJSON.put("col", this.col);
         territoryJSON.put("height" , this.height);
         territoryJSON.put("rain" , this.rain);
         territoryJSON.put("temp" , this.temp);
