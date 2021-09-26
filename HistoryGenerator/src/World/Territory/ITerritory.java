@@ -16,4 +16,6 @@ public interface ITerritory {
     public Biome getBiome();
     //Get the list of neighbors
     public ArrayList<String> getNeighbors();
+    //Returns Territory as JSON
+    public Object asJSON();
 }

@@ -14,7 +14,8 @@ public class Main {
         //Without biome search, we can get to size 10 (over 1 mil territories) and maybe larger (more tiles than the largest world in Rimworld. Not bad.)
 
         //poles: 0 = north pole, 1 = south pole, 2 = both poles
-        final IWorld world = new World(844, 6, 0, true); //seed 7, size 3, poles 0
+        final IWorld world = new World(760, 3, 2, true); //seed 7, size 2, poles 2
+        System.out.println(world.asJSON());
         final IView view = new DebugView();
         final IController controller = new Controller(world, view);
         controller.go();
