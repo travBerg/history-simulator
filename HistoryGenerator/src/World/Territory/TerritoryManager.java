@@ -28,7 +28,7 @@ public class TerritoryManager {
     public static Pair<List<POI>, List<Resource>> landscape(final Biome biome, final int seed, final int riverId,
                                                             final Optional<River> river, final ArrayList<String> neighbors,
                                                             final int height, final int rain, final int temp) {
-        //TODO: This approach is maybe dumb. Just create the segments as part of
+        //TODO: Don't include rivers in this, dingus
         final Random random = new Random(seed);
         final Optional<POI> riverPOI = river.map(x-> POIManager.createRiverPOI(x, neighbors, riverId, seed));
         //ArrayList<River> test = new ArrayList<>();

@@ -1,15 +1,21 @@
 package World.Territory;
 
 import TerrainGenerator.ITerrainMap;
+import World.PointOfInterest.POI;
+import World.Rivers.River;
+import World.Territory.Biome.Biome;
 import World.World;
 import javafx.util.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
-public abstract class Territory implements ITerritory {
+public class Territory implements ITerritory {
     final int seed;
     //row|column
     final int row;
@@ -19,9 +25,13 @@ public abstract class Territory implements ITerritory {
     final int rain;
     final int temp;
     final int size;
+    final Biome biome;
+    final String name;
     final boolean discovered;
+    final Set<POI> pOI;
 
-    public Territory(final String location, final int seed, final String hrt, final int size) {
+    public Territory(final String location, final int seed, final String hrt, final int size, final Biome biome,
+                     final HashMap<Integer, River> rivers, final HashMap<String, Integer> locBased) {
         this.seed = seed;
         final Pair<Integer, Integer> loc = TerritoryManager.parseLocation(location);
         this.row = loc.getKey();
@@ -32,7 +42,10 @@ public abstract class Territory implements ITerritory {
         this.neighbors = TerritoryManager.addNeighbors(location, size);
         this.size = size;
         this.discovered = false;
-        //method to populate with POI
+        this.biome = biome;
+        this.name = "Unnamed " + biome.getName() + " Region";
+        //Populate with POI
+        this.pOI = new HashSet<POI>();
     }
 
     @Override
@@ -43,6 +56,12 @@ public abstract class Territory implements ITerritory {
 
     @Override
     public final int getCol() { return col; }
+
+    @Override
+    public final String getName() { return name; }
+
+    @Override
+    public final Biome getBiome() { return biome; }
 
     @Override
     public ArrayList<String> getNeighbors() { return neighbors; }
