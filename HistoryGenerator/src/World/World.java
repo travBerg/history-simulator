@@ -6,10 +6,8 @@ import World.Rivers.River;
 import World.Rivers.RiverManager;
 import World.Territory.*;
 import World.Territory.Biome.Biome;
-import com.sun.security.jgss.InquireSecContextPermission;
 import javafx.util.Pair;
 
-import java.beans.PropertyEditorSupport;
 import java.util.*;
 
 import org.json.simple.JSONArray;
@@ -47,7 +45,8 @@ public class World implements IWorld{
         }
     }
 
-    //TODO: Fix this to allow for larger worlds. Maybe limit region size? Maybe just write breadth first search less bad?
+    //TODO: Fix this to allow for larger worlds. Maybe limit region size? Definitely make a list of all loc keys and
+    // remove them as they are assigned
     public ArrayList<String> biomeSearch(final HashMap<String, Territory> territoryMap, final String code,
                                          final HashMap<String, Boolean> discovered, final Queue<String> q,
                                          final ArrayList<String> res) {
@@ -125,7 +124,7 @@ public class World implements IWorld{
     public String biomeDebugRender(final HashMap<String, Integer> mapTer, final HashMap<Integer, Region> biomes) {
         String out = "[WORLD DEBUG]------------------------------------------\n" +
                 "Region/Biome Map: (Note that index is off by one from number that will appear in explore view)\n";
-        for (int x = 0; x < size; x++) {
+        for (int x = size - 1; x >= 0; x--) {
             //This is for hex view
             if (x % 2 != 0) {
                 out = out + "   ";
@@ -160,8 +159,11 @@ public class World implements IWorld{
         final HashMap<String, Territory> tMap = new HashMap<String, Territory>();
         for (String location:terrain.keySet()) {
             final ArrayList<String> terr = terrain.get(location);
-            final Territory territory = createTerritory(terr.get(0), terr.get(1), location, seed, this.size, rivers, locBased);
-            tMap.put(location, territory);
+            //Hacky solution to my silly coordinates problem
+            final Pair<Integer, Integer> flip = TerritoryManager.parseLocation(location);
+            final String nuLoc = ((0 - flip.getKey()) + this.size) - 1 + "|" + flip.getValue();
+            final Territory territory = createTerritory(terr.get(0), terr.get(1), nuLoc, seed, this.size, rivers, locBased);
+            tMap.put(nuLoc, territory);
         }
         return tMap;
     }
