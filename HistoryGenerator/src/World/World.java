@@ -327,33 +327,27 @@ public class World implements IWorld{
     public JSONObject asJSON() {
         //TODO finalize function
         JSONObject worldJSON = new JSONObject();
-        JSONArray territoriesJSON = new JSONArray();
         JSONArray regionsJSON = new JSONArray();
-
-        //  final HashMap<String, Territory> territoryMap;
-        this.territoryMap.forEach((location, territory) -> {
-            JSONObject territoryJSON = new JSONObject();
-            String[] splitLocation = location.split("\\|");
-            int row = Integer.parseInt(splitLocation[0]);
-            int col = Integer.parseInt(splitLocation[1]);
-            territoryJSON.put("col", col);
-            territoryJSON.put("row", row);
-            territoryJSON.put("territory", territory.asJSON());
-            territoriesJSON.add(territoryJSON);
-        });
-
 
         //  final HashMap<Integer, Region> regions;
         this.regions.forEach((number, region) -> {
             JSONObject regionJSON = new JSONObject();
+            JSONObject regionDetails = new JSONObject();
+            JSONArray territoriesJSON = new JSONArray();
             regionJSON.put("number", number);
-            regionJSON.put("region", region.asJSON());
+            regionDetails.put("type", region.getType());
+            regionDetails.put("index", region.getIndex());
+            regionDetails.put("name", region.getName());
+            region.getLocations().forEach(loc -> {
+                territoriesJSON.add(territoryMap.get(loc).asJSON());
+            });
+            regionDetails.put("territories", territoriesJSON);
+            regionJSON.put("region", regionDetails);
             regionsJSON.add(regionJSON);
         });
 
         worldJSON.put("seed", this.seed);
         worldJSON.put("size", this.size);
-        worldJSON.put("territories", territoriesJSON);
         worldJSON.put("regions", regionsJSON);
 
         return worldJSON;
