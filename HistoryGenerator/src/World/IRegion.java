@@ -8,5 +8,4 @@ public interface IRegion {
     public String getName();
     public String getType();
     public ArrayList<String> getLocations();
-    public JSONObject asJSON();
 }

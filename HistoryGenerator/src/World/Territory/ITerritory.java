@@ -9,7 +9,8 @@ public interface ITerritory {
     //The biome code for the territory
     public String getName();
     //The location of the territory
-    public String getLocation();
+    public int getRow();
+    public int getCol();
     //Determine if territory has been discovered
     public boolean isDiscovered();
     //Get name of biome type

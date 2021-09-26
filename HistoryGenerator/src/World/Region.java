@@ -41,27 +41,4 @@ public class Region implements IRegion {
     public ArrayList<String> getLocations() {
         return locations;
     }
-
-    @Override @SuppressWarnings("unchecked")
-    public JSONObject asJSON() {
-        JSONObject territoryJSON = new JSONObject();
-        JSONArray locationsJSON = new JSONArray();
-
-        for (String location: this.locations){
-            String[] splitLocation = location.split("\\|");
-            int row = Integer.parseInt(splitLocation[0]);
-            int col = Integer.parseInt(splitLocation[1]);
-            JSONObject locationJSON = new JSONObject();
-
-            locationJSON.put("col", col);
-            locationJSON.put("row", row);
-            locationsJSON.add(locationJSON);
-        }
-
-        territoryJSON.put("locations", locationsJSON);
-        territoryJSON.put("type", this.type);
-        territoryJSON.put("index", this.index);
-        territoryJSON.put("name", this.name);
-        return territoryJSON;
-    }
 }
