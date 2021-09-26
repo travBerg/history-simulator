@@ -1,23 +1,22 @@
 package World.Territory;
 
+import World.Rivers.River;
+import World.Territory.Biome.Biome;
+
+import java.util.HashMap;
+
 public class JungleHills extends Territory {
-    public static final String CODE = "JH";
     public final String name;
-    public static final String BIOME = "Jungle Hills";
-    public JungleHills(String location, int seed, String hrt, int size) {
+    public static final Biome BIOME = Biome.JUNGLEHILLS;
+    public JungleHills(String location, int seed, String hrt, int size, final HashMap<Integer, River> rivers,
+                       final HashMap<String, Integer> locBased) {
         super(location, seed, hrt, size);
-        name = "Unnamed " + BIOME + " Territory";
-    }
-
-
-    @Override
-    public String getCode() {
-        return CODE;
+        name = "Unnamed " + BIOME.getName() + " Territory";
     }
 
     @Override
     public String getName() { return name; }
 
     @Override
-    public String getBiome() { return BIOME; }
+    public Biome getBiome() { return BIOME; }
 }

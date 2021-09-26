@@ -1,24 +1,23 @@
 package World.Territory;
 
+import World.Rivers.River;
+import World.Territory.Biome.Biome;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Grassland extends Territory {
-    public final static String CODE = "GL";
     public final String name;
-    public final static String BIOME = "Grassland";
-    public Grassland (String location, int seed, String hrt, int size) {
+    public final static Biome BIOME = Biome.GRASSLAND;
+    public Grassland (String location, int seed, String hrt, int size, final HashMap<Integer, River>rivers,
+                      final HashMap<String, Integer> locBased) {
         super(location, seed, hrt, size);
-        name = "Unnamed " + BIOME + " Territory";
-    }
-
-    @Override
-    public String getCode() {
-        return CODE;
+        name = "Unnamed " + BIOME.getName() + " Territory";
     }
 
     @Override
     public String getName() { return name; }
 
     @Override
-    public String getBiome() { return BIOME; }
+    public Biome getBiome() { return BIOME; }
 }

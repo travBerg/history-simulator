@@ -1,10 +1,42 @@
 package World.Territory;
 
+import World.PointOfInterest.POI;
+import World.PointOfInterest.POIManager;
+import World.Resources.Resource;
+import World.Rivers.River;
+import World.Rivers.RiverManager;
+import World.Territory.Biome.Biome;
 import javafx.util.Pair;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class TerritoryManager {
+    /**River generation must happen before this
+     *
+     * Pseudocode for populating a territory with POI and Resources (maybe people eventually?)
+     * @param
+     * @return
+     * 1. Create water sources (Aquifers, springs, etc.)
+     * 2. Create material and water resources (based off biome and water POI)
+     * 3. Create food and animals (based off water sources and biomes)
+     * 4. Create shelter POI and populate with relevant animals and materials
+     * public static Pair<List<POI>, List<Resources>> landscape(final Biome biome, final int seed,
+     *                                                          final Optional<River> river, ArrayList<String> neighbors,
+     *                                                          final int height, final int rain, final int temp){}
+     */
+
+    public static Pair<List<POI>, List<Resource>> landscape(final Biome biome, final int seed, final int riverId,
+                                                            final Optional<River> river, final ArrayList<String> neighbors,
+                                                            final int height, final int rain, final int temp) {
+        //TODO: This approach is maybe dumb. Just create the segments as part of
+        final Random random = new Random(seed);
+        final Optional<POI> riverPOI = river.map(x-> POIManager.createRiverPOI(x, neighbors, riverId, seed));
+        //ArrayList<River> test = new ArrayList<>();
+        //river.map(test::add);
+        return new Pair<>(new ArrayList<>(), new ArrayList<>());
+    }
+
+
     public static Pair<Integer, Integer> parseLocation(final String location) {
         String array[] = location.split("\\|");
         final int row = Integer.parseInt(array[0]);
@@ -25,7 +57,8 @@ public class TerritoryManager {
             for(int i = row - 1; i <= row + 1; i++) {
                 for(int j = col - 1; j <= col + 1; j++){
                     if(!(i < row && j < col) && !(i > row && j < col) &&
-                            j >= 0 && j < size && i >= 0 && i < size) {
+                            j >= 0 && j < size && i >= 0 && i < size &&
+                            !(i == row && j == col)) {
                         neighbors.add(i + "|" + j);
                     }
                 }
@@ -35,20 +68,14 @@ public class TerritoryManager {
             for(int i = row - 1; i <= row + 1; i++) {
                 for(int j = col - 1; j <= col + 1; j++){
                     if(!(i < row && j > col) && !(i > row && j > col) &&
-                            j >= 0 && j < size && i >= 0 && i < size) {
+                            j >= 0 && j < size && i >= 0 && i < size &&
+                            !(i == row && j == col)) {
                         neighbors.add(i + "|" + j);
                     }
                 }
             }
         }
-        /*
-        for(int i = row - 1; i <= row + 1; i++) {
-            for(int j = col - 1; j <= col + 1; j++){
-                if(j >= 0 && j < size && i >= 0 && i < size) {
-                    neighbors.add(i + "|" + j);
-                }
-            }
-        }*/
+
         return neighbors;
     }
 }

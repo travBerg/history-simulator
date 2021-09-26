@@ -17,6 +17,7 @@ public abstract class Territory implements ITerritory {
     final int temp;
     final int size;
     final boolean discovered;
+
     public Territory(final String location, final int seed, final String hrt, final int size) {
         this.seed = seed;
         this.location = location;
@@ -26,6 +27,7 @@ public abstract class Territory implements ITerritory {
         this.neighbors = TerritoryManager.addNeighbors(location, size);
         this.size = size;
         this.discovered = false;
+        //method to populate with POI
     }
 
     @Override

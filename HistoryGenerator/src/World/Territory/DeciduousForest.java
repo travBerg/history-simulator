@@ -1,23 +1,23 @@
 package World.Territory;
 
-public class DeciduousForest extends Territory{
-    public static final String CODE = "DF";
-    public final String name;
-    public static final String BIOME = "Deciduous Forest";
-    public DeciduousForest(String location, int seed, String hrt, int size) {
-        super(location, seed, hrt, size);
-        name = "Unnamed " + BIOME + " Territory";
-    }
+import World.Rivers.River;
+import World.Territory.Biome.Biome;
 
-    @Override
-    public String getCode() {
-        return CODE;
+import java.util.HashMap;
+
+public class DeciduousForest extends Territory{
+    public final String name;
+    public static final Biome BIOME = Biome.DECIDUOUSFOREST;
+    public DeciduousForest(String location, int seed, String hrt, int size, final HashMap<Integer, River> rivers,
+                           final HashMap<String, Integer> locBased) {
+        super(location, seed, hrt, size);
+        name = "Unnamed " + BIOME.getName() + " Territory";
     }
 
     @Override
     public String getName() { return name; }
 
     @Override
-    public String getBiome() { return BIOME; }
+    public Biome getBiome() { return BIOME; }
 
 }
