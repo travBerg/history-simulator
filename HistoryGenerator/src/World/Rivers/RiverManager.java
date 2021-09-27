@@ -4,6 +4,8 @@ import World.PointOfInterest.RiverSegment;
 import World.Territory.Territory;
 import World.Territory.TerritoryManager;
 import javafx.util.Pair;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.util.*;
 import java.util.concurrent.SynchronousQueue;
@@ -143,14 +145,13 @@ public class RiverManager {
 
                 //Check if long river came from old river
                 if(locBased.containsKey(longer.getSegments().get(0))) {
+                    System.out.println("OLD RIVER MERGE SHIT");
                     //Post-merge long river
                     final River lResult = new River(longer.getName(),
                             Stream.of(longer.getSegments().subList(0, longer.getSegments().indexOf(s)), tail)
                                     .flatMap(Collection::stream).collect(Collectors.toList()), Optional.empty(),
-                            longer.getTributaries().map(t->{
-                                t.add(new Pair<>(s,idx));
-                                return t;
-                            }));
+                            addTributary(longer.getTributaries(), new Pair(s, idx)));
+
                     //update old river with new tail in both maps
                     rivers.replace(oldId, lResult);
                     longer.getSegments().stream().forEach(locBased::remove);
@@ -167,6 +168,7 @@ public class RiverManager {
                         shorter.getSegments().subList(0, shorter.getSegments().indexOf(s)), Optional.ofNullable(idx), Optional.empty()));
                 sTail.stream().forEach(locBased::remove);
                 //Post-merge long river
+                System.out.println("NEW RIVER MERGE SHIT");
                 final River lResult = new River(longer.getName(),
                         Stream.of(longer.getSegments().subList(0, longer.getSegments().indexOf(s)), tail)
                                 .flatMap(Collection::stream).collect(Collectors.toList()), Optional.empty(),
@@ -184,15 +186,36 @@ public class RiverManager {
         });
         //TODO: Maybe convert locBased to be <String, RiverSegment>?
         System.out.println("Final rivers\n-----------------------------------------------------------------------------------------");
-        rivers.keySet().stream().forEach(x->System.out.println(x + ": " + rivers.get(x).getSegments() + " merge: " + rivers.get(x).getMerge().orElse(-1)));
+        rivers.keySet().stream().forEach(x->System.out.println(x + ": " + rivers.get(x).getSegments() + " merge: " +
+                rivers.get(x).getMerge().orElse(-1) + " Tributaries: " + rivers.get(x).getTributaries()));
         return new Pair<>(rivers, locBased);
     }
 
-    public static Optional<Set<Pair<String,Integer>>> addTributary(Optional<Set<Pair<String, Integer>>> tributaries, Pair<String,Integer> newTrib) {
+    public static Optional<Set<Pair<String,Integer>>> addTributary(Optional<Set<Pair<String, Integer>>> tributaries,
+                                                                   Pair<String,Integer> newTrib) {
         tributaries.map(t->{
             t.add(newTrib);
             return t;
         });
+        if(tributaries.isEmpty()) {
+            final HashSet<Pair<String, Integer>> set = new HashSet<>();
+            set.add(newTrib);
+            return Optional.of(set);
+        }
         return tributaries;
+    }
+
+    public static JSONObject riverToJSON(final River r) {
+        JSONObject o = new JSONObject();
+        o.put("name", r.getName());
+        JSONArray segs = new JSONArray();
+        r.getSegments().stream().forEach(s -> segs.add(s));
+        o.put("segments", segs);
+        o.put("merge", r.getMerge().orElse(null));
+        //List of riverids
+        JSONArray tribs = new JSONArray();
+        r.getTributaries().ifPresent(t -> t.stream().forEach(p->tribs.add(p.getValue())));
+        o.put("tributaries", tribs);
+        return o;
     }
 }

@@ -9,6 +9,7 @@ public class River {
     private final List<String> segments;
     private final String name;
     private final Optional<Integer> merge;
+    //Set of <location, tributary river id>
     private final Optional<Set<Pair<String, Integer>>> tributaries;
 
     public River(final int seed, final HashMap<String, ArrayList<String>> terrain, final String start, final int size) {

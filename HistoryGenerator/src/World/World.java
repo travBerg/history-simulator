@@ -18,6 +18,7 @@ public class World implements IWorld{
     final int seed;
     final HashMap<String, Territory> territoryMap;
     final HashMap<Integer, Region> regions;
+    final HashMap<Integer, River> rivers;
 
     public World(final int seed, final int sizeCon, final int poles, final boolean debug) {
         this.seed = seed;
@@ -33,6 +34,7 @@ public class World implements IWorld{
                 generator.returnProduct(), size);
 
         this.territoryMap = createTerritoryMap(this.seed, generator.returnProduct(), riverMaps.getKey(), riverMaps.getValue());
+        this.rivers = riverMaps.getKey();
         //this.regions = new HashMap<Integer, Region>();
         this.regions = createRegions(this.territoryMap, debug);
         if (debug) {
@@ -45,7 +47,7 @@ public class World implements IWorld{
         }
     }
 
-    //TODO: Fix this to allow for larger worlds. Maybe limit region size? Definitely make a list of all loc keys and
+    //TODO: Fix this to allow for larger worlds. Maybe limit region size? Definitely make a list (hashset) of all loc keys and
     // remove them as they are assigned
     public ArrayList<String> biomeSearch(final HashMap<String, Territory> territoryMap, final String code,
                                          final HashMap<String, Boolean> discovered, final Queue<String> q,
@@ -174,22 +176,22 @@ public class World implements IWorld{
         final Territory t;
         switch(type) {
             case Biome.OCEAN_CODE:
-                t = new Ocean(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.OCEAN, rivers, locBased);
                 break;
             //case "CD":
             //    t = new ColdDesert(location, seed, hrt);
             //    break;
             case Biome.TUNDRA_CODE:
-                t = new Tundra(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.TUNDRA, rivers, locBased);
                 break;
             case Biome.GRASSLAND_CODE:
-                t = new Grassland(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.GRASSLAND, rivers, locBased);
                 break;
             //case "CW":
             //    t = new ConiferousWetlands(location, seed, hrt);
             //    break;
             case Biome.SHRUBLAND_CODE:
-                t = new Shrubland(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.SHRUBLAND, rivers, locBased);
                 break;
             //case "PR":
             //    t = new Prairie(location, seed, hrt);
@@ -198,16 +200,16 @@ public class World implements IWorld{
             //    t = new Marsh(location, seed, hrt);
             //    break;
             case Biome.SANDYDESERT_CODE:
-                t = new SandyDesert(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.SANDYDESERT, rivers, locBased);
                 break;
             case Biome.SAVANNA_CODE:
-                t = new Savanna(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.SAVANNA, rivers, locBased);
                 break;
             case Biome.SWAMP_CODE:
-                t = new Swamp(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.SWAMP, rivers, locBased);
                 break;
             case Biome.JUNGLE_CODE:
-                t = new Jungle(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.JUNGLE, rivers, locBased);
                 break;
             //case "ST":
             //    t = new Steppe(location, seed, hrt);
@@ -219,7 +221,7 @@ public class World implements IWorld{
             //    t = new DeadForest(location, seed, hrt);
             //    break;
             case Biome.TAIGA_CODE:
-                t = new Taiga(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.TAIGA, rivers, locBased);
                 break;
             //case "IF":
             //    t = new MixedForest(location, seed, hrt);
@@ -231,7 +233,7 @@ public class World implements IWorld{
             //    t = new RockyDesert(location, seed, hrt);
             //    break;
             case Biome.DECFOREST_CODE:
-                t = new DeciduousForest(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.DECIDUOUSFOREST, rivers, locBased);
                 break;
             //case "DN":
             //    t = new SandDunes(location, seed, hrt);
@@ -243,16 +245,16 @@ public class World implements IWorld{
             //    t = new Rainforest(location, seed, hrt);
             //    break;
             case Biome.GLACIER_CODE:
-                t = new Glacier(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.GLACIER, rivers, locBased);
                 break;
             case Biome.TUNDRAHILLS_CODE:
-                t = new TundraHills(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.TUNDRAHILLS, rivers, locBased);
                 break;
             case Biome.GRASSHILLS_CODE:
-                t = new GrassyHills(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.GRASSHILLS, rivers, locBased);
                 break;
             case Biome.TAIGAHILLS_CODE:
-                t = new TaigaHills(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.TAIGAHILLS, rivers, locBased);
                 break;
             //case "XH":
             //    t = new DeadHills(location, seed, hrt);
@@ -261,38 +263,38 @@ public class World implements IWorld{
             //    t = new MixedHills(location, seed, hrt);
             //    break;
             case Biome.BADLANDS_CODE:
-                t = new Badlands(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.BADLANDS, rivers, locBased);
                 break;
             case Biome.SHRUBLANDHILLS_CODE:
-                t = new ShrublandHills(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.SHRUBLANDHILLS, rivers, locBased);
                 break;
             case Biome.DECHILLS_CODE:
-                t = new DeciduousHills(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.DECIDUOUSHILLS, rivers, locBased);
                 break;
             case Biome.JUNGLEHILLS_CODE:
-                t = new JungleHills(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.JUNGLEHILLS, rivers, locBased);
                 break;
             case Biome.MOUNTAIN_CODE:
-                t = new Mountain(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.MOUNTAIN, rivers, locBased);
                 break;
             case Biome.MOUNTAINTAIGA_CODE:
-                t = new MountainTaiga(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.MOUNTAINTAIGA, rivers, locBased);
                 break;
             //case "MM":
             //    t = new MixedMountain(location, seed, hrt);
             //    break;
             case Biome.DECMOUNTAIN_CODE:
-                t = new DeciduousMountain(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.DECIDUOUSMOUNTAIN, rivers, locBased);
                 break;
             case Biome.JUNGLEMOUNTAIN_CODE:
-                t = new JungleMountain(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.JUNGLEMOUNTAIN, rivers, locBased);
                 break;
             case Biome.ALPTUNDRA_CODE:
-                t = new AlpineTundra(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.ALPINETUNDRA, rivers, locBased);
                 break;
             default:
                 System.out.println("WARNING: Territory tag defaulted");
-                t = new Ocean(location, seed, hrt, size, rivers, locBased);
+                t = new Territory(location, seed, hrt, size, Biome.OCEAN, rivers, locBased);
         }
 
         return t;
@@ -328,6 +330,7 @@ public class World implements IWorld{
         //TODO finalize function
         JSONObject worldJSON = new JSONObject();
         JSONArray regionsJSON = new JSONArray();
+        JSONArray riverList = new JSONArray();
 
         //  final HashMap<Integer, Region> regions;
         this.regions.forEach((number, region) -> {
@@ -344,11 +347,13 @@ public class World implements IWorld{
             regionDetails.put("territories", territoriesJSON);
             regionJSON.put("region", regionDetails);
             regionsJSON.add(regionJSON);
-        });
 
+        });
+        rivers.keySet().stream().forEach(k -> riverList.add(RiverManager.riverToJSON(rivers.get(k))));
         worldJSON.put("seed", this.seed);
         worldJSON.put("size", this.size);
         worldJSON.put("regions", regionsJSON);
+        worldJSON.put("rivers", riverList);
 
         return worldJSON;
     }

@@ -1,7 +1,5 @@
 package World.Territory.Biome;
 
-import World.Territory.Swamp;
-
 public enum Biome {
     ALPINETUNDRA(Biome.ALPTUNDRA_CODE, "Alpine Tundra", 0.4f),
     BADLANDS(Biome.BADLANDS_CODE, "Badlands", 0.5f),
