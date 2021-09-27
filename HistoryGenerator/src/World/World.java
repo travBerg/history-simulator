@@ -18,6 +18,7 @@ public class World implements IWorld{
     final int seed;
     final HashMap<String, Territory> territoryMap;
     final HashMap<Integer, Region> regions;
+    final HashMap<Integer, River> rivers;
 
     public World(final int seed, final int sizeCon, final int poles, final boolean debug) {
         this.seed = seed;
@@ -33,6 +34,7 @@ public class World implements IWorld{
                 generator.returnProduct(), size);
 
         this.territoryMap = createTerritoryMap(this.seed, generator.returnProduct(), riverMaps.getKey(), riverMaps.getValue());
+        this.rivers = riverMaps.getKey();
         //this.regions = new HashMap<Integer, Region>();
         this.regions = createRegions(this.territoryMap, debug);
         if (debug) {
@@ -45,7 +47,7 @@ public class World implements IWorld{
         }
     }
 
-    //TODO: Fix this to allow for larger worlds. Maybe limit region size? Definitely make a list of all loc keys and
+    //TODO: Fix this to allow for larger worlds. Maybe limit region size? Definitely make a list (hashset) of all loc keys and
     // remove them as they are assigned
     public ArrayList<String> biomeSearch(final HashMap<String, Territory> territoryMap, final String code,
                                          final HashMap<String, Boolean> discovered, final Queue<String> q,
@@ -328,6 +330,7 @@ public class World implements IWorld{
         //TODO finalize function
         JSONObject worldJSON = new JSONObject();
         JSONArray regionsJSON = new JSONArray();
+        JSONArray riverList = new JSONArray();
 
         //  final HashMap<Integer, Region> regions;
         this.regions.forEach((number, region) -> {
@@ -344,11 +347,13 @@ public class World implements IWorld{
             regionDetails.put("territories", territoriesJSON);
             regionJSON.put("region", regionDetails);
             regionsJSON.add(regionJSON);
-        });
 
+        });
+        rivers.keySet().stream().forEach(k -> riverList.add(RiverManager.riverToJSON(rivers.get(k))));
         worldJSON.put("seed", this.seed);
         worldJSON.put("size", this.size);
         worldJSON.put("regions", regionsJSON);
+        worldJSON.put("rivers", riverList);
 
         return worldJSON;
     }

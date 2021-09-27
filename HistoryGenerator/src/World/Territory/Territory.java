@@ -2,6 +2,7 @@ package World.Territory;
 
 import TerrainGenerator.ITerrainMap;
 import World.PointOfInterest.POI;
+import World.PointOfInterest.POIManager;
 import World.Rivers.River;
 import World.Territory.Biome.Biome;
 import World.World;
@@ -45,7 +46,11 @@ public class Territory implements ITerritory {
         this.biome = biome;
         this.name = "Unnamed " + biome.getName() + " Region";
         //Populate with POI
-        this.pOI = new HashSet<POI>();
+        this.pOI = new HashSet<>();
+        if(locBased.containsKey(location)) {
+            final int i = locBased.get(location);
+            pOI.add(POIManager.createRiverPOI(rivers.get(i), location, seed, locBased));
+        }
     }
 
     @Override
@@ -91,6 +96,9 @@ public class Territory implements ITerritory {
         territoryJSON.put("discovered" , this.discovered);
         territoryJSON.put("seed" , this.seed);
         territoryJSON.put("neighbors" , neighborsJSON);
+        JSONArray pOIArray = new JSONArray();
+        this.pOI.stream().forEach(p -> pOIArray.add(POIManager.toJSONPOI(p)));
+        territoryJSON.put("poi", pOIArray);
         return territoryJSON;
     }
 }

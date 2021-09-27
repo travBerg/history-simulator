@@ -30,7 +30,7 @@ public class TerritoryManager {
                                                             final int height, final int rain, final int temp) {
         //TODO: Don't include rivers in this, dingus
         final Random random = new Random(seed);
-        final Optional<POI> riverPOI = river.map(x-> POIManager.createRiverPOI(x, neighbors, riverId, seed));
+        //final Optional<POI> riverPOI = river.map(x-> POIManager.createRiverPOI(x, neighbors, riverId, seed));
         //ArrayList<River> test = new ArrayList<>();
         //river.map(test::add);
         return new Pair<>(new ArrayList<>(), new ArrayList<>());
