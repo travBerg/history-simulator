@@ -13,7 +13,7 @@ import java.util.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-public class World implements IWorld{
+public class World implements IWorld {
     final int size;
     final int seed;
     final HashMap<String, Territory> territoryMap;
@@ -49,34 +49,36 @@ public class World implements IWorld{
 
     //TODO: Fix this to allow for larger worlds. Maybe limit region size? Definitely make a list (hashset) of all loc keys and
     // remove them as they are assigned
-    public ArrayList<String> biomeSearch(final HashMap<String, Territory> territoryMap, final String code,
-                                         final HashMap<String, Boolean> discovered, final Queue<String> q,
-                                         final ArrayList<String> res) {
-        if (q.isEmpty()) {
-            //System.out.println("Results: " + res);
-            return res;
-        }
-        //pop front node from queue and print it
-        final String loc = q.poll();
-        if (territoryMap.get(loc).getBiome().getCode() == code) {
-            res.add(loc);
-        }
+    public ArrayList<String> biomeSearch(final HashMap<String, Territory> territoryMap,
+                                         final String code,
+                                         final HashSet<String> frontier,
+                                         final ArrayList<String> res,
+                                         final Territory t) {
 
-        final ArrayList<String> locations = territoryMap.get(loc).getNeighbors();
-
-        for (String l:locations) {
-            if (territoryMap.containsKey(l)) {
-                if (!discovered.containsKey(l) || !discovered.get(l)) {
-                    discovered.put(l, Boolean.TRUE);
-                    if (territoryMap.get(l).getBiome().getCode() == code) {
-                        q.add(l);
-                    }
+        //get arraylist of neighbors for t
+        ArrayList<String> neighbors = t.getNeighbors();
+        //search through neighbors and store any matching biome neighbors, and continues to search from them.
+        for (String neighbor : neighbors) {
+            //if the neighbor location is not used yet, we will continue
+            if (frontier.contains(neighbor)) {
+                //get new territory object from neighbor location
+                final Territory neighbor_t = territoryMap.get(neighbor);
+                // Check to make sure the territories have the same biome type
+                if (code.equals(neighbor_t.getBiome().getCode())) {
+                    //remove the new neighbor from the list
+                    frontier.remove(neighbor);
+                    //adds new biome
+                    res.add(neighbor);
+                    //continue searching
+                    final ArrayList<String> bResults = biomeSearch(territoryMap, t.getBiome().getCode(), frontier, res, t);
+                    //Add all elements from neighbors to res.
+                    res.addAll(bResults);
                 }
             }
         }
-
-        return biomeSearch(territoryMap, code, discovered, q, res);
+        return res;
     }
+
     /*
         Return a hashmap with <integer, biome> (biome matched with key)
         function that takes in a territory map and returns a map of the biomes
@@ -86,41 +88,72 @@ public class World implements IWorld{
         final HashMap<Integer, Region> biomes = new HashMap<Integer, Region>();
         //Map ter location to biome index
         final HashMap<String, Integer> mapTer = new HashMap<String, Integer>();
+        //Set of all of the r|c coords
+        final HashSet<String> frontier = new HashSet<>();
         //TODO: This isnt the functional way to do this but I just want it to work so sort it out later
         int count = 0;
         for (int row = 0; row < size; row++) {
-            for(int col = 0; col < size; col++){
+            for (int col = 0; col < size; col++) {
                 final String loc = row + "|" + col;
-                if(!mapTer.containsKey(loc)) {
-                    final Territory t = territoryMap.get(loc);
-                    //Map location to discovered or nah
-                    final HashMap<String, Boolean> discovered = new HashMap<>();
-                    discovered.put(loc, Boolean.TRUE);
-                    //Queue of places to search
-                    final Queue<String> q = new ArrayDeque<>();
-                    q.add(loc);
-                    //results list for terrs that belong in biome
-                    final ArrayList<String> res = new ArrayList<>();
-                    //Get the region as list of locs
-                    final ArrayList<String> bResults = biomeSearch(territoryMap, t.getBiome().getCode(), discovered, q, res);
-                    //System.out.println("Test: " + bResults);
-                    //Make new region
-                    final Region nuBiome = new Region(t, count, bResults);
-                    //Map each location to region
-                    for (String r:bResults) {
-                        mapTer.put(r, count);
-                    }
-                    //Map index to biome
-                    biomes.put(count, nuBiome);
-                    count++;
-                }
-
+                //add coord to frontier
+                frontier.add(loc);
             }
         }
-        if (debug) {
-            System.out.println(biomeDebugRender(mapTer, biomes));
+
+        while (frontier.size() > 0) {
+            //get new territory to expand into a region
+            final String newTerritoryLoc = getRandomElement(frontier);
+            //remove location from frontier
+            frontier.remove(newTerritoryLoc);
+            //get the territory object from territoryMap
+            final Territory t = territoryMap.get(newTerritoryLoc);
+            //results list for terrs that belong in biome
+            final ArrayList<String> res = new ArrayList<>();
+            //Get the region as list of locs
+            final ArrayList<String> bResults = biomeSearch(territoryMap, t.getBiome().getCode(), frontier, res, t);
+            //add this territory to list of territories to be added to mapTer
+            bResults.add(newTerritoryLoc);
+            //Make new region
+            final Region nuBiome = new Region(t, count, bResults);
+            //
+            for (String r : bResults) {
+                mapTer.put(r, count);
+            }
+            //Map index to biome
+            biomes.put(count, nuBiome);
+            count++;
         }
         return biomes;
+    }
+
+    private static <E>
+    E getRandomElement(Set<? extends E> set) {
+
+        Random random = new Random();
+
+        // Generate a random number using nextInt
+        // method of the Random class.
+        int randomNumber = random.nextInt(set.size());
+
+        Iterator<? extends E> iterator = set.iterator();
+
+        int currentIndex = 0;
+        E randomElement = null;
+
+        // iterate the HashSet
+        while (iterator.hasNext()) {
+
+            randomElement = iterator.next();
+
+            // if current index is equal to random number
+            if (currentIndex == randomNumber)
+                return randomElement;
+
+            // increase the current index
+            currentIndex++;
+        }
+
+        return randomElement;
     }
 
     public String biomeDebugRender(final HashMap<String, Integer> mapTer, final HashMap<Integer, Region> biomes) {
