@@ -33,17 +33,17 @@ public class Main {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-        {
-            try {
-                FileWriter myWriter = new FileWriter("test_world.json");
-                myWriter.write(world.asJSON().toJSONString());
-                myWriter.close();
-                System.out.println("Successfully wrote to the file.");
-            } catch (IOException e) {
-                System.out.println("An error occurred.");
-                e.printStackTrace();
-            }
+
+        try {
+            FileWriter myWriter = new FileWriter("test_world.json");
+            myWriter.write(world.asJSON().toJSONString());
+            myWriter.close();
+            System.out.println("Successfully wrote to the file.");
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
         }
+
 
 
         final IView view = new DebugView();
