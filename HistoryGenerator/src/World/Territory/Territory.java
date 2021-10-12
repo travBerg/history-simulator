@@ -94,7 +94,6 @@ public class Territory implements ITerritory {
         territoryJSON.put("temp" , this.temp);
         territoryJSON.put("size" , this.size);
         territoryJSON.put("discovered" , this.discovered);
-        territoryJSON.put("seed" , this.seed);
         territoryJSON.put("neighbors" , neighborsJSON);
         JSONArray pOIArray = new JSONArray();
         this.pOI.stream().forEach(p -> pOIArray.add(POIManager.toJSONPOI(p)));

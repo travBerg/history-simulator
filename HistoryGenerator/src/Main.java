@@ -19,7 +19,7 @@ public class Main {
         //Without biome search, we can get to size 10 (over 1 mil territories) and maybe larger (more tiles than the largest world in Rimworld. Not bad.)
 
         //poles: 0 = north pole, 1 = south pole, 2 = both poles
-        final IWorld world = new World(420, 8, 2, true); //seed 7, size 2, poles 2
+        final IWorld world = new World(420, 4, 2, true); //seed 7, size 2, poles 2
 
         //Create json file
         try {

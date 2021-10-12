@@ -47,8 +47,7 @@ public class World implements IWorld {
         }
     }
 
-    //TODO: Fix this to allow for larger worlds. Maybe limit region size? Definitely make a list (hashset) of all loc keys and
-    // remove them as they are assigned
+    //This is fixed now (thanks Brandon)
     public ArrayList<String> biomeSearch(final HashMap<String, Territory> territoryMap,
                                          final String code,
                                          final HashSet<String> frontier,
@@ -102,7 +101,7 @@ public class World implements IWorld {
 
         while (frontier.size() > 0) {
             //get new territory to expand into a region
-            final String newTerritoryLoc = getRandomElement(frontier);
+            final String newTerritoryLoc = getRandomElement(frontier, this.seed);
             //remove location from frontier
             frontier.remove(newTerritoryLoc);
             //get the territory object from territoryMap
@@ -126,10 +125,11 @@ public class World implements IWorld {
         return biomes;
     }
 
+    //TODO: If we start limiting sizes of regions, we're gonna need to add a seed parameter to this
     private static <E>
-    E getRandomElement(Set<? extends E> set) {
+    E getRandomElement(final Set<? extends E> set, final int seed) {
 
-        Random random = new Random();
+        Random random = new Random(seed);
 
         // Generate a random number using nextInt
         // method of the Random class.
@@ -378,7 +378,7 @@ public class World implements IWorld {
                 territoriesJSON.add(territoryMap.get(loc).asJSON());
             });
             regionDetails.put("territories", territoriesJSON);
-            regionJSON.put("region", regionDetails);
+            regionJSON.put("regionDetails", regionDetails);
             regionsJSON.add(regionJSON);
 
         });
