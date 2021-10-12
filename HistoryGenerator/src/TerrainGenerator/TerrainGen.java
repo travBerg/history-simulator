@@ -1,5 +1,8 @@
 package TerrainGenerator;
 
+import World.Territory.TerritoryManager;
+import javafx.util.Pair;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -16,6 +19,7 @@ public class TerrainGen implements IGenerator{
     HashMap<String, ArrayList<String>> terrain;
     HashMap<String, String> csvMap;
     int seed;
+    int size;
 
     /**
      * This is the constructor with most settings for customizing terrain
@@ -27,6 +31,7 @@ public class TerrainGen implements IGenerator{
      */
     public TerrainGen(int size, double r, int poles, double nVar, double nMean, int seed){
         this.seed = seed;
+        this.size = size;
         this.heightMap = new HeightMap(r, size, 0, 0, seed);
         this.heightMap.init();
         //THIS IS TEMPORARY UNTIL RAINMAP GETS UPDATED
@@ -43,6 +48,7 @@ public class TerrainGen implements IGenerator{
 
     public TerrainGen(int size, int seed, int poles){
         this.seed = seed;
+        this.size = size;
         this.heightMap = new HeightMap(2, size, 0, 0, seed);
         this.heightMap.init();
         //THIS IS TEMPORARY UNTIL RAINMAP GETS UPDATED
@@ -86,7 +92,11 @@ public class TerrainGen implements IGenerator{
                 final ArrayList<String> terr = new ArrayList<>();
                 terr.add(type);
                 terr.add(val);
-                map.put(key, terr);
+                //Hacky solution to my silly coordinates problem
+                final Pair<Integer, Integer> flip = TerritoryManager.parseLocation(key);
+                final String nuLoc = ((0 - flip.getKey()) + size) - 1 + "|" + flip.getValue();
+                //System.out.println("Pos: " + nuLoc);
+                map.put(nuLoc, terr);
             }
         }
 
@@ -148,7 +158,7 @@ public class TerrainGen implements IGenerator{
     public String render() {
         String out = "";
         int s = heightMap.getBoard().size();
-        for(int x = 0; x < s; x++) {
+        for(int x = size - 1; x >= 0; x--) {
             //This is for hex view
             if (x % 2 != 0) {
                 out = out + "   ";

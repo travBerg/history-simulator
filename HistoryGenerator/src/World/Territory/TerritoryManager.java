@@ -87,10 +87,10 @@ public class TerritoryManager {
         for (String location:terrain.keySet()) {
             final ArrayList<String> terr = terrain.get(location);
             //Hacky solution to my silly coordinates problem
-            final Pair<Integer, Integer> flip = TerritoryManager.parseLocation(location);
-            final String nuLoc = ((0 - flip.getKey()) + size) - 1 + "|" + flip.getValue();
-            final Territory territory = createTerritory(terr.get(0), terr.get(1), nuLoc, seed, size, rivers, locBased);
-            tMap.put(nuLoc, territory);
+            //final Pair<Integer, Integer> loc = TerritoryManager.parseLocation(location);
+            //final String nuLoc = ((0 - flip.getKey()) + size) - 1 + "|" + flip.getValue();
+            final Territory territory = createTerritory(terr.get(0), terr.get(1), location, seed, size, rivers, locBased);
+            tMap.put(location, territory);
         }
         return tMap;
     }

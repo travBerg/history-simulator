@@ -151,10 +151,11 @@ public class WorldManager {
         return worldJSON;
     }
 
-    public String biomeDebugRender(final HashMap<String, Integer> mapTer, final HashMap<Integer, Region> biomes,
+    public static String biomeDebugRender(final HashMap<String, Integer> mapTer, final HashMap<Integer, Region> regions,
                                    final int size) {
         String out = "[WORLD DEBUG]------------------------------------------\n" +
                 "Region/Biome Map: (Note that index is off by one from number that will appear in explore view)\n";
+        System.out.println(mapTer);
         for (int x = size - 1; x >= 0; x--) {
             //This is for hex view
             if (x % 2 != 0) {
@@ -162,7 +163,8 @@ public class WorldManager {
             }
             for (int y = 0; y < size; y++) {
                 String key = Integer.toString(x) + "|" + Integer.toString(y);
-                Region b = biomes.get(mapTer.get(key));
+                System.out.println(key);
+                Region b = regions.get(mapTer.get(key));
                 String num;
                 if (b.getIndex() < 10) {
                     num = "00" + b.getIndex();

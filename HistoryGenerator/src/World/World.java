@@ -16,6 +16,7 @@ import org.json.simple.JSONObject;
 public class World implements IWorld {
     private final int size;
     private final int seed;
+    //location string to Territory
     private final HashMap<String, Territory> territoryMap;
     private final HashMap<Integer, Region> regions;
     private final HashMap<Integer, River> rivers;
@@ -45,6 +46,8 @@ public class World implements IWorld {
             System.out.println("Territories: " + this.size * this.size);
             System.out.println("Regions: " + regions.size());
             //System.out.println(this.territoryMap.get("1|0"));
+            //TODO: Reimplement
+            //System.out.println("Biome to Region map: \n" + WorldManager.biomeDebugRender(generator.returnProduct(), this.regions, this.size));
             System.out.println("Biome to hrt map:\n" + generator.render());
             System.out.println("--------------------------------------------------------");
         }
