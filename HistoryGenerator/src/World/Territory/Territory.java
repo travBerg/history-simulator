@@ -86,7 +86,7 @@ public class Territory implements ITerritory {
             locationJSON.put("row", neighborCol);
             neighborsJSON.add(locationJSON);
         }
-
+        territoryJSON.put("name", this.getName());
         territoryJSON.put("row", this.row);
         territoryJSON.put("col", this.col);
         territoryJSON.put("height" , this.height);
@@ -99,5 +99,10 @@ public class Territory implements ITerritory {
         this.pOI.stream().forEach(p -> pOIArray.add(POIManager.toJSONPOI(p)));
         territoryJSON.put("poi", pOIArray);
         return territoryJSON;
+    }
+
+    @Override
+    public Set<POI> getPOI() {
+        return pOI;
     }
 }

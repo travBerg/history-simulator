@@ -4,6 +4,7 @@ import View.DebugView.DebugView;
 import View.IView;
 import World.World;
 import World.IWorld;
+import World.WorldManager;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -36,7 +37,7 @@ public class Main {
 
         try {
             FileWriter myWriter = new FileWriter("test_world.json");
-            myWriter.write(world.asJSON().toJSONString());
+            myWriter.write(WorldManager.asJSON(world).toJSONString());
             myWriter.close();
             System.out.println("Successfully wrote to the file.");
         } catch (IOException e) {
@@ -44,8 +45,7 @@ public class Main {
             e.printStackTrace();
         }
 
-
-
+        
         final IView view = new DebugView();
         final IController controller = new Controller(world, view);
         controller.go();
