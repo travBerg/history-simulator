@@ -93,6 +93,7 @@ public class RiverManager {
             final boolean res = (rand < r * R_RIVER_PERC_MOD);
             return res;
         }).collect(Collectors.toList());
+        System.out.println("Riverlocs: " + riverLocs);
         //TODO: Maybe shuffle the riverLocs?
         System.out.println("Rivers: ");
 

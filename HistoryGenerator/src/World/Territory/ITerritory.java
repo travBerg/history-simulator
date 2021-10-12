@@ -1,9 +1,11 @@
 package World.Territory;
 
+import World.PointOfInterest.POI;
 import World.Territory.Biome.Biome;
 import World.World;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public interface ITerritory {
     //The biome code for the territory
@@ -19,4 +21,6 @@ public interface ITerritory {
     public ArrayList<String> getNeighbors();
     //Returns Territory as JSON
     public Object asJSON();
+    //Gets the list of POI
+    public Set<POI> getPOI();
 }

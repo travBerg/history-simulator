@@ -1,5 +1,7 @@
 package World;
 
+import World.Rivers.River;
+import World.Territory.Territory;
 import javafx.util.Pair;
 import org.json.simple.JSONObject;
 
@@ -10,5 +12,9 @@ public interface IWorld {
 
     public ArrayList<Pair<Integer,String>> getRegionList();
     public ArrayList<Pair<String, String>> getTerritories(int idx);
-    public JSONObject asJSON();
+    public int getSize();
+    public int getSeed();
+    public HashMap<String, Territory> getTerritoryMap();
+    public HashMap<Integer, Region> getRegions();
+    public HashMap<Integer, River> getRivers();
 }
