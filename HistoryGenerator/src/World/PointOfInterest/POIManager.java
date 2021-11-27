@@ -2,7 +2,6 @@ package World.PointOfInterest;
 
 import World.Rivers.River;
 import World.Territory.Biome.Biome;
-import World.World;
 import javafx.util.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -12,13 +11,26 @@ import java.util.stream.Collectors;
 
 public class POIManager {
 
-    public static Set<POI> createWatersourcePOI(final Set<POI> pOI, final Biome biome, final int seed) {
+    public static Set<POI> createWatersourcePOI(final Set<POI> pOI, final Biome biome, final int seed, final String loc) {
+        final HashSet<POI> watersources = new HashSet<>();
         //If this territory has a river segment
-        if(pOI.stream().filter(p->p instanceof RiverSegment).findAny().isPresent()) {
-            //TODO: Lakes
-
-        }
-        return new HashSet<POI>();
+        pOI.stream().filter(p->p instanceof RiverSegment).findFirst().map(r->{
+            //Generate lakes
+            final RiverSegment river = (RiverSegment) r;
+            if(river.getOut().equals(loc)) {
+                //This is for when the river is the end
+                watersources.add(new Lake("Unnamed Lake", Optional.ofNullable(river), biome));
+            } else {
+                final Random random = new Random(seed);
+                final int n = random.nextInt(100); //0-99
+                //TODO: Change to constant
+                if(n < 20) {
+                    watersources.add(new Lake("Unnamed Lake", Optional.ofNullable(river), biome));
+                }
+            }
+            return new Object();
+        } );
+        return watersources;
     }
 
     public static Optional<POI> createRiverPOI(final River river, final String loc, final int seed,
