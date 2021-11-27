@@ -2,6 +2,7 @@ package World.Territory;
 
 import World.PointOfInterest.POI;
 import World.PointOfInterest.POIManager;
+import World.PointOfInterest.RiverSegment;
 import World.Resources.Resource;
 import World.Rivers.River;
 import World.Rivers.RiverManager;
@@ -25,15 +26,16 @@ public class TerritoryManager {
      *                                                          final int height, final int rain, final int temp){}
      */
 
-    public static Pair<List<POI>, List<Resource>> landscape(final Biome biome, final int seed, final int riverId,
-                                                            final Optional<River> river, final ArrayList<String> neighbors,
-                                                            final int height, final int rain, final int temp) {
-        //TODO: Don't include rivers in this, dingus
-        final Random random = new Random(seed);
-        //final Optional<POI> riverPOI = river.map(x-> POIManager.createRiverPOI(x, neighbors, riverId, seed));
-        //ArrayList<River> test = new ArrayList<>();
-        //river.map(test::add);
-        return new Pair<>(new ArrayList<>(), new ArrayList<>());
+    public static Pair<Set<POI>, Set<Resource>> landscape(final Biome biome, final int seed,
+                                                            final ArrayList<String> neighbors, final Set<POI> poi) {
+        final Resource water = addWater(biome, poi, seed);
+        return new Pair<>(new HashSet<>(), new HashSet<>());
+    }
+
+    public static Resource addWater(final Biome biome, final Set<POI> poi, final int seed) {
+        //TODO: get any existing river poi, create new water poi (maybe), finalize water number
+        final Optional<POI> river = poi.stream().filter(p -> p.getClass() == RiverSegment.class).findFirst();
+        return new Resource();
     }
 
     public static Pair<Integer, Integer> parseLocation(final String location) {

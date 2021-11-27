@@ -1,7 +1,7 @@
 package World.PointOfInterest;
 
 import World.Rivers.River;
-import World.World;
+import World.Territory.Biome.Biome;
 import javafx.util.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -11,7 +11,29 @@ import java.util.stream.Collectors;
 
 public class POIManager {
 
-    public static POI createRiverPOI(final River river, final String loc, final int seed,
+    public static Set<POI> createWatersourcePOI(final Set<POI> pOI, final Biome biome, final int seed, final String loc) {
+        final HashSet<POI> watersources = new HashSet<>();
+        //If this territory has a river segment
+        pOI.stream().filter(p->p instanceof RiverSegment).findFirst().map(r->{
+            //Generate lakes
+            final RiverSegment river = (RiverSegment) r;
+            if(river.getOut().equals(loc)) {
+                //This is for when the river is the end
+                watersources.add(new Lake("Unnamed Lake", Optional.ofNullable(river), biome));
+            } else {
+                final Random random = new Random(seed);
+                final int n = random.nextInt(100); //0-99
+                //TODO: Change to constant
+                if(n < 20) {
+                    watersources.add(new Lake("Unnamed Lake", Optional.ofNullable(river), biome));
+                }
+            }
+            return new Object();
+        } );
+        return watersources;
+    }
+
+    public static Optional<POI> createRiverPOI(final River river, final String loc, final int seed,
                                      final HashMap<String, Integer> locBased) {
         //TODO: make source of river, make mouth of river, make river junctions
         final int idx = river.getSegments().indexOf(loc);
@@ -19,41 +41,42 @@ public class POIManager {
             //River is head
             if(river.getSegments().size() > 1) {
                 //Should never be tributary on first segment
-                return new RiverSegment(locBased.get(loc), river.getName(), loc, river.getSegments().get(1),
-                        new HashSet<Pair<String,Integer>>());
+                return Optional.ofNullable(new RiverSegment(locBased.get(loc), river.getName(), loc, river.getSegments().get(1),
+                        new HashSet<Pair<String,Integer>>()));
             }
             //River is also mouth
-            return new RiverSegment(locBased.get(loc), river.getName(), loc, loc, new HashSet<>());
+            return Optional.ofNullable(new RiverSegment(locBased.get(loc), river.getName(), loc, loc, new HashSet<>()));
         }
         if(idx == river.getSegments().size() - 1) {
-            //River is tail
-            //Check for tributaries
+            //River is mouth
+            //Check for tributaries so they can be added
             if(river.getTributaries().isPresent()) {
                 Set<Pair<String, Integer>> t = river.getTributaries().map(a -> a.stream().filter(p->p.getKey()
                         .equals(loc)).collect(Collectors.toSet())).get();
 
-                return new RiverSegment(locBased.get(loc), river.getName(), river.getSegments().get(idx - 1), loc, t);
+                return Optional.ofNullable(new RiverSegment(locBased.get(loc), river.getName(), river.getSegments().get(idx - 1), loc, t));
             }
-            return new RiverSegment(locBased.get(loc), river.getName(), river.getSegments().get(idx - 1), loc,
-                    new HashSet<>());
+            return Optional.ofNullable(new RiverSegment(locBased.get(loc), river.getName(), river.getSegments().get(idx - 1), loc,
+                    new HashSet<>()));
         }
         //river is middle segment
+        //river segment has a tributary
         if(river.getTributaries().isPresent()) {
             Set<Pair<String, Integer>> t = river.getTributaries().map(a -> a.stream().filter(p->p.getKey()
                     .equals(loc)).collect(Collectors.toSet())).get();
 
-            return new RiverSegment(locBased.get(loc), river.getName(), river.getSegments().get(idx - 1),
-                    river.getSegments().get(idx + 1), t);
+            return Optional.ofNullable(new RiverSegment(locBased.get(loc), river.getName(), river.getSegments().get(idx - 1),
+                    river.getSegments().get(idx + 1), t));
         }
 
-        return new RiverSegment(locBased.get(loc), river.getName(), river.getSegments().get(idx - 1),
-                river.getSegments().get(idx + 1), new HashSet<>());
+        return Optional.ofNullable(new RiverSegment(locBased.get(loc), river.getName(), river.getSegments().get(idx - 1),
+                river.getSegments().get(idx + 1), new HashSet<>()));
     }
 
     public static JSONObject toJSONPOI(POI poi) {
         JSONObject out = new JSONObject();
         if(poi instanceof RiverSegment) {
-            RiverSegment riverSegment = (RiverSegment) poi;
+            final RiverSegment riverSegment = (RiverSegment) poi;
             out.put("type", "riverSegment");
             out.put("riverId", riverSegment.getRiverId());
             out.put("name", riverSegment.getName());
@@ -66,6 +89,15 @@ public class POIManager {
                 tr.put("riverIdx", t.getValue());
                 trib.add(tr);
             });
+            out.put("tributaries", trib);
+            return out;
+        }
+        if(poi instanceof Lake) {
+            final Lake lake = (Lake) poi;
+            out.put("type", "lake");
+            out.put("name", lake.getName());
+            out.put("riverId", lake.getRiver().map(r->r.riverId).orElse(-1));
+            return out;
         } else {
             System.out.println("WUH OH! LOOKS LIKE TROUBLE, BIG HOSS (toJSONPOI)");
         }

@@ -36,8 +36,6 @@ public class World implements IWorld {
 
         this.territoryMap = TerritoryManager.createTerritoryMap(this.seed, generator.returnProduct(), riverMaps.getKey(),
                 riverMaps.getValue(), this.size);
-        //territoryMap.keySet().stream().forEach(k -> System.out.println(k + ": " + territoryMap.get(k).getRow() + " | "
-        //        + territoryMap.get(k).getCol() + " POI: " + territoryMap.get(k).getPOI()));
         this.rivers = riverMaps.getKey();
         //this.regions = new HashMap<Integer, Region>();
         this.regions = WorldManager.createRegions(this.territoryMap, debug, size, this.seed);

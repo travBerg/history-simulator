@@ -13,7 +13,6 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) {
-
         //NOTE: Looks like size 6 (65x65, 4225 territories) is the best we get rn.
         //Otherwise it overflows while performing the biome search.
         //May be able to fix this by limiting max biome size
