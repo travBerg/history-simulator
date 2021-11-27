@@ -10,10 +10,7 @@ import javafx.util.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class Territory implements ITerritory {
@@ -47,10 +44,15 @@ public class Territory implements ITerritory {
         this.name = "Unnamed " + biome.getName() + " Region";
         //Populate with POI
         this.pOI = new HashSet<>();
+        //locBased is for rivers, check if this area has a river
         if(locBased.containsKey(location)) {
             final int i = locBased.get(location);
-            pOI.add(POIManager.createRiverPOI(rivers.get(i), location, seed, locBased));
+            if(this.biome != Biome.OCEAN) {
+                POIManager.createRiverPOI(rivers.get(i), location, seed, locBased).map(r-> pOI.add(r));
+            }
         }
+        //Add watersource POI
+        POIManager.createWatersourcePOI(pOI, biome, seed).stream().map(p->pOI.add(p));
     }
 
     @Override
