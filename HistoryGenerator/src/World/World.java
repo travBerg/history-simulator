@@ -9,6 +9,7 @@ import World.Territory.Biome.Biome;
 import javafx.util.Pair;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -42,6 +43,9 @@ public class World implements IWorld {
         if (debug) {
             System.out.println("Size: " + this.size + "x" + this.size);
             System.out.println("Territories: " + this.size * this.size);
+            System.out.println("Terrirories by map: " + territoryMap.keySet().size());
+            System.out.println("Territories by region: " + regions.values().stream().map(r->r.getLocations().size())
+                    .collect(Collectors.summingInt(Integer::intValue)));
             System.out.println("Regions: " + regions.size());
             //System.out.println(this.territoryMap.get("1|0"));
             //TODO: Reimplement
