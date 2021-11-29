@@ -3,6 +3,8 @@ package World.Territory;
 import TerrainGenerator.ITerrainMap;
 import World.PointOfInterest.POI;
 import World.PointOfInterest.POIManager;
+import World.Resources.Resource;
+import World.Resources.ResourceManager;
 import World.Rivers.River;
 import World.Territory.Biome.Biome;
 import World.World;
@@ -27,6 +29,8 @@ public class Territory implements ITerritory {
     final String name;
     final boolean discovered;
     final Set<POI> pOI;
+    //Resource to amount
+    final HashMap<Resource, Integer> resources;
 
     public Territory(final String location, final int seed, final String hrt, final int size, final Biome biome,
                      final HashMap<Integer, River> rivers, final HashMap<String, Integer> locBased) {
@@ -53,6 +57,7 @@ public class Territory implements ITerritory {
         }
         //Add watersource POI
         pOI.addAll(POIManager.createWatersourcePOI(pOI, biome, seed, location));
+        this.resources = ResourceManager.addResources(pOI, biome, seed);
     }
 
     @Override
