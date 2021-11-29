@@ -2,6 +2,7 @@ package World.PointOfInterest;
 
 import World.Rivers.River;
 import World.Territory.Biome.Biome;
+import World.World;
 import javafx.util.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -24,7 +25,7 @@ public class POIManager {
                 final Random random = new Random(seed);
                 final int n = random.nextInt(100); //0-99
                 //TODO: Change to constant
-                if(n < 20) {
+                if(n < World.SETTINGS.get("lakePercChanceRiver")) {
                     watersources.add(new Lake("Unnamed Lake", Optional.ofNullable(river), biome));
                 }
             }
