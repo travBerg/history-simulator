@@ -52,7 +52,7 @@ public class Territory implements ITerritory {
             }
         }
         //Add watersource POI
-        POIManager.createWatersourcePOI(pOI, biome, seed, location).stream().map(p->pOI.add(p));
+        pOI.addAll(POIManager.createWatersourcePOI(pOI, biome, seed, location));
     }
 
     @Override
