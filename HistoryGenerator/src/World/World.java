@@ -14,6 +14,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class World implements IWorld {
+    public static final HashMap<String, Integer> SETTINGS = new HashMap<>();
+
     private final int size;
     private final int seed;
     //location string to Territory
@@ -21,10 +23,11 @@ public class World implements IWorld {
     private final HashMap<Integer, Region> regions;
     private final HashMap<Integer, River> rivers;
 
-    public World(final int seed, final int sizeCon, final int poles, final boolean debug) {
-        this.seed = seed;
-        this.size = (int) Math.pow(2, sizeCon) + 1;
-        final IGenerator generator = new TerrainGen(this.size, seed, poles);
+    public World(final HashMap<String, Integer> settings) {
+        this.SETTINGS.putAll(settings);
+        this.seed = SETTINGS.get("seed");
+        this.size = (int) Math.pow(2, SETTINGS.get("sizeCon")) + 1;
+        final IGenerator generator = new TerrainGen(this.size, seed, SETTINGS.get("poles"));
         /**
          * River plan
          * Create rivers as map (riverid to River) and map of locations to list of rivers
@@ -38,8 +41,8 @@ public class World implements IWorld {
                 riverMaps.getValue(), this.size);
         this.rivers = riverMaps.getKey();
         //this.regions = new HashMap<Integer, Region>();
-        this.regions = WorldManager.createRegions(this.territoryMap, debug, size, this.seed);
-        if (debug) {
+        this.regions = WorldManager.createRegions(this.territoryMap, SETTINGS.get("debug") != 0, size, this.seed);
+        if (SETTINGS.get("debug") != 0) {
             System.out.println("Size: " + this.size + "x" + this.size);
             System.out.println("Territories: " + this.size * this.size);
             System.out.println("Regions: " + regions.size());

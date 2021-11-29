@@ -5,10 +5,12 @@ import View.IView;
 import World.World;
 import World.IWorld;
 import World.WorldManager;
+import World.SettingsManager;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 
 public class Main {
 
@@ -17,9 +19,10 @@ public class Main {
         //Otherwise it overflows while performing the biome search.
         //May be able to fix this by limiting max biome size
         //Without biome search, we can get to size 10 (over 1 mil territories) and maybe larger (more tiles than the largest world in Rimworld. Not bad.)
+        final HashMap<String, Integer> settings = SettingsManager.getSettings(420, 4, 2, true);
 
         //poles: 0 = north pole, 1 = south pole, 2 = both poles
-        final IWorld world = new World(420, 4, 2, true); //seed 7, size 2, poles 2
+        final IWorld world = new World(settings); //seed 7, size 2, poles 2
 
         //Create json file
         try {
