@@ -3,6 +3,8 @@ package World.Territory;
 import TerrainGenerator.ITerrainMap;
 import World.PointOfInterest.POI;
 import World.PointOfInterest.POIManager;
+import World.Resources.Resource;
+import World.Resources.ResourceManager;
 import World.Rivers.River;
 import World.Territory.Biome.Biome;
 import World.World;
@@ -27,6 +29,8 @@ public class Territory implements ITerritory {
     final String name;
     final boolean discovered;
     final Set<POI> pOI;
+    //Resource to amount
+    final HashMap<Resource, Integer> resources;
 
     public Territory(final String location, final int seed, final String hrt, final int size, final Biome biome,
                      final HashMap<Integer, River> rivers, final HashMap<String, Integer> locBased) {
@@ -53,6 +57,7 @@ public class Territory implements ITerritory {
         }
         //Add watersource POI
         pOI.addAll(POIManager.createWatersourcePOI(pOI, biome, seed, location));
+        this.resources = ResourceManager.addResources(pOI, biome, seed);
     }
 
     @Override
@@ -97,9 +102,19 @@ public class Territory implements ITerritory {
         territoryJSON.put("size" , this.size);
         territoryJSON.put("discovered" , this.discovered);
         territoryJSON.put("neighbors" , neighborsJSON);
-        JSONArray pOIArray = new JSONArray();
+        //POI
+        final JSONArray pOIArray = new JSONArray();
         this.pOI.stream().forEach(p -> pOIArray.add(POIManager.toJSONPOI(p)));
         territoryJSON.put("poi", pOIArray);
+        //Resources
+        final JSONArray resourceArray = new JSONArray();
+        this.resources.entrySet().stream().forEach(e->{
+            final JSONObject res = new JSONObject();
+            res.put("resource", ResourceManager.toJSONRes(e.getKey()));
+            res.put("quantity", e.getValue());
+            resourceArray.add(res);
+        });
+        territoryJSON.put("resourceCaps", resourceArray);
         return territoryJSON;
     }
 

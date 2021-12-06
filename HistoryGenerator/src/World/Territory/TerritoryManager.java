@@ -28,14 +28,8 @@ public class TerritoryManager {
 
     public static Pair<Set<POI>, Set<Resource>> landscape(final Biome biome, final int seed,
                                                             final ArrayList<String> neighbors, final Set<POI> poi) {
-        final Resource water = addWater(biome, poi, seed);
+        //final Resource water = addWater(biome, poi, seed);
         return new Pair<>(new HashSet<>(), new HashSet<>());
-    }
-
-    public static Resource addWater(final Biome biome, final Set<POI> poi, final int seed) {
-        //TODO: get any existing river poi, create new water poi (maybe), finalize water number
-        final Optional<POI> river = poi.stream().filter(p -> p.getClass() == RiverSegment.class).findFirst();
-        return new Resource();
     }
 
     public static Pair<Integer, Integer> parseLocation(final String location) {
