@@ -13,8 +13,9 @@ import java.util.stream.Stream;
 public class Lake extends POI {
     private final Optional<RiverSegment> river;
     private final static Pair<Integer, Integer> WATER = new Pair<>(Integer.MAX_VALUE, 0);
+    //Map of resource mean and std dev
     private final static Map<Resource, Pair<Integer, Integer>> RES = Stream.of(
-            new AbstractMap.SimpleImmutableEntry<Resource, Pair<Integer, Integer>>(Resource.WATER, WATER)
+            new AbstractMap.SimpleImmutableEntry<>(Resource.WATER, WATER)
         ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     public Lake(final String name, final Optional<RiverSegment> river, final Biome biome) {
