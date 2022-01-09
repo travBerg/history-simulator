@@ -18,8 +18,8 @@ public class RiverSegment extends POI{
     final Set<Pair<String, Integer>> tributaries;
     private final static Pair<Integer, Integer> WATER = new Pair<>(Integer.MAX_VALUE, 0);
     private final static Map<Resource, Pair<Integer, Integer>> RES = Stream.of(
-            new AbstractMap.SimpleImmutableEntry<Resource, Pair<Integer, Integer>>(Resource.WATER, WATER)
-    ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            new AbstractMap.SimpleImmutableEntry<>(Resource.WATER, WATER)
+        ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
 
     public RiverSegment(final int riverId, final String name, final String in, final String out, final Set<Pair<String, Integer>> trib){

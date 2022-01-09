@@ -35,6 +35,7 @@ public class ResourceManager {
             });
         });
         //Shouldnt ever be conflicting keys, but if there are it takes the most recent
+        //filter out negative resources
         return resources.entrySet().stream().filter(e->e.getValue()>0).collect(Collectors
                 .toMap(Map.Entry::getKey, Map.Entry::getValue, (prev, next) -> next, HashMap::new));
     }
