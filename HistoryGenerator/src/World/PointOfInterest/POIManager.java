@@ -12,6 +12,12 @@ import java.util.stream.Collectors;
 
 public class POIManager {
 
+    public static Set<POI> createLandPOI(final Biome biome, final int seed, final String loc, final String terName) {
+        final HashSet<POI> pois = new HashSet<>();
+        pois.add(new Wilderness(terName, biome));
+        return pois;
+    }
+
     public static Set<POI> createWatersourcePOI(final Set<POI> pOI, final Biome biome, final int seed, final String loc) {
         final HashSet<POI> watersources = new HashSet<>();
         //If this territory has a river segment
@@ -99,7 +105,13 @@ public class POIManager {
             out.put("name", lake.getName());
             out.put("riverId", lake.getRiver().map(r->r.riverId).orElse(-1));
             return out;
-        } else {
+        }
+        if(poi instanceof Wilderness) {
+            final Wilderness wild = (Wilderness) poi;
+            out.put("type", "wilderness");
+            out.put("name", wild.getName());
+        }
+        else {
             System.out.println("WUH OH! LOOKS LIKE TROUBLE, BIG HOSS (toJSONPOI)");
         }
         return out;
