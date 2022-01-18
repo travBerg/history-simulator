@@ -62,7 +62,7 @@ public class Territory implements ITerritory {
             //Add watersource POI
             pOI.addAll(POIManager.createWatersourcePOI(pOI, biome, seed, location));
             //Add land POI
-            pOI.addAll(POIManager.createLandPOI(biome, seed, location, this.name));
+            //pOI.addAll(POIManager.createLandPOI(biome, seed, location, this.name));
         } else {
             //TODO: Add Ocean POI
         }
