@@ -2,6 +2,7 @@ package World.Resources;
 
 import World.PointOfInterest.POI;
 import World.Territory.Biome.Biome;
+import World.World;
 import javafx.util.Pair;
 import org.json.simple.JSONObject;
 
@@ -40,7 +41,22 @@ public class ResourceManager {
                 }
             });
         });
-        /*TODO: Add fresh water source and global resource mods to the final values of the resources here*/
+        // Add fresh water source and global resource mods to the final values of the resources here
+        final int freshWaterMod;
+        if(resources.containsKey(Resource.WATER) && resources.get(Resource.WATER) >= 100000) {
+            freshWaterMod = 3;
+        } else {
+            freshWaterMod = 1;
+        }
+        resources.forEach((r,n) -> {
+            final String resModName = r.getName()+"_mod";
+            final double resMod = World.RESOURCE_MODS.getOrDefault(resModName, 1.0);
+            if(r.isFreshBoosted()) {
+                resources.put(r, (int)(n * resMod * freshWaterMod));
+            } else {
+                resources.put(r, (int)(n * resMod));
+            }
+        });
         //Shouldnt ever be conflicting keys, but if there are it takes the most recent
         //filter out negative resources
         return resources.entrySet().stream().filter(e->e.getValue()>0).collect(Collectors
