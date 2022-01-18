@@ -28,6 +28,7 @@ public class World implements IWorld {
         this.RESOURCE_MODS.putAll(resSettings);
         this.SETTINGS.putAll(settings);
         this.seed = SETTINGS.get("seed");
+        final Random rand = new Random(seed);
         this.size = (int) Math.pow(2, SETTINGS.get("sizeCon")) + 1;
         final IGenerator generator = new TerrainGen(this.size, seed, SETTINGS.get("poles"));
         /**
@@ -39,7 +40,7 @@ public class World implements IWorld {
         final Pair<HashMap<Integer, River>, HashMap<String, Integer>> riverMaps = RiverManager.getRiverMaps(seed,
                 generator.returnProduct(), size);
 
-        this.territoryMap = TerritoryManager.createTerritoryMap(this.seed, generator.returnProduct(), riverMaps.getKey(),
+        this.territoryMap = TerritoryManager.createTerritoryMap(rand, generator.returnProduct(), riverMaps.getKey(),
                 riverMaps.getValue(), this.size);
         this.rivers = riverMaps.getKey();
         //this.regions = new HashMap<Integer, Region>();

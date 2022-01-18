@@ -20,14 +20,14 @@ public class ResourceManager {
      * @param seed
      * @return
      */
-    public static HashMap<Resource, Integer> addResources(final Set<POI> poi, final Biome biome, final int seed) {
+    public static HashMap<Resource, Integer> addResources(final Set<POI> poi, final Biome biome, final Random rand) {
         final Map<Resource, Integer> resources = new HashMap<>();
         poi.stream().forEach(p->{
             p.getResources().forEach((r,i)->{
                 if(resources.containsKey(r)) {
                     final int curVal = resources.get(r);
                     if(curVal != Integer.MAX_VALUE) {
-                        final int nuVal = genAmount(i, seed);
+                        final int nuVal = genAmount(i, rand);
                         final int val;
                         if(nuVal == Integer.MAX_VALUE) {
                             val = Integer.MAX_VALUE;
@@ -37,7 +37,7 @@ public class ResourceManager {
                         resources.put(r, val);
                     }
                 } else {
-                    resources.put(r, genAmount(i, seed));
+                    resources.put(r, genAmount(i, rand));
                 }
             });
         });
@@ -69,8 +69,7 @@ public class ResourceManager {
      * @param seed is how we make the random
      * @return
      */
-    private static int genAmount(final Pair<Integer, Integer> stats, final int seed) {
-        final Random rand = new Random(seed);
+    private static int genAmount(final Pair<Integer, Integer> stats, final Random rand) {
         //stats is {mean : std dev}
         return (int)((rand.nextGaussian() * stats.getValue()) + stats.getKey());
     }

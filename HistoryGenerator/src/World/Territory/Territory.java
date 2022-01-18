@@ -17,7 +17,6 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public class Territory implements ITerritory {
-    final int seed;
     //row|column
     final int row;
     final int col;
@@ -34,9 +33,8 @@ public class Territory implements ITerritory {
     final HashMap<Resource, Integer> resources;
 
     //For creating new Territories
-    public Territory(final String location, final int seed, final String hrt, final int size, final Biome biome,
+    public Territory(final String location, final Random rand, final String hrt, final int size, final Biome biome,
                      final HashMap<Integer, River> rivers, final HashMap<String, Integer> locBased) {
-        this.seed = seed;
         final Pair<Integer, Integer> loc = TerritoryManager.parseLocation(location);
         this.row = loc.getKey();
         this.col = loc.getValue();
@@ -57,16 +55,16 @@ public class Territory implements ITerritory {
             //locBased is for rivers, check if this area has a river
             if(locBased.containsKey(location)) {
                 final int i = locBased.get(location);
-                POIManager.createRiverPOI(rivers.get(i), location, seed, locBased).map(r -> pOI.add(r));
+                POIManager.createRiverPOI(rivers.get(i), location, rand, locBased).map(r -> pOI.add(r));
             }
             //Add watersource POI
-            pOI.addAll(POIManager.createWatersourcePOI(pOI, biome, seed, location));
+            pOI.addAll(POIManager.createWatersourcePOI(pOI, biome, rand, location));
             //Add land POI
             //pOI.addAll(POIManager.createLandPOI(biome, seed, location, this.name));
         } else {
             //TODO: Add Ocean POI
         }
-        this.resources = ResourceManager.addResources(pOI, biome, seed);
+        this.resources = ResourceManager.addResources(pOI, biome, rand);
     }
 
     @Override
