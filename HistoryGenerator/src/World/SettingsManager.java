@@ -14,4 +14,20 @@ public class SettingsManager {
         settings.put("lakePercChanceRiver", 20);
         return settings;
     }
+
+    //Resource mods to mess with scarcity
+    public static HashMap<String, Double> getResourceMods(){
+        //TODO: Read settings from a settings file
+        final HashMap<String, Double> mods = new HashMap<>();
+        mods.put("berries_mod", 1.0);
+        mods.put("cactus fruit_mod", 1.0);
+        mods.put("corn_mod", 1.0);
+        mods.put("fruit_mod", 1.0);
+        mods.put("mushroom_mod", 1.0);
+        mods.put("nuts_mod", 1.0);
+        mods.put("rice_mod", 1.0);
+        mods.put("water_mod", 1.0);
+        mods.put("wheat_mod", 1.0);
+        return mods;
+    }
 }

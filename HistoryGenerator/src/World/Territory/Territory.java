@@ -3,6 +3,7 @@ package World.Territory;
 import TerrainGenerator.ITerrainMap;
 import World.PointOfInterest.POI;
 import World.PointOfInterest.POIManager;
+import World.PointOfInterest.Wilderness;
 import World.Resources.Resource;
 import World.Resources.ResourceManager;
 import World.Rivers.River;
@@ -32,6 +33,7 @@ public class Territory implements ITerritory {
     //Resource to amount
     final HashMap<Resource, Integer> resources;
 
+    //For creating new Territories
     public Territory(final String location, final int seed, final String hrt, final int size, final Biome biome,
                      final HashMap<Integer, River> rivers, final HashMap<String, Integer> locBased) {
         this.seed = seed;
@@ -45,18 +47,25 @@ public class Territory implements ITerritory {
         this.size = size;
         this.discovered = false;
         this.biome = biome;
-        this.name = "Unnamed " + biome.getName() + " Region";
+        this.name = "Unnamed " + biome.getName();
         //Populate with POI
         this.pOI = new HashSet<>();
-        //locBased is for rivers, check if this area has a river
-        if(locBased.containsKey(location)) {
-            final int i = locBased.get(location);
-            if(this.biome != Biome.OCEAN) {
-                POIManager.createRiverPOI(rivers.get(i), location, seed, locBased).map(r-> pOI.add(r));
+        //First add the wilderness POI to the territory
+        pOI.add(new Wilderness(name, this.biome));
+        //For now no POI for Oceans
+        if(this.biome != Biome.OCEAN) {
+            //locBased is for rivers, check if this area has a river
+            if(locBased.containsKey(location)) {
+                final int i = locBased.get(location);
+                POIManager.createRiverPOI(rivers.get(i), location, seed, locBased).map(r -> pOI.add(r));
             }
+            //Add watersource POI
+            pOI.addAll(POIManager.createWatersourcePOI(pOI, biome, seed, location));
+            //Add land POI
+            //pOI.addAll(POIManager.createLandPOI(biome, seed, location, this.name));
+        } else {
+            //TODO: Add Ocean POI
         }
-        //Add watersource POI
-        pOI.addAll(POIManager.createWatersourcePOI(pOI, biome, seed, location));
         this.resources = ResourceManager.addResources(pOI, biome, seed);
     }
 

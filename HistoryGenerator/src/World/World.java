@@ -15,6 +15,7 @@ import org.json.simple.JSONObject;
 
 public class World implements IWorld {
     public static final HashMap<String, Integer> SETTINGS = new HashMap<>();
+    public static final HashMap<String, Double> RESOURCE_MODS = new HashMap<>();
 
     private final int size;
     private final int seed;
@@ -23,7 +24,8 @@ public class World implements IWorld {
     private final HashMap<Integer, Region> regions;
     private final HashMap<Integer, River> rivers;
 
-    public World(final HashMap<String, Integer> settings) {
+    public World(final HashMap<String, Integer> settings, final HashMap<String, Double> resSettings) {
+        this.RESOURCE_MODS.putAll(resSettings);
         this.SETTINGS.putAll(settings);
         this.seed = SETTINGS.get("seed");
         this.size = (int) Math.pow(2, SETTINGS.get("sizeCon")) + 1;
