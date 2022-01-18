@@ -16,29 +16,29 @@ interface MapProducer<K,V> {
 }
 
 public enum Biome implements MapProducer{
-    ALPINETUNDRA(Biome.ALPTUNDRA_CODE, "Alpine Tundra", Biome::initDefaultResMap,0.4f),
-    BADLANDS(Biome.BADLANDS_CODE, "Badlands", Biome::initDefaultResMap,0.5f),
-    DECIDUOUSFOREST(Biome.DECFOREST_CODE, "Deciduous Forest", Biome::initDefaultResMap,0.1f),
-    DECIDUOUSHILLS(Biome.DECHILLS_CODE, "Deciduous Hills", Biome::initDefaultResMap, 0.2f),
-    DECIDUOUSMOUNTAIN(Biome.DECMOUNTAIN_CODE, "Deciduous Mountain", Biome::initDefaultResMap, 0.4f),
-    GLACIER(Biome.GLACIER_CODE, "Glacier", Biome::initDefaultResMap, 0.4f),
-    GRASSLAND(Biome.GRASSLAND_CODE, "Grassland", Biome::initDefaultResMap, 0.1f),
-    GRASSHILLS(Biome.GRASSHILLS_CODE, "Grassy Hills", Biome::initDefaultResMap, 0.2f),
-    JUNGLE(Biome.JUNGLE_CODE, "Jungle", Biome::initDefaultResMap, 0.2f),
-    JUNGLEHILLS(Biome.JUNGLEHILLS_CODE, "Jungle Hills", Biome::initDefaultResMap, 0.3f),
-    JUNGLEMOUNTAIN(Biome.JUNGLEMOUNTAIN_CODE, "Jungle Mountain", Biome::initDefaultResMap, 0.4f),
+    ALPINETUNDRA(Biome.ALPTUNDRA_CODE, "Alpine Tundra", Biome::initTundraResMap,0.4f),
+    BADLANDS(Biome.BADLANDS_CODE, "Badlands", Biome::initAridResMap,0.5f),
+    DECIDUOUSFOREST(Biome.DECFOREST_CODE, "Deciduous Forest", Biome::initDeciduousResMap,0.1f),
+    DECIDUOUSHILLS(Biome.DECHILLS_CODE, "Deciduous Hills", Biome::initDeciduousResMap, 0.2f),
+    DECIDUOUSMOUNTAIN(Biome.DECMOUNTAIN_CODE, "Deciduous Mountain", Biome::initDeciduousResMap, 0.4f),
+    GLACIER(Biome.GLACIER_CODE, "Glacier", Biome::initGlacierResMap, 0.4f),
+    GRASSLAND(Biome.GRASSLAND_CODE, "Grassland", Biome::initGrassResMap, 0.1f),
+    GRASSHILLS(Biome.GRASSHILLS_CODE, "Grassy Hills", Biome::initGrassResMap, 0.2f),
+    JUNGLE(Biome.JUNGLE_CODE, "Jungle", Biome::initJungleResMap, 0.2f),
+    JUNGLEHILLS(Biome.JUNGLEHILLS_CODE, "Jungle Hills", Biome::initJungleResMap, 0.3f),
+    JUNGLEMOUNTAIN(Biome.JUNGLEMOUNTAIN_CODE, "Jungle Mountain", Biome::initJungleResMap, 0.4f),
     MOUNTAIN(Biome.MOUNTAIN_CODE, "Mountain", Biome::initDefaultResMap, 0.4f),
-    MOUNTAINTAIGA(Biome.MOUNTAINTAIGA_CODE, "Mountain Taiga", Biome::initDefaultResMap, 0.4f),
-    OCEAN(Biome.OCEAN_CODE, "Ocean", Biome::initDefaultResMap, 0f),
-    SANDYDESERT(Biome.SANDYDESERT_CODE, "Sandy Desert", Biome::initDefaultResMap, 0.1f),
-    SAVANNA(Biome.SAVANNA_CODE, "Savanna", Biome::initDefaultResMap, 0.1f),
-    SHRUBLAND(Biome.SHRUBLAND_CODE, "Shrubland", Biome::initDefaultResMap, 0.1f),
-    SHRUBLANDHILLS(Biome.SHRUBLANDHILLS_CODE, "Shrubland Hills", Biome::initDefaultResMap, 0.2f),
-    SWAMP(Biome.SWAMP_CODE, "Swamp", Biome::initDefaultResMap, 0.05f),
-    TAIGA(Biome.TAIGA_CODE, "Taiga", Biome::initDefaultResMap, 0.1f),
-    TAIGAHILLS(Biome.TAIGAHILLS_CODE, "Taiga Hills", Biome::initDefaultResMap, 0.2f),
-    TUNDRA(Biome.TUNDRA_CODE, "Tundra", Biome::initDefaultResMap, 0.1f),
-    TUNDRAHILLS(Biome.TUNDRAHILLS_CODE, "Tundra Hills", Biome::initDefaultResMap, 0.2f);
+    MOUNTAINTAIGA(Biome.MOUNTAINTAIGA_CODE, "Mountain Taiga", Biome::initTaigaResMap, 0.4f),
+    OCEAN(Biome.OCEAN_CODE, "Ocean", Biome::initOceanResMap, 0f),
+    SANDYDESERT(Biome.SANDYDESERT_CODE, "Sandy Desert", Biome::initAridResMap, 0.1f),
+    SAVANNA(Biome.SAVANNA_CODE, "Savanna", Biome::initAridResMap, 0.1f),
+    SHRUBLAND(Biome.SHRUBLAND_CODE, "Shrubland", Biome::initAridResMap, 0.1f),
+    SHRUBLANDHILLS(Biome.SHRUBLANDHILLS_CODE, "Shrubland Hills", Biome::initAridResMap, 0.2f),
+    SWAMP(Biome.SWAMP_CODE, "Swamp", Biome::initSwampResMap, 0.05f),
+    TAIGA(Biome.TAIGA_CODE, "Taiga", Biome::initTaigaResMap, 0.1f),
+    TAIGAHILLS(Biome.TAIGAHILLS_CODE, "Taiga Hills", Biome::initTaigaResMap, 0.2f),
+    TUNDRA(Biome.TUNDRA_CODE, "Tundra", Biome::initTundraResMap, 0.1f),
+    TUNDRAHILLS(Biome.TUNDRAHILLS_CODE, "Tundra Hills", Biome::initTundraResMap, 0.2f);
 
     public static final String ALPTUNDRA_CODE = "AT";
     public static final String BADLANDS_CODE = "BD";
@@ -81,12 +81,83 @@ public enum Biome implements MapProducer{
     public float getCaveChance() { return this.caveChance; }
     public Map<Resource, Pair<Integer, Integer>> getResourceStats() {return resources;}
 
-    //All resource pairs are <mean, std dev>
+    /**
+     * Here are the functions for making the resource stat maps
+     * vvv
+    */
     private static Map<Resource, Pair<Integer, Integer>> initDefaultResMap() {
         return Stream.of(
             new AbstractMap.SimpleImmutableEntry<>(Resource.WATER, new Pair<>(1000, 300)),
             new AbstractMap.SimpleImmutableEntry<>(Resource.WHEAT, new Pair<>(200, 300))
         ).collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    private static Map<Resource, Pair<Integer,Integer>> initAridResMap() {
+        return Stream.of(
+                new AbstractMap.SimpleImmutableEntry<>(Resource.WATER, new Pair<>(-50, 100)),
+                new AbstractMap.SimpleImmutableEntry<>(Resource.CACTUS, new Pair<>(100, 50))
+        ).collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    private static Map<Resource, Pair<Integer,Integer>> initDeciduousResMap() {
+        return Stream.of(
+                new AbstractMap.SimpleImmutableEntry<>(Resource.WATER, new Pair<>(1000, 300)),
+                new AbstractMap.SimpleImmutableEntry<>(Resource.BERRIES, new Pair<>(200, 300)),
+                new AbstractMap.SimpleImmutableEntry<>(Resource.NUTS, new Pair<>(200, 200)),
+                new AbstractMap.SimpleImmutableEntry<>(Resource.MUSHROOM, new Pair<>(100, 350))
+        ).collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    private static Map<Resource, Pair<Integer, Integer>> initGlacierResMap() {
+        return Stream.of(
+                new AbstractMap.SimpleImmutableEntry<>(Resource.WATER, new Pair<>(Integer.MAX_VALUE, 0))
+        ).collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    private static Map<Resource, Pair<Integer,Integer>> initGrassResMap() {
+        return Stream.of(
+                new AbstractMap.SimpleImmutableEntry<>(Resource.WATER, new Pair<>(1000, 300)),
+                new AbstractMap.SimpleImmutableEntry<>(Resource.WHEAT, new Pair<>(200, 300)),
+                new AbstractMap.SimpleImmutableEntry<>(Resource.CORN, new Pair<>(200, 300))
+        ).collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    private static Map<Resource, Pair<Integer,Integer>> initJungleResMap() {
+        return Stream.of(
+                new AbstractMap.SimpleImmutableEntry<>(Resource.WATER, new Pair<>(1500, 300)),
+                new AbstractMap.SimpleImmutableEntry<>(Resource.BERRIES, new Pair<>(100, 100)),
+                new AbstractMap.SimpleImmutableEntry<>(Resource.FRUIT, new Pair<>(300, 400)),
+                new AbstractMap.SimpleImmutableEntry<>(Resource.RICE, new Pair<>(100, 100)),
+                new AbstractMap.SimpleImmutableEntry<>(Resource.NUTS, new Pair<>(200, 200))
+        ).collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    private static Map<Resource, Pair<Integer,Integer>> initSwampResMap() {
+        return Stream.of(
+                new AbstractMap.SimpleImmutableEntry<>(Resource.WATER, new Pair<>(-100, 100)),
+                new AbstractMap.SimpleImmutableEntry<>(Resource.MUSHROOM, new Pair<>(200, 300)),
+                new AbstractMap.SimpleImmutableEntry<>(Resource.RICE, new Pair<>(300, 300))
+        ).collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    private static Map<Resource, Pair<Integer,Integer>> initTaigaResMap() {
+        return Stream.of(
+                new AbstractMap.SimpleImmutableEntry<>(Resource.WATER, new Pair<>(1000, 300)),
+                new AbstractMap.SimpleImmutableEntry<>(Resource.BERRIES, new Pair<>(150, 100)),
+                new AbstractMap.SimpleImmutableEntry<>(Resource.MUSHROOM, new Pair<>(200, 300)),
+                new AbstractMap.SimpleImmutableEntry<>(Resource.NUTS, new Pair<>(300, 300))
+        ).collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    private static Map<Resource, Pair<Integer, Integer>> initTundraResMap() {
+        return Stream.of(
+                new AbstractMap.SimpleImmutableEntry<>(Resource.WATER, new Pair<>(1500, 300)),
+                new AbstractMap.SimpleImmutableEntry<>(Resource.BERRIES, new Pair<>(100, 100))
+        ).collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    private static Map<Resource, Pair<Integer,Integer>> initOceanResMap() {
+        return new HashMap<>();
     }
 
     @Override

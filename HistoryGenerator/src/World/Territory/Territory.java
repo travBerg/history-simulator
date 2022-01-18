@@ -3,6 +3,7 @@ package World.Territory;
 import TerrainGenerator.ITerrainMap;
 import World.PointOfInterest.POI;
 import World.PointOfInterest.POIManager;
+import World.PointOfInterest.Wilderness;
 import World.Resources.Resource;
 import World.Resources.ResourceManager;
 import World.Rivers.River;
@@ -49,6 +50,8 @@ public class Territory implements ITerritory {
         this.name = "Unnamed " + biome.getName();
         //Populate with POI
         this.pOI = new HashSet<>();
+        //First add the wilderness POI to the territory
+        pOI.add(new Wilderness(name, this.biome));
         //For now no POI for Oceans
         if(this.biome != Biome.OCEAN) {
             //locBased is for rivers, check if this area has a river
@@ -58,7 +61,10 @@ public class Territory implements ITerritory {
             }
             //Add watersource POI
             pOI.addAll(POIManager.createWatersourcePOI(pOI, biome, seed, location));
+            //Add land POI
             pOI.addAll(POIManager.createLandPOI(biome, seed, location, this.name));
+        } else {
+            //TODO: Add Ocean POI
         }
         this.resources = ResourceManager.addResources(pOI, biome, seed);
     }

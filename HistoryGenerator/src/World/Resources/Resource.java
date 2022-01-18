@@ -1,6 +1,14 @@
 package World.Resources;
 
 public enum Resource {
+    //Resources
+    BERRIES("berries", false, true),
+    CACTUS("cactus fruit", false, true),
+    CORN("corn", false, true),
+    FRUIT("fruit", false, true),
+    MUSHROOM("mushroom", false, true),
+    NUTS("nuts", false, true),
+    RICE("rice", false, true),
     WATER("water",true, false),
     WHEAT("wheat", false, true);
 

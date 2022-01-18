@@ -14,7 +14,7 @@ public class POIManager {
 
     public static Set<POI> createLandPOI(final Biome biome, final int seed, final String loc, final String terName) {
         final HashSet<POI> pois = new HashSet<>();
-        pois.add(new Wilderness(terName, biome));
+        //pois.add(new Wilderness(terName, biome));
         return pois;
     }
 

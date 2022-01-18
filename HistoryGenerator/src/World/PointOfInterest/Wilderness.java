@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 public class Wilderness extends POI{
 
-    Wilderness(final String name, final Biome biome) {
+    public Wilderness(final String name, final Biome biome) {
         this(name + " Wilderness", biome.getResourceStats());
     }
 
