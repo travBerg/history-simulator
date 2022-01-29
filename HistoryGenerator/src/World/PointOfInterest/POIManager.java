@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class POIManager {
 
-    public static Set<POI> createWatersourcePOI(final Set<POI> pOI, final Biome biome, final int seed, final String loc) {
+    public static Set<POI> createWatersourcePOI(final Set<POI> pOI, final Biome biome, final Random rand, final String loc) {
         final HashSet<POI> watersources = new HashSet<>();
         //If this territory has a river segment
         pOI.stream().filter(p->p instanceof RiverSegment).findFirst().map(r->{
@@ -22,8 +22,7 @@ public class POIManager {
                 //This is for when the river is the end
                 watersources.add(new Lake("Unnamed Lake", Optional.ofNullable(river), biome));
             } else {
-                final Random random = new Random(seed);
-                final int n = random.nextInt(100); //0-99
+                final int n = rand.nextInt(100); //0-99
                 //TODO: Change to constant
                 if(n < World.SETTINGS.get("lakePercChanceRiver")) {
                     watersources.add(new Lake("Unnamed Lake", Optional.ofNullable(river), biome));
@@ -34,7 +33,7 @@ public class POIManager {
         return watersources;
     }
 
-    public static Optional<POI> createRiverPOI(final River river, final String loc, final int seed,
+    public static Optional<POI> createRiverPOI(final River river, final String loc, final Random rand,
                                      final HashMap<String, Integer> locBased) {
         //TODO: make source of river, make mouth of river, make river junctions
         final int idx = river.getSegments().indexOf(loc);

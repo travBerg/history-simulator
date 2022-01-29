@@ -21,7 +21,7 @@ public class Main {
         //Otherwise it overflows while performing the biome search.
         //May be able to fix this by limiting max biome size
         //Without biome search, we can get to size 10 (over 1 mil territories) and maybe larger (more tiles than the largest world in Rimworld. Not bad.)
-        final HashMap<String, Integer> settings = SettingsManager.getSettings(420, 4, 2, true);
+        final HashMap<String, Integer> settings = SettingsManager.getSettings(420, 3, 2, true);
 
         //poles: 0 = north pole, 1 = south pole, 2 = both poles
         final IWorld world = new World(settings, resSettings); //seed 7, size 2, poles 2

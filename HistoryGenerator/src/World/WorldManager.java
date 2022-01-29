@@ -45,7 +45,7 @@ public class WorldManager {
         function that takes in a territory map and returns a map of the biomes
      */
     public static HashMap<Integer, Region> createRegions(final HashMap<String, Territory> territoryMap,
-                                                         final boolean debug, final int size, final int seed) {
+                                                         final boolean debug, final int size, final Random random) {
         //Map index to biome
         final HashMap<Integer, Region> biomes = new HashMap<Integer, Region>();
         //Map ter location to biome index
@@ -64,7 +64,7 @@ public class WorldManager {
 
         while (frontier.size() > 0) {
             //get new territory to expand into a region
-            final String newTerritoryLoc = getRandomElement(frontier, seed);
+            final String newTerritoryLoc = getRandomElement(frontier, random);
             //remove location from frontier
             frontier.remove(newTerritoryLoc);
             //get the territory object from territoryMap
@@ -89,9 +89,7 @@ public class WorldManager {
     }
 
     private static <E>
-    E getRandomElement(final Set<? extends E> set, final int seed) {
-
-        Random random = new Random(seed);
+    E getRandomElement(final Set<? extends E> set, final Random random) {
 
         // Generate a random number using nextInt
         // method of the Random class.

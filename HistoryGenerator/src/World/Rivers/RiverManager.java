@@ -23,8 +23,7 @@ public class RiverManager {
      * @param start location of where river will start
      * @return a list of location of river segment POI
      */
-    public static List<String> constructRiver(final int seed, final HashMap<String, ArrayList<String>> terrain, final String start, final int size) {
-        final Random random = new Random(seed);
+    public static List<String> constructRiver(final Random random, final HashMap<String, ArrayList<String>> terrain, final String start, final int size) {
         final ArrayList<String> segments = new ArrayList<>();
         segments.add(start);
         return constructRiverHelp(random,segments,start,size,terrain);
@@ -66,7 +65,7 @@ public class RiverManager {
     //Create rivers as map (riverid to River) and map of locations to list of rivers
     /**
      *
-     * @param seed random seed
+     * @param random random from seed
      * @param terrain Map of location to a [type, hrt]
      * @param size Number of hexes to a side
      * 1. Iterate through locations finding river chance based on r value
@@ -77,11 +76,10 @@ public class RiverManager {
      * @return (Map of riverid to river, Map of location to list of riverids)
      */
     public static Pair<HashMap<Integer, River>, HashMap<String, Integer>>
-    getRiverMaps(final int seed, final HashMap<String, ArrayList<String>> terrain, final int size) {
+    getRiverMaps(final Random random, final HashMap<String, ArrayList<String>> terrain, final int size) {
         final Set<String> locKeys = terrain.keySet();
         final HashMap<Integer,River> rivers = new HashMap<>();
         final HashMap<String, Integer> locBased = new HashMap<>();
-        final Random random = new Random(seed);
         //Get river starts
         final List<String> riverLocs = locKeys.stream().filter(loc -> {
             final int h = Integer.parseInt(terrain.get(loc).get(1).substring(0,1));
@@ -99,7 +97,7 @@ public class RiverManager {
 
         //Start creating rivers/merging
         riverLocs.stream().forEach(loc -> {
-            final River river = new River(seed, terrain, loc, size);
+            final River river = new River(random, terrain, loc, size);
             //Check if river needs to merge and merge it if so
             final List<String> segments = river.getSegments();
             final int idx = riverLocs.indexOf(loc);
