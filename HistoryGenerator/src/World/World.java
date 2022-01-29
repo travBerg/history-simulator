@@ -27,8 +27,9 @@ public class World implements IWorld {
     public World(final HashMap<String, Integer> settings, final HashMap<String, Double> resSettings) {
         this.RESOURCE_MODS.putAll(resSettings);
         this.SETTINGS.putAll(settings);
+        //TODO: I think this is the only place we should save seed and once time begins to move we just add year/month to it, make a random, and pass that random around
         this.seed = SETTINGS.get("seed");
-        final Random rand = new Random(seed);
+        final Random random = new Random(seed);
         this.size = (int) Math.pow(2, SETTINGS.get("sizeCon")) + 1;
         final IGenerator generator = new TerrainGen(this.size, seed, SETTINGS.get("poles"));
         /**
@@ -37,14 +38,13 @@ public class World implements IWorld {
          * Save river map as a World parameter
          * Send location to list of rivers map to createTerritoryMap so that individual terr can access the info when constructing
          */
-        final Pair<HashMap<Integer, River>, HashMap<String, Integer>> riverMaps = RiverManager.getRiverMaps(seed,
+        final Pair<HashMap<Integer, River>, HashMap<String, Integer>> riverMaps = RiverManager.getRiverMaps(random,
                 generator.returnProduct(), size);
 
-        this.territoryMap = TerritoryManager.createTerritoryMap(rand, generator.returnProduct(), riverMaps.getKey(),
+        this.territoryMap = TerritoryManager.createTerritoryMap(random, generator.returnProduct(), riverMaps.getKey(),
                 riverMaps.getValue(), this.size);
         this.rivers = riverMaps.getKey();
-        //this.regions = new HashMap<Integer, Region>();
-        this.regions = WorldManager.createRegions(this.territoryMap, SETTINGS.get("debug") != 0, size, this.seed);
+        this.regions = WorldManager.createRegions(this.territoryMap, SETTINGS.get("debug") != 0, size, random);
         if (SETTINGS.get("debug") != 0) {
             System.out.println("Size: " + this.size + "x" + this.size);
             System.out.println("Territories: " + this.size * this.size);

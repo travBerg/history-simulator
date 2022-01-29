@@ -12,9 +12,9 @@ public class River {
     //Set of <location, tributary river id>
     private final Optional<Set<Pair<String, Integer>>> tributaries;
 
-    public River(final int seed, final HashMap<String, ArrayList<String>> terrain, final String start, final int size) {
+    public River(final Random random, final HashMap<String, ArrayList<String>> terrain, final String start, final int size) {
         this.name = "Unnamed River";
-        this.segments = RiverManager.constructRiver(seed, terrain, start, size);
+        this.segments = RiverManager.constructRiver(random, terrain, start, size);
         this.merge = Optional.empty();
         this.tributaries = Optional.empty();
     }
