@@ -18,7 +18,6 @@ public class RiverManager {
 
     /**
      *
-     * @param seed random seed
      * @param terrain Map of location to a [type, hrt]
      * @param start location of where river will start
      * @return a list of location of river segment POI
@@ -126,6 +125,7 @@ public class RiverManager {
                     rivers.put(idx, result);
                     //remove from locBased
                     sub.getSegments().forEach(seg->locBased.remove(seg));
+                    domTail.forEach(seg->locBased.remove(seg));
                     result.getSegments().forEach(seg->locBased.put(seg, idx));
                     return "Merge - head intersect\n";
                 }
@@ -181,10 +181,11 @@ public class RiverManager {
                 segments.stream().forEach(s->locBased.put(s,idx));
                 return "No merge\n";
             });
-            System.out.println(mergeLog);
+            //System.out.println(mergeLog);
         });
         //TODO: Maybe convert locBased to be <String, RiverSegment>?
         System.out.println("Final rivers\n-----------------------------------------------------------------------------------------");
+        System.out.println("Rivers set: " + rivers.keySet());
         rivers.keySet().stream().forEach(x->System.out.println(x + ": " + rivers.get(x).getSegments() + " merge: " +
                 rivers.get(x).getMerge().orElse(-1) + " Tributaries: " + rivers.get(x).getTributaries()));
         return new Pair<>(rivers, locBased);

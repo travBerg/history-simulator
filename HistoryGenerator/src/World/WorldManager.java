@@ -9,35 +9,27 @@ import java.util.*;
 
 public class WorldManager {
 
-    //This is fixed now (thanks Brandon)
-    public static ArrayList<String> biomeSearch(final HashMap<String, Territory> territoryMap,
-                                         final String code,
-                                         final HashSet<String> frontier,
-                                         final ArrayList<String> res,
-                                         final Territory t) {
-
-        //get arraylist of neighbors for t
-        ArrayList<String> neighbors = t.getNeighbors();
-        //search through neighbors and store any matching biome neighbors, and continues to search from them.
-        for (String neighbor : neighbors) {
-            //if the neighbor location is not used yet, we will continue
-            if (frontier.contains(neighbor)) {
-                //get new territory object from neighbor location
-                final Territory neighbor_t = territoryMap.get(neighbor);
-                // Check to make sure the territories have the same biome type
-                if (code.equals(neighbor_t.getBiome().getCode())) {
-                    //remove the new neighbor from the list
-                    frontier.remove(neighbor);
-                    //adds new biome
-                    res.add(neighbor);
-                    //continue searching
-                    final ArrayList<String> bResults = biomeSearch(territoryMap, t.getBiome().getCode(), frontier, res, t);
-                    //Add all elements from neighbors to res.
-                    res.addAll(bResults);
+    public static ArrayList<String> biomeSearch2(final HashMap<String, Territory> territoryMap, final String code,
+                                                 final String root) {
+        final Queue<String> queue = new ArrayDeque();
+        final HashSet<String> explored = new HashSet();
+        final ArrayList<String> out = new ArrayList<>();
+        queue.add(root);
+        explored.add(root);
+        while (!queue.isEmpty()) {
+            String v = queue.poll();
+            Territory terV = territoryMap.get(v);
+            if(terV.getBiome().getCode().equals(code)) {
+                out.add(v);
+                for(String n:terV.getNeighbors()) {
+                    if(!explored.contains(n)) {
+                        explored.add(n);
+                        queue.add(n);
+                    }
                 }
             }
         }
-        return res;
+        return out;
     }
 
     /*
@@ -65,19 +57,16 @@ public class WorldManager {
         while (frontier.size() > 0) {
             //get new territory to expand into a region
             final String newTerritoryLoc = getRandomElement(frontier, random);
-            //remove location from frontier
-            frontier.remove(newTerritoryLoc);
             //get the territory object from territoryMap
             final Territory t = territoryMap.get(newTerritoryLoc);
-            //results list for terrs that belong in biome
-            final ArrayList<String> res = new ArrayList<>();
             //Get the region as list of locs
-            final ArrayList<String> bResults = biomeSearch(territoryMap, t.getBiome().getCode(), frontier, res, t);
-            //add this territory to list of territories to be added to mapTer
-            bResults.add(newTerritoryLoc);
+            final ArrayList<String> bResults = biomeSearch2(territoryMap, t.getBiome().getCode(), newTerritoryLoc);
+            //final ArrayList<String> bResults = biomeSearch(territoryMap, t.getBiome().getCode(), frontier, res, t);
+            //Remove all the found biome territories from frontier
+            frontier.removeAll(bResults);
             //Make new region
             final Region nuBiome = new Region(t, count, bResults);
-            //
+            //This is for printing debug
             for (String r : bResults) {
                 mapTer.put(r, count);
             }

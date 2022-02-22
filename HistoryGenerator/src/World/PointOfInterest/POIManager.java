@@ -33,7 +33,7 @@ public class POIManager {
         return watersources;
     }
 
-    public static Optional<POI> createRiverPOI(final River river, final String loc, final Random rand,
+    public static Optional<RiverSegment> createRiverPOI(final River river, final String loc, final Random rand,
                                      final HashMap<String, Integer> locBased) {
         //TODO: make source of river, make mouth of river, make river junctions
         final int idx = river.getSegments().indexOf(loc);

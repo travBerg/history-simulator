@@ -39,16 +39,18 @@ public class World implements IWorld {
          * Send location to list of rivers map to createTerritoryMap so that individual terr can access the info when constructing
          */
         final Pair<HashMap<Integer, River>, HashMap<String, Integer>> riverMaps = RiverManager.getRiverMaps(random,
-                generator.returnProduct(), size);
+               generator.returnProduct(), size);
 
         this.territoryMap = TerritoryManager.createTerritoryMap(random, generator.returnProduct(), riverMaps.getKey(),
                 riverMaps.getValue(), this.size);
         this.rivers = riverMaps.getKey();
         this.regions = WorldManager.createRegions(this.territoryMap, SETTINGS.get("debug") != 0, size, random);
+        final int regionTerrs = regions.values().stream().map(r->r.getLocations().size()).reduce(0, Integer::sum);
         if (SETTINGS.get("debug") != 0) {
             System.out.println("Size: " + this.size + "x" + this.size);
             System.out.println("Territories: " + this.size * this.size);
             System.out.println("Regions: " + regions.size());
+            System.out.println("Region territories: " + regionTerrs);
             //System.out.println(this.territoryMap.get("1|0"));
             //TODO: Reimplement
             //System.out.println("Biome to Region map: \n" + WorldManager.biomeDebugRender(generator.returnProduct(), this.regions, this.size));
