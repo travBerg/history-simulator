@@ -96,8 +96,8 @@ public class Territory implements ITerritory {
             int neighborRow = Integer.parseInt(splitNeighborLocation[0]);
             int neighborCol = Integer.parseInt(splitNeighborLocation[1]);
             JSONObject locationJSON = new JSONObject();
-            locationJSON.put("col", neighborRow);
-            locationJSON.put("row", neighborCol);
+            locationJSON.put("col", neighborCol);
+            locationJSON.put("row", neighborRow);
             neighborsJSON.add(locationJSON);
         }
         territoryJSON.put("name", this.getName());
