@@ -1,6 +1,7 @@
 package World.Territory;
 
 import TerrainGenerator.ITerrainMap;
+import World.Animals.Animal;
 import World.PointOfInterest.POI;
 import World.PointOfInterest.POIManager;
 import World.PointOfInterest.Wilderness;
@@ -31,6 +32,7 @@ public class Territory implements ITerritory {
     final Set<POI> pOI;
     //Resource to amount
     final HashMap<Resource, Integer> resources;
+    final Set<Animal> animals;
 
     //For creating new Territories
     public Territory(final String location, final Random rand, final String hrt, final int size, final Biome biome,
@@ -64,7 +66,9 @@ public class Territory implements ITerritory {
         } else {
             //TODO: Add Ocean POI
         }
-        this.resources = ResourceManager.addResources(pOI, biome, rand);
+        final Pair<HashMap<Resource, Integer>, Set<Animal>> resAndAni = ResourceManager.addResources(pOI, biome, rand);
+        this.resources = resAndAni.getKey();
+        this.animals = resAndAni.getValue();
     }
 
     @Override
@@ -88,9 +92,10 @@ public class Territory implements ITerritory {
     @Override @SuppressWarnings("unchecked")
     public JSONObject asJSON() {
         JSONObject territoryJSON = new JSONObject();
-        JSONArray neighborsJSON = new JSONArray();
+        //JSONArray neighborsJSON = new JSONArray();
 
         //Break up neighbors into rows and columns
+        /* Dont think I actually need all this
         for (String Neighborlocation: this.neighbors){
             String[] splitNeighborLocation = Neighborlocation.split("\\|");
             int neighborRow = Integer.parseInt(splitNeighborLocation[0]);
@@ -99,7 +104,7 @@ public class Territory implements ITerritory {
             locationJSON.put("col", neighborCol);
             locationJSON.put("row", neighborRow);
             neighborsJSON.add(locationJSON);
-        }
+        }*/
         territoryJSON.put("name", this.getName());
         territoryJSON.put("row", this.row);
         territoryJSON.put("col", this.col);
@@ -108,7 +113,7 @@ public class Territory implements ITerritory {
         territoryJSON.put("temp" , this.temp);
         territoryJSON.put("size" , this.size);
         territoryJSON.put("discovered" , this.discovered);
-        territoryJSON.put("neighbors" , neighborsJSON);
+        //territoryJSON.put("neighbors" , neighborsJSON);
         //POI
         final JSONArray pOIArray = new JSONArray();
         this.pOI.stream().forEach(p -> pOIArray.add(POIManager.toJSONPOI(p)));
@@ -122,6 +127,11 @@ public class Territory implements ITerritory {
             resourceArray.add(res);
         });
         territoryJSON.put("resourceCaps", resourceArray);
+        final JSONArray aniArray = new JSONArray();
+        this.animals.forEach(a->{
+            aniArray.add(a.getName());
+        });
+        territoryJSON.put("animals", aniArray);
         return territoryJSON;
     }
 
