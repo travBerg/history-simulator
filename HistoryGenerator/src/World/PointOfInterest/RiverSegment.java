@@ -1,5 +1,6 @@
 package World.PointOfInterest;
 
+import World.Animals.Animal;
 import World.Resources.Resource;
 import javafx.util.Pair;
 
@@ -20,15 +21,17 @@ public class RiverSegment extends POI{
     private final static Map<Resource, Pair<Integer, Integer>> RES = Stream.of(
             new AbstractMap.SimpleImmutableEntry<>(Resource.WATER, WATER)
         ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    private final static Map<Animal, Pair<Integer,Integer>> ANI = new HashMap<>();
 
 
     public RiverSegment(final int riverId, final String name, final String in, final String out, final Set<Pair<String, Integer>> trib){
-        this(riverId, name, in, out, trib, RES);
+        this(riverId, name, in, out, trib, RES, ANI);
     }
 
     private RiverSegment(final int riverId, final String name, final String in, final String out,
-                         final Set<Pair<String, Integer>> trib, final Map<Resource, Pair<Integer, Integer>> res){
-        super(name, res);
+                         final Set<Pair<String, Integer>> trib, final Map<Resource, Pair<Integer, Integer>> res,
+                         final Map<Animal, Pair<Integer, Integer>> ani){
+        super(name, res, ani);
         this.riverId = riverId;
         this.in = in;
         this.out = out;

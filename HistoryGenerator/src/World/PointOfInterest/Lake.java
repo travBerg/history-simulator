@@ -1,5 +1,6 @@
 package World.PointOfInterest;
 
+import World.Animals.Animal;
 import World.Resources.Resource;
 import World.Rivers.River;
 import World.Territory.Biome.Biome;
@@ -17,13 +18,15 @@ public class Lake extends POI {
     private final static Map<Resource, Pair<Integer, Integer>> RES = Stream.of(
             new AbstractMap.SimpleImmutableEntry<>(Resource.WATER, WATER)
         ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    private final static Map<Animal, Pair<Integer,Integer>> ANI = new HashMap<>();
 
     public Lake(final String name, final Optional<RiverSegment> river, final Biome biome) {
-        this(name, river, biome, RES);
+        this(name, river, biome, RES, ANI);
     }
 
-    private Lake(final String name, final Optional<RiverSegment> river, final Biome biome, final Map<Resource, Pair<Integer, Integer>> res) {
-        super(name, res);
+    private Lake(final String name, final Optional<RiverSegment> river, final Biome biome,
+                 final Map<Resource, Pair<Integer, Integer>> res, final Map<Animal, Pair<Integer, Integer>> ani) {
+        super(name, res, ani);
         this.river = river;
     }
 

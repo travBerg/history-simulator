@@ -1,33 +1,42 @@
 package World.Resources;
 
+import World.Animals.Animal;
 import World.PointOfInterest.POI;
 import World.Territory.Biome.Biome;
 import World.World;
 import javafx.util.Pair;
 import org.json.simple.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ResourceManager {
     /**
      * This method adds resources to the territory based off the available POIs and biome
      * @param poi the set of places of interest for this territory
      * @param biome
-     * @param seed
+     * @param rand randomizer
      * @return
      */
     public static HashMap<Resource, Integer> addResources(final Set<POI> poi, final Biome biome, final Random rand) {
         final Map<Resource, Integer> resources = new HashMap<>();
         poi.stream().forEach(p->{
-            p.getResources().forEach((r,i)->{
+            //Unpack the animals for this poi into a list of pairs of its resources with its generated number
+            final List<Pair<Resource, Integer>> aniRes = p.getAnimals().entrySet().stream()
+                    .map(r->ResourceManager.convertToResList(r,rand)).flatMap(List::stream).collect(Collectors.toList());
+            //convert poi resource map to List<Pair<Resource, Integer>> and combine with the animal one before
+            // running it through process of adding to resource map
+            List<Pair<Resource, Integer>> total = Stream.concat(p.getResources().entrySet().stream()
+                    .map(e->new Pair<Resource, Integer>(e.getKey(), genAmount(e.getValue(), rand)))
+                    .collect(Collectors.toList()).stream(), aniRes.stream()).collect(Collectors.toList());
+            //add all poi resources to resource map
+            total.stream().forEach(pair->{
+                final Resource r = pair.getKey();
+                final Integer nuVal = pair.getValue();
                 if(resources.containsKey(r)) {
                     final int curVal = resources.get(r);
                     if(curVal != Integer.MAX_VALUE) {
-                        final int nuVal = genAmount(i, rand);
                         final int val;
                         if(nuVal == Integer.MAX_VALUE) {
                             val = Integer.MAX_VALUE;
@@ -37,9 +46,11 @@ public class ResourceManager {
                         resources.put(r, val);
                     }
                 } else {
-                    resources.put(r, genAmount(i, rand));
+                    resources.put(r, nuVal);
                 }
             });
+
+
         });
         // Add fresh water source and global resource mods to the final values of the resources here
         final int freshWaterMod;
@@ -63,10 +74,18 @@ public class ResourceManager {
                 .toMap(Map.Entry::getKey, Map.Entry::getValue, (prev, next) -> next, HashMap::new));
     }
 
+    private static List<Pair<Resource, Integer>> convertToResList(final Map.Entry<Animal, Pair<Integer,Integer>> entry,
+                                                                  final Random rand) {
+        final int n = genAmount(entry.getValue(), rand);
+        return Arrays.stream(entry.getKey().getResources()).filter(pr->!pr.getValue())
+                .map(x->new Pair<Resource, Integer>(x.getKey(), n))
+                .collect(Collectors.toList());
+    }
+
     /**
      * Generates an amount of a resource based off resource base stats
      * @param stats is the base resource stats. Pair<mean, std dev>
-     * @param seed is how we make the random
+     * @param rand is how we make the random
      * @return
      */
     private static int genAmount(final Pair<Integer, Integer> stats, final Random rand) {
