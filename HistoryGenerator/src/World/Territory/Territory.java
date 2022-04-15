@@ -92,9 +92,10 @@ public class Territory implements ITerritory {
     @Override @SuppressWarnings("unchecked")
     public JSONObject asJSON() {
         JSONObject territoryJSON = new JSONObject();
-        JSONArray neighborsJSON = new JSONArray();
+        //JSONArray neighborsJSON = new JSONArray();
 
         //Break up neighbors into rows and columns
+        /* Dont think I actually need all this
         for (String Neighborlocation: this.neighbors){
             String[] splitNeighborLocation = Neighborlocation.split("\\|");
             int neighborRow = Integer.parseInt(splitNeighborLocation[0]);
@@ -103,7 +104,7 @@ public class Territory implements ITerritory {
             locationJSON.put("col", neighborCol);
             locationJSON.put("row", neighborRow);
             neighborsJSON.add(locationJSON);
-        }
+        }*/
         territoryJSON.put("name", this.getName());
         territoryJSON.put("row", this.row);
         territoryJSON.put("col", this.col);
@@ -112,7 +113,7 @@ public class Territory implements ITerritory {
         territoryJSON.put("temp" , this.temp);
         territoryJSON.put("size" , this.size);
         territoryJSON.put("discovered" , this.discovered);
-        territoryJSON.put("neighbors" , neighborsJSON);
+        //territoryJSON.put("neighbors" , neighborsJSON);
         //POI
         final JSONArray pOIArray = new JSONArray();
         this.pOI.stream().forEach(p -> pOIArray.add(POIManager.toJSONPOI(p)));
