@@ -1,6 +1,7 @@
 package World.Territory;
 
 import TerrainGenerator.ITerrainMap;
+import World.Animals.Animal;
 import World.PointOfInterest.POI;
 import World.PointOfInterest.POIManager;
 import World.PointOfInterest.Wilderness;
@@ -31,6 +32,7 @@ public class Territory implements ITerritory {
     final Set<POI> pOI;
     //Resource to amount
     final HashMap<Resource, Integer> resources;
+    final Set<Animal> animals;
 
     //For creating new Territories
     public Territory(final String location, final Random rand, final String hrt, final int size, final Biome biome,
@@ -64,7 +66,9 @@ public class Territory implements ITerritory {
         } else {
             //TODO: Add Ocean POI
         }
-        this.resources = ResourceManager.addResources(pOI, biome, rand);
+        final Pair<HashMap<Resource, Integer>, Set<Animal>> resAndAni = ResourceManager.addResources(pOI, biome, rand);
+        this.resources = resAndAni.getKey();
+        this.animals = resAndAni.getValue();
     }
 
     @Override
@@ -122,6 +126,11 @@ public class Territory implements ITerritory {
             resourceArray.add(res);
         });
         territoryJSON.put("resourceCaps", resourceArray);
+        final JSONArray aniArray = new JSONArray();
+        this.animals.forEach(a->{
+            aniArray.add(a.getName());
+        });
+        territoryJSON.put("animals", aniArray);
         return territoryJSON;
     }
 
