@@ -1,5 +1,6 @@
 package World;
 
+import World.Territory.Biome.Biome;
 import World.Territory.Territory;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -7,8 +8,10 @@ import org.json.simple.JSONObject;
 import java.util.ArrayList;
 
 public class Region implements IRegion {
+    //This here is the list of the locations of the territories
     private final ArrayList<String> locations;
     private final String type;
+    private final Biome biome;
     private final int index;
     private final String name;
 
@@ -17,6 +20,7 @@ public class Region implements IRegion {
         //locations.add(ter.getLocation());
         this.index = idx;
         this.type = ter.getBiome().getCode();
+        this.biome = ter.getBiome();
         //TODO: Placeholder
         this.name = "Unnamed " + ter.getBiome().getName() + " Region";
     }
@@ -41,4 +45,7 @@ public class Region implements IRegion {
     public ArrayList<String> getLocations() {
         return locations;
     }
+
+    @Override
+    public Biome getBiome() {return biome;}
 }

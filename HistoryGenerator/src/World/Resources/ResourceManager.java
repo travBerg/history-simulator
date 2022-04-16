@@ -25,7 +25,7 @@ public class ResourceManager {
         final Set<Animal> animals = new HashSet<>();
         poi.stream().forEach(p->{
             //Unpack the animals for this poi into a list of pairs of its resources with its generated number
-            final List<Pair<Resource, Integer>> aniRes = p.getAnimals().entrySet().stream()
+            final List<Pair<Resource, Integer>> aniRes = p.getAnimals().entrySet().stream().sorted(Map.Entry.comparingByKey())
                     .map(r->{
                         final List<Pair<Resource, Integer>> resList = ResourceManager.convertToResList(r,rand);
                         if(!resList.isEmpty()) { animals.add(r.getKey()); }
@@ -33,8 +33,12 @@ public class ResourceManager {
                     }).flatMap(List::stream).collect(Collectors.toList());
             //convert poi resource map to List<Pair<Resource, Integer>> and combine with the animal one before
             // running it through process of adding to resource map
-            List<Pair<Resource, Integer>> total = Stream.concat(p.getResources().entrySet().stream()
-                    .map(e->new Pair<Resource, Integer>(e.getKey(), genAmount(e.getValue(), rand)))
+            List<Pair<Resource, Integer>> total = Stream.concat(p.getResources().entrySet().stream().sorted(Map.Entry.comparingByKey())
+                    .map(e->{
+                        final Pair<Resource, Integer> prr = new Pair<Resource, Integer>(e.getKey(), genAmount(e.getValue(), rand));
+                        //System.out.println("Resource: " + prr.getKey() + " Amount: " + prr.getValue());
+                        return prr;
+                    })
                     .collect(Collectors.toList()).stream(), aniRes.stream()).collect(Collectors.toList());
             //add all poi resources to resource map
             total.stream().forEach(pair->{

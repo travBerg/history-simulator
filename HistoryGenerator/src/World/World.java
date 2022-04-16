@@ -2,6 +2,7 @@ package World;
 
 import TerrainGenerator.IGenerator;
 import TerrainGenerator.TerrainGen;
+import World.Groups.Group;
 import World.Rivers.River;
 import World.Rivers.RiverManager;
 import World.Territory.*;
@@ -16,6 +17,7 @@ import org.json.simple.JSONObject;
 public class World implements IWorld {
     public static final HashMap<String, Integer> SETTINGS = new HashMap<>();
     public static final HashMap<String, Double> RESOURCE_MODS = new HashMap<>();
+    public static final HashMap<String, Float> GROUP_MODS = new HashMap<>();
 
     private final int size;
     private final int seed;
@@ -23,11 +25,15 @@ public class World implements IWorld {
     private final HashMap<String, Territory> territoryMap;
     private final HashMap<Integer, Region> regions;
     private final HashMap<Integer, River> rivers;
+    private final HashMap<String, Group> groups;
 
-    public World(final HashMap<String, Integer> settings, final HashMap<String, Double> resSettings) {
+    public World(final HashMap<String, Integer> settings, final HashMap<String, Double> resSettings,
+                 final HashMap<String, Float> groupMods) {
         this.RESOURCE_MODS.putAll(resSettings);
+        this.GROUP_MODS.putAll(groupMods);
         this.SETTINGS.putAll(settings);
-        //TODO: I think this is the only place we should save seed and once time begins to move we just add year/month to it, make a random, and pass that random around
+        //TODO: I think this is the only place we should save seed and once time begins to move we just add year/month
+        // to it, make a random, and pass that random around
         this.seed = SETTINGS.get("seed");
         final Random random = new Random(seed);
         this.size = (int) Math.pow(2, SETTINGS.get("sizeCon")) + 1;
@@ -40,16 +46,37 @@ public class World implements IWorld {
          */
         final Pair<HashMap<Integer, River>, HashMap<String, Integer>> riverMaps = RiverManager.getRiverMaps(random,
                generator.returnProduct(), size);
-
+        //Create the territory map
         this.territoryMap = TerritoryManager.createTerritoryMap(random, generator.returnProduct(), riverMaps.getKey(),
                 riverMaps.getValue(), this.size);
+        //Get the map of river ids to River object
         this.rivers = riverMaps.getKey();
+        //Create the regions based off the territory map
         this.regions = WorldManager.createRegions(this.territoryMap, SETTINGS.get("debug") != 0, size, random);
-        final int regionTerrs = regions.values().stream().map(r->r.getLocations().size()).reduce(0, Integer::sum);
+        /**
+         * Groups
+         * Input regions and territoryMap
+         * Output Pair<HashMap<String, Group>, Set<Territory>> - key is map of id to Group,
+         * value is set of changed territories
+         */
+        final Pair<HashMap<String, Group>, Set<Territory>> popPair = WorldManager.populate(territoryMap, regions, random);
+        this.groups = popPair.getKey();
+        //Overwrite edited Terrs
+        popPair.getValue().forEach(t->{
+            Territory ter = territoryMap.replace(t.getLocation(),t);
+            if(ter == null && SETTINGS.get("debug") != 0) {
+                System.out.println("WARNING: Territory " + t.getLocation() + " failed to overwrite!");
+            }
+        });
+
         if (SETTINGS.get("debug") != 0) {
             System.out.println("Size: " + this.size + "x" + this.size);
             System.out.println("Territories: " + this.size * this.size);
             System.out.println("Regions: " + regions.size());
+            System.out.println("Groups: " + groups.size());
+            System.out.println("Terrs Overwritten: " + popPair.getValue().size());
+            //Debug count of territories by region
+            final int regionTerrs = regions.values().stream().map(r->r.getLocations().size()).reduce(0, Integer::sum);
             System.out.println("Region territories: " + regionTerrs);
             //System.out.println(this.territoryMap.get("1|0"));
             //TODO: Reimplement
@@ -58,6 +85,8 @@ public class World implements IWorld {
             System.out.println("--------------------------------------------------------");
         }
     }
+
+
 
     @Override
     //Return list of pair of region idx and name
@@ -107,6 +136,11 @@ public class World implements IWorld {
     @Override
     public HashMap<Integer, River> getRivers() {
         return rivers;
+    }
+
+    @Override
+    public HashMap<String, Group> getGroups() {
+        return groups;
     }
 
 }

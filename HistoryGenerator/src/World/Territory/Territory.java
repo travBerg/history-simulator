@@ -2,6 +2,7 @@ package World.Territory;
 
 import TerrainGenerator.ITerrainMap;
 import World.Animals.Animal;
+import World.Groups.Group;
 import World.PointOfInterest.POI;
 import World.PointOfInterest.POIManager;
 import World.PointOfInterest.Wilderness;
@@ -19,24 +20,27 @@ import java.util.regex.Pattern;
 
 public class Territory implements ITerritory {
     //row|column
-    final int row;
-    final int col;
-    final ArrayList<String> neighbors;
-    final int height;
-    final int rain;
-    final int temp;
-    final int size;
-    final Biome biome;
-    final String name;
-    final boolean discovered;
-    final Set<POI> pOI;
+    private final String location;
+    private final int row;
+    private final int col;
+    private final ArrayList<String> neighbors;
+    private final int height;
+    private final int rain;
+    private final int temp;
+    private final int size;
+    private final Biome biome;
+    private final String name;
+    private final boolean discovered;
+    private final Set<POI> pOI;
     //Resource to amount
-    final HashMap<Resource, Integer> resources;
-    final Set<Animal> animals;
+    private final HashMap<Resource, Integer> resources;
+    private final Set<Animal> animals;
+    private final Set<Group> groups;
 
     //For creating new Territories
     public Territory(final String location, final Random rand, final String hrt, final int size, final Biome biome,
                      final HashMap<Integer, River> rivers, final HashMap<String, Integer> locBased) {
+        this.location = location;
         final Pair<Integer, Integer> loc = TerritoryManager.parseLocation(location);
         this.row = loc.getKey();
         this.col = loc.getValue();
@@ -69,6 +73,32 @@ public class Territory implements ITerritory {
         final Pair<HashMap<Resource, Integer>, Set<Animal>> resAndAni = ResourceManager.addResources(pOI, biome, rand);
         this.resources = resAndAni.getKey();
         this.animals = resAndAni.getValue();
+        this.groups = new HashSet<>();
+    }
+
+    /**
+     * Constructor for when the first group is added to territory before time starts
+     * @param old territory before it had group
+     * @param group new group
+     */
+    public Territory(final Territory old, final Group group, final Random rand) {
+        this.location = old.getLocation();
+        this.row = old.getRow();
+        this.col = old.getCol();
+        this.neighbors = old.getNeighbors();
+        this.height = old.height;
+        this.rain = old.rain;
+        this.temp = old.temp;
+        this.size = old.size;
+        this.biome = old.getBiome();
+        //Have the group name it
+        this.name = old.getName();
+        this.discovered = old.isDiscovered();
+        this.pOI = old.getPOI();
+        this.resources = old.getResources();
+        this.animals = old.animals;
+        this.groups = new HashSet<>();
+        this.groups.add(group);
     }
 
     @Override
@@ -106,6 +136,7 @@ public class Territory implements ITerritory {
             neighborsJSON.add(locationJSON);
         }*/
         territoryJSON.put("name", this.getName());
+        territoryJSON.put("location", this.location);
         territoryJSON.put("row", this.row);
         territoryJSON.put("col", this.col);
         territoryJSON.put("height" , this.height);
@@ -132,11 +163,25 @@ public class Territory implements ITerritory {
             aniArray.add(a.getName());
         });
         territoryJSON.put("animals", aniArray);
+        final JSONArray grpArray = new JSONArray();
+        this.groups.forEach(g->{
+            grpArray.add(g.getId());
+        });
+        territoryJSON.put("groupsPresent", grpArray);
         return territoryJSON;
     }
 
     @Override
     public Set<POI> getPOI() {
         return pOI;
+    }
+
+    public HashMap<Resource, Integer> getResources() {
+        return resources;
+    }
+
+    @Override
+    public String getLocation() {
+        return location;
     }
 }
