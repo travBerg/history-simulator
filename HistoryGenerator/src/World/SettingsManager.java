@@ -30,4 +30,11 @@ public class SettingsManager {
         mods.put("wheat_mod", 1.0);
         return mods;
     }
+
+    public static HashMap<String, Float> getGroupMods() {
+        //TODO: Read settings from a settings file
+        final HashMap<String, Float> mods = new HashMap<>();
+        mods.put("pop_mod", 1.0f);
+        return mods;
+    }
 }

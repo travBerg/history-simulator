@@ -1,11 +1,18 @@
 package World;
 
+import World.Groups.Group;
+import World.Groups.GroupManager;
 import World.Rivers.RiverManager;
+import World.Territory.Biome.Biome;
 import World.Territory.Territory;
+import World.Territory.TerritoryManager;
+import javafx.util.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class WorldManager {
 
@@ -30,6 +37,49 @@ public class WorldManager {
             }
         }
         return out;
+    }
+
+    /**
+     * Groups
+     * Input regions and territoryMap
+     * Output Pair<List<Groups>, territoryMap>
+     * Okay we're gonna go region by region (filtering out Oceans) and then for each ter in group (filtering out
+     * ters with no food or water) roll against that
+     * Biome's chance of having a group to see if it does.
+     * If it does, create group with population based off available food and water resources
+     * Add group id to copy of territory. Return as Pair
+     * Compile into lists, one of groups one of territories
+     * After all regions done, flatmap all groups and territories into master lists
+     * Group master list becomes group list, territory master list is used to overwrite entries in territoryMap
+     */
+    public static Pair<HashMap<String, Group>, Set<Territory>> populate(final HashMap<String, Territory> terMap,
+                                                   final HashMap<Integer, Region> regions, final Random rand) {
+        //TODO: Random is broken here (or maybe in Resources?)
+        //Accumulator set for the territories that are modified with a new Group
+        final Set<Territory> nuTerr = new HashSet<>();
+        //This stream creates all the new groups (as map of id to Group) and adds modified terrs to above set as it goes along
+        final Map<String, Group> groupResult = regions.values().stream().filter(r->r.getBiome() != Biome.OCEAN).map(r->{
+            final Biome biome = r.getBiome();
+            //Calculate percent chance that a
+            final float groupPerc = 100 * biome.getGroupChance() * World.GROUP_MODS.get("pop_mod");
+            //get list of terrs
+            final List<Territory> terrs = r.getLocations().stream().map(terMap::get).collect(Collectors.toList());
+            //remove those with insufficient food and water roll for the rest
+            final List<Group> groups = terrs.stream().filter(TerritoryManager::habitable).map(t->{
+                if(rand.nextFloat() * 100 < groupPerc) {
+                    final Optional<Group> gO = Optional.of(new Group(t, rand));
+                    nuTerr.add(new Territory(t, gO.get(), rand));
+                    return gO;
+                } else {
+                    final Optional<Group> gO = Optional.empty();
+                    return gO;
+                }
+            }).flatMap(Optional::stream).collect(Collectors.toList());
+            return groups;
+        //Match each group up with its id
+        }).flatMap(List::stream).collect(Collectors.toMap(Group::getId, g->g));
+
+        return new Pair<HashMap<String, Group>, Set<Territory>>(new HashMap<String, Group>(groupResult), nuTerr);
     }
 
     /*
@@ -111,7 +161,9 @@ public class WorldManager {
         JSONObject worldJSON = new JSONObject();
         JSONArray regionsJSON = new JSONArray();
         JSONArray riverList = new JSONArray();
+        JSONArray groupList = new JSONArray();
 
+        //Regions
         //  final HashMap<Integer, Region> regions;
         w.getRegions().forEach((number, region) -> {
             JSONObject regionJSON = new JSONObject();
@@ -129,11 +181,16 @@ public class WorldManager {
             regionsJSON.add(regionJSON);
 
         });
+        //Rivers
         w.getRivers().keySet().stream().forEach(k -> riverList.add(RiverManager.riverToJSON(w.getRivers().get(k))));
+        //Groups
+        w.getGroups().values().stream().forEach(g->groupList.add(GroupManager.asJSON(g)));
+        //Put it all together
+        worldJSON.put("rivers", riverList);
+        worldJSON.put("regions", regionsJSON);
+        worldJSON.put("groups", groupList);
         worldJSON.put("seed", w.getSeed());
         worldJSON.put("size", w.getSize());
-        worldJSON.put("regions", regionsJSON);
-        worldJSON.put("rivers", riverList);
 
         return worldJSON;
     }

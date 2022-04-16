@@ -23,4 +23,5 @@ public interface ITerritory {
     public Object asJSON();
     //Gets the list of POI
     public Set<POI> getPOI();
+    public String getLocation();
 }

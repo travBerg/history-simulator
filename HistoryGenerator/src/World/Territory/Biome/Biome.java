@@ -22,29 +22,29 @@ interface AniMapProducer<K,V> {
 }
 
 public enum Biome implements MapProducer, AniMapProducer{
-    ALPINETUNDRA(Biome.ALPTUNDRA_CODE, "Alpine Tundra", Biome::initTundraResMap,0.4f, Biome::initOceanAniMap),
-    BADLANDS(Biome.BADLANDS_CODE, "Badlands", Biome::initAridResMap,0.5f, Biome::initOceanAniMap),
-    DECIDUOUSFOREST(Biome.DECFOREST_CODE, "Deciduous Forest", Biome::initDeciduousResMap,0.1f, Biome::initDefaultAnimalMap),
-    DECIDUOUSHILLS(Biome.DECHILLS_CODE, "Deciduous Hills", Biome::initDeciduousResMap, 0.2f, Biome::initDefaultAnimalMap),
-    DECIDUOUSMOUNTAIN(Biome.DECMOUNTAIN_CODE, "Deciduous Mountain", Biome::initDeciduousResMap, 0.4f, Biome::initMountainAniMap),
-    GLACIER(Biome.GLACIER_CODE, "Glacier", Biome::initGlacierResMap, 0.4f, Biome::initOceanAniMap),
-    GRASSLAND(Biome.GRASSLAND_CODE, "Grassland", Biome::initGrassResMap, 0.1f, Biome::initGrasslandAniMap),
-    GRASSHILLS(Biome.GRASSHILLS_CODE, "Grassy Hills", Biome::initGrassResMap, 0.2f, Biome::initGrasslandAniMap),
-    JUNGLE(Biome.JUNGLE_CODE, "Jungle", Biome::initJungleResMap, 0.2f, Biome::initDefaultAnimalMap),
-    JUNGLEHILLS(Biome.JUNGLEHILLS_CODE, "Jungle Hills", Biome::initJungleResMap, 0.3f, Biome::initDefaultAnimalMap),
-    JUNGLEMOUNTAIN(Biome.JUNGLEMOUNTAIN_CODE, "Jungle Mountain", Biome::initJungleResMap, 0.4f, Biome::initDefaultAnimalMap),
-    MOUNTAIN(Biome.MOUNTAIN_CODE, "Mountain", Biome::initDefaultResMap, 0.4f, Biome::initMountainAniMap),
-    MOUNTAINTAIGA(Biome.MOUNTAINTAIGA_CODE, "Mountain Taiga", Biome::initTaigaResMap, 0.4f, Biome::initMountainAniMap),
-    OCEAN(Biome.OCEAN_CODE, "Ocean", Biome::initOceanResMap, 0f, Biome::initOceanAniMap),
-    SANDYDESERT(Biome.SANDYDESERT_CODE, "Sandy Desert", Biome::initAridResMap, 0.1f, Biome::initOceanAniMap),
-    SAVANNA(Biome.SAVANNA_CODE, "Savanna", Biome::initAridResMap, 0.1f, Biome::initDefaultAnimalMap),
-    SHRUBLAND(Biome.SHRUBLAND_CODE, "Shrubland", Biome::initAridResMap, 0.1f, Biome::initMountainAniMap),
-    SHRUBLANDHILLS(Biome.SHRUBLANDHILLS_CODE, "Shrubland Hills", Biome::initAridResMap, 0.2f, Biome::initMountainAniMap),
-    SWAMP(Biome.SWAMP_CODE, "Swamp", Biome::initSwampResMap, 0.05f, Biome::initDefaultAnimalMap),
-    TAIGA(Biome.TAIGA_CODE, "Taiga", Biome::initTaigaResMap, 0.1f, Biome::initDefaultAnimalMap),
-    TAIGAHILLS(Biome.TAIGAHILLS_CODE, "Taiga Hills", Biome::initTaigaResMap, 0.2f, Biome::initDefaultAnimalMap),
-    TUNDRA(Biome.TUNDRA_CODE, "Tundra", Biome::initTundraResMap, 0.1f, Biome::initOceanAniMap),
-    TUNDRAHILLS(Biome.TUNDRAHILLS_CODE, "Tundra Hills", Biome::initTundraResMap, 0.2f, Biome::initOceanAniMap);
+    ALPINETUNDRA(Biome.ALPTUNDRA_CODE, "Alpine Tundra", Biome::initTundraResMap,0.4f, Biome::initOceanAniMap, 0.1f),
+    BADLANDS(Biome.BADLANDS_CODE, "Badlands", Biome::initAridResMap,0.5f, Biome::initOceanAniMap, 0.1f),
+    DECIDUOUSFOREST(Biome.DECFOREST_CODE, "Deciduous Forest", Biome::initDeciduousResMap,0.1f, Biome::initDefaultAnimalMap, 0.3f),
+    DECIDUOUSHILLS(Biome.DECHILLS_CODE, "Deciduous Hills", Biome::initDeciduousResMap, 0.2f, Biome::initDefaultAnimalMap, 0.3f),
+    DECIDUOUSMOUNTAIN(Biome.DECMOUNTAIN_CODE, "Deciduous Mountain", Biome::initDeciduousResMap, 0.4f, Biome::initMountainAniMap, 0.1f),
+    GLACIER(Biome.GLACIER_CODE, "Glacier", Biome::initGlacierResMap, 0.4f, Biome::initOceanAniMap, 0f),
+    GRASSLAND(Biome.GRASSLAND_CODE, "Grassland", Biome::initGrassResMap, 0.1f, Biome::initGrasslandAniMap, 0.3f),
+    GRASSHILLS(Biome.GRASSHILLS_CODE, "Grassy Hills", Biome::initGrassResMap, 0.2f, Biome::initGrasslandAniMap, 0.3f),
+    JUNGLE(Biome.JUNGLE_CODE, "Jungle", Biome::initJungleResMap, 0.2f, Biome::initDefaultAnimalMap, 0.2f),
+    JUNGLEHILLS(Biome.JUNGLEHILLS_CODE, "Jungle Hills", Biome::initJungleResMap, 0.3f, Biome::initDefaultAnimalMap, 0.2f),
+    JUNGLEMOUNTAIN(Biome.JUNGLEMOUNTAIN_CODE, "Jungle Mountain", Biome::initJungleResMap, 0.4f, Biome::initDefaultAnimalMap, 0.2f),
+    MOUNTAIN(Biome.MOUNTAIN_CODE, "Mountain", Biome::initDefaultResMap, 0.4f, Biome::initMountainAniMap, 0.1f),
+    MOUNTAINTAIGA(Biome.MOUNTAINTAIGA_CODE, "Mountain Taiga", Biome::initTaigaResMap, 0.4f, Biome::initMountainAniMap, 0.1f),
+    OCEAN(Biome.OCEAN_CODE, "Ocean", Biome::initOceanResMap, 0f, Biome::initOceanAniMap, 0f),
+    SANDYDESERT(Biome.SANDYDESERT_CODE, "Sandy Desert", Biome::initAridResMap, 0.1f, Biome::initOceanAniMap, 0.1f),
+    SAVANNA(Biome.SAVANNA_CODE, "Savanna", Biome::initAridResMap, 0.1f, Biome::initDefaultAnimalMap, 0.3f),
+    SHRUBLAND(Biome.SHRUBLAND_CODE, "Shrubland", Biome::initAridResMap, 0.1f, Biome::initMountainAniMap, 0.2f),
+    SHRUBLANDHILLS(Biome.SHRUBLANDHILLS_CODE, "Shrubland Hills", Biome::initAridResMap, 0.2f, Biome::initMountainAniMap, 0.2f),
+    SWAMP(Biome.SWAMP_CODE, "Swamp", Biome::initSwampResMap, 0.05f, Biome::initDefaultAnimalMap, 0.2f),
+    TAIGA(Biome.TAIGA_CODE, "Taiga", Biome::initTaigaResMap, 0.1f, Biome::initDefaultAnimalMap, 0.2f),
+    TAIGAHILLS(Biome.TAIGAHILLS_CODE, "Taiga Hills", Biome::initTaigaResMap, 0.2f, Biome::initDefaultAnimalMap, 0.2f),
+    TUNDRA(Biome.TUNDRA_CODE, "Tundra", Biome::initTundraResMap, 0.1f, Biome::initOceanAniMap, 0.1f),
+    TUNDRAHILLS(Biome.TUNDRAHILLS_CODE, "Tundra Hills", Biome::initTundraResMap, 0.2f, Biome::initOceanAniMap, 0.1f);
 
     public static final String ALPTUNDRA_CODE = "AT";
     public static final String BADLANDS_CODE = "BD";
@@ -75,14 +75,16 @@ public enum Biome implements MapProducer, AniMapProducer{
     private final float caveChance;
     private final Map<Resource, Pair<Integer,Integer>> resources;
     private final Map<Animal, Pair<Integer,Integer>> animals;
+    private final float groupChance;
 
     Biome(final String code, final String name, final MapProducer<Resource, Pair<Integer,Integer>> resources,
-          final float caveChance, final AniMapProducer<Animal, Pair<Integer, Integer>> animals){
+          final float caveChance, final AniMapProducer<Animal, Pair<Integer, Integer>> animals, final float groupChance){
         this.code = code;
         this.nameText = name;
         this.caveChance = caveChance;
         this.resources = Collections.unmodifiableMap(resources.getMap());
         this.animals = Collections.unmodifiableMap(animals.getAniMap());
+        this.groupChance = groupChance;
     }
 
     public String getCode() { return this.code; }
@@ -90,6 +92,7 @@ public enum Biome implements MapProducer, AniMapProducer{
     public float getCaveChance() { return this.caveChance; }
     public Map<Resource, Pair<Integer, Integer>> getResourceStats() {return resources;}
     public Map<Animal, Pair<Integer, Integer>> getAnimals() {return animals;}
+    public float getGroupChance() { return groupChance; }
 
     /**
      * Here are the functions for making the resource stat maps

@@ -1,5 +1,6 @@
 package World;
 
+import World.Groups.Group;
 import World.Rivers.River;
 import World.Territory.Territory;
 import javafx.util.Pair;
@@ -17,4 +18,5 @@ public interface IWorld {
     public HashMap<String, Territory> getTerritoryMap();
     public HashMap<Integer, Region> getRegions();
     public HashMap<Integer, River> getRivers();
+    public HashMap<String, Group> getGroups();
 }

@@ -17,6 +17,7 @@ public class Main {
     public static void main(String[] args) {
         //Get resource modifiers
         final HashMap<String, Double> resSettings = SettingsManager.getResourceMods();
+        final HashMap<String, Float> groupMods = SettingsManager.getGroupMods();
         //NOTE: Looks like size 6 (65x65, 4225 territories) is the best we get rn.
         //Otherwise it overflows while performing the biome search.
         //May be able to fix this by limiting max biome size
@@ -24,7 +25,7 @@ public class Main {
         final HashMap<String, Integer> settings = SettingsManager.getSettings(420, 5, 2, true);
 
         //poles: 0 = north pole, 1 = south pole, 2 = both poles
-        final IWorld world = new World(settings, resSettings); //seed 7, size 2, poles 2
+        final IWorld world = new World(settings, resSettings, groupMods); //seed 7, size 2, poles 2
 
         //Create json file
         try {

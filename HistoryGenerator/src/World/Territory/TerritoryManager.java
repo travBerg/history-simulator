@@ -12,25 +12,6 @@ import javafx.util.Pair;
 import java.util.*;
 
 public class TerritoryManager {
-    /**River generation must happen before this
-     *
-     * Pseudocode for populating a territory with POI and Resources (maybe people eventually?)
-     * @param
-     * @return
-     * 1. Create water sources (Aquifers, springs, etc.)
-     * 2. Create material and water resources (based off biome and water POI)
-     * 3. Create food and animals (based off water sources and biomes)
-     * 4. Create shelter POI and populate with relevant animals and materials
-     * public static Pair<List<POI>, List<Resources>> landscape(final Biome biome, final int seed,
-     *                                                          final Optional<River> river, ArrayList<String> neighbors,
-     *                                                          final int height, final int rain, final int temp){}
-     */
-
-    public static Pair<Set<POI>, Set<Resource>> landscape(final Biome biome, final int seed,
-                                                            final ArrayList<String> neighbors, final Set<POI> poi) {
-        //final Resource water = addWater(biome, poi, seed);
-        return new Pair<>(new HashSet<>(), new HashSet<>());
-    }
 
     public static Pair<Integer, Integer> parseLocation(final String location) {
         String array[] = location.split("\\|");
@@ -38,6 +19,19 @@ public class TerritoryManager {
         final int col = Integer.parseInt(array[1]);
         Pair<Integer, Integer> nuLocation = new Pair<>(row, col);
         return nuLocation;
+    }
+
+    public static ArrayList<Integer> test(final HashMap<Integer,Integer> t) {
+        final ArrayList<Pair<Integer,Integer>> list = new ArrayList<>();
+        list.add(new Pair<>(1,5));
+        list.add(new Pair<>(2,5));
+        list.add(new Pair<>(3,5));
+        final ArrayList<Integer> result = new ArrayList<>();
+        list.stream().forEach(p->{
+            t.replace(p.getKey(), p.getValue());
+            result.add(p.getValue());
+        });
+        return result;
     }
 
     public static ArrayList<String> addNeighbors(final String location, final int size) {
@@ -217,4 +211,15 @@ public class TerritoryManager {
 
         return t;
     }
+
+    /**
+     * Returns true if the territory has both food and water
+     * @param t the Territory we're checking
+     * @return
+     */
+    public static boolean habitable(final Territory t) {
+        return t.getResources().keySet().stream().anyMatch(Resource::isEdible) &&
+                t.getResources().keySet().stream().anyMatch(Resource::isPotable);
+    }
+
 }
