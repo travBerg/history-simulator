@@ -21,19 +21,6 @@ public class TerritoryManager {
         return nuLocation;
     }
 
-    public static ArrayList<Integer> test(final HashMap<Integer,Integer> t) {
-        final ArrayList<Pair<Integer,Integer>> list = new ArrayList<>();
-        list.add(new Pair<>(1,5));
-        list.add(new Pair<>(2,5));
-        list.add(new Pair<>(3,5));
-        final ArrayList<Integer> result = new ArrayList<>();
-        list.stream().forEach(p->{
-            t.replace(p.getKey(), p.getValue());
-            result.add(p.getValue());
-        });
-        return result;
-    }
-
     public static ArrayList<String> addNeighbors(final String location, final int size) {
         Pair<Integer, Integer> coords = parseLocation(location);
         int row = coords.getKey();
