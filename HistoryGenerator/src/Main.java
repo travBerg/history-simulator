@@ -1,5 +1,6 @@
 import Controller.Controller;
 import Controller.IController;
+import Logger.Logger;
 import View.DebugView.DebugView;
 import View.IView;
 import World.World;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 public class Main {
 
     public static void main(String[] args) {
+        Logger.clear(true, true);
         //Get resource modifiers
         final HashMap<String, Double> resSettings = SettingsManager.getResourceMods();
         final HashMap<String, Float> groupMods = SettingsManager.getGroupMods();

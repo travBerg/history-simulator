@@ -1,5 +1,6 @@
 package World.Rivers;
 
+import Logger.Logger;
 import World.PointOfInterest.RiverSegment;
 import World.Territory.Territory;
 import World.Territory.TerritoryManager;
@@ -15,6 +16,7 @@ import java.util.stream.Stream;
 public class RiverManager {
     //Multiplier to percentage chance for river based on rain (r) value
     private final static double R_RIVER_PERC_MOD = 10;
+    private final static Logger LOG = Logger.getLogger(RiverManager.class);
 
     /**
      *
@@ -90,9 +92,9 @@ public class RiverManager {
             final boolean res = (rand < r * R_RIVER_PERC_MOD);
             return res;
         }).collect(Collectors.toList());
-        System.out.println("Riverlocs: " + riverLocs);
+        LOG.debug("Riverlocs: " + riverLocs);
         //TODO: Maybe shuffle the riverLocs?
-        System.out.println("Rivers: ");
+        //LOG.debug("Rivers: ");
 
         //Start creating rivers/merging
         riverLocs.stream().forEach(loc -> {
@@ -100,7 +102,7 @@ public class RiverManager {
             //Check if river needs to merge and merge it if so
             final List<String> segments = river.getSegments();
             final int idx = riverLocs.indexOf(loc);
-            System.out.println(idx + ": " + river.getSegments());
+            final String rivLog = idx + ": " + river.getSegments();
             //if need to merge
             final String mergeLog = "MERGE LOG:\n"+ segments.stream().filter(locBased::containsKey).findFirst().map(s->{
 
@@ -144,7 +146,7 @@ public class RiverManager {
 
                 //Check if long river came from old river
                 if(locBased.containsKey(longer.getSegments().get(0))) {
-                    System.out.println("OLD RIVER MERGE SHIT");
+                    LOG.debug("OLD RIVER MERGE SHIT");
                     //Post-merge long river
                     final River lResult = new River(longer.getName(),
                             Stream.of(longer.getSegments().subList(0, longer.getSegments().indexOf(s)), tail)
@@ -167,7 +169,7 @@ public class RiverManager {
                         shorter.getSegments().subList(0, shorter.getSegments().indexOf(s)), Optional.ofNullable(idx), Optional.empty()));
                 sTail.stream().forEach(locBased::remove);
                 //Post-merge long river
-                System.out.println("NEW RIVER MERGE SHIT");
+                LOG.debug("NEW RIVER MERGE SHIT");
                 final River lResult = new River(longer.getName(),
                         Stream.of(longer.getSegments().subList(0, longer.getSegments().indexOf(s)), tail)
                                 .flatMap(Collection::stream).collect(Collectors.toList()), Optional.empty(),
@@ -181,13 +183,16 @@ public class RiverManager {
                 segments.stream().forEach(s->locBased.put(s,idx));
                 return "No merge\n";
             });
-            //System.out.println(mergeLog);
+            LOG.debug(rivLog + "\n" + mergeLog);
         });
         //TODO: Maybe convert locBased to be <String, RiverSegment>?
-        System.out.println("Final rivers\n-----------------------------------------------------------------------------------------");
-        System.out.println("Rivers set: " + rivers.keySet());
-        rivers.keySet().stream().forEach(x->System.out.println(x + ": " + rivers.get(x).getSegments() + " merge: " +
-                rivers.get(x).getMerge().orElse(-1) + " Tributaries: " + rivers.get(x).getTributaries()));
+        //LOG.stats("Final rivers\n-----------------------------------------------------------------------------------------");
+        LOG.stats("Number of rivers: " + rivers.keySet().size());
+        final String riverDebug = rivers.keySet().stream().map(x-> x + ": " + rivers.get(x).getSegments() + " merge: " +
+                rivers.get(x).getMerge().orElse(-1) + " Tributaries: " + rivers.get(x).getTributaries())
+                .collect(Collectors.joining("\n"));
+        LOG.debug("Final rivers\n-----------------------------------------------------------------------------------------\n"
+                + riverDebug);
         return new Pair<>(rivers, locBased);
     }
 

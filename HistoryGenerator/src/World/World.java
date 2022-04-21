@@ -1,5 +1,6 @@
 package World;
 
+import Logger.Logger;
 import TerrainGenerator.IGenerator;
 import TerrainGenerator.TerrainGen;
 import World.Groups.Group;
@@ -19,6 +20,8 @@ public class World implements IWorld {
     public static final HashMap<String, Double> RESOURCE_MODS = new HashMap<>();
     public static final HashMap<String, Float> GROUP_MODS = new HashMap<>();
 
+    private static final Logger LOG = Logger.getLogger(World.class);
+
     private final int size;
     private final int seed;
     //location string to Territory
@@ -29,15 +32,17 @@ public class World implements IWorld {
 
     public World(final HashMap<String, Integer> settings, final HashMap<String, Double> resSettings,
                  final HashMap<String, Float> groupMods) {
-        this.RESOURCE_MODS.putAll(resSettings);
-        this.GROUP_MODS.putAll(groupMods);
-        this.SETTINGS.putAll(settings);
+        RESOURCE_MODS.putAll(resSettings);
+        GROUP_MODS.putAll(groupMods);
+        SETTINGS.putAll(settings);
         //TODO: I think this is the only place we should save seed and once time begins to move we just add year/month
         // to it, make a random, and pass that random around
         this.seed = SETTINGS.get("seed");
         final Random random = new Random(seed);
         this.size = (int) Math.pow(2, SETTINGS.get("sizeCon")) + 1;
         final IGenerator generator = new TerrainGen(this.size, seed, SETTINGS.get("poles"));
+        LOG.stats("Size: " + this.size + "x" + this.size);
+        LOG.stats("Territories: " + this.size * this.size);
         /**
          * River plan
          * Create rivers as map (riverid to River) and map of locations to list of rivers
@@ -53,6 +58,10 @@ public class World implements IWorld {
         this.rivers = riverMaps.getKey();
         //Create the regions based off the territory map
         this.regions = WorldManager.createRegions(this.territoryMap, SETTINGS.get("debug") != 0, size, random);
+        LOG.stats("Regions: " + regions.size());
+        //Debug count of territories by region
+        final int regionTerrs = regions.values().stream().map(r->r.getLocations().size()).reduce(0, Integer::sum);
+        LOG.stats("Region territories: " + regionTerrs);
         /**
          * Groups
          * Input regions and territoryMap
@@ -61,23 +70,17 @@ public class World implements IWorld {
          */
         final Pair<HashMap<String, Group>, Set<Territory>> popPair = WorldManager.populate(territoryMap, regions, random);
         this.groups = popPair.getKey();
+        LOG.stats("Groups: " + groups.size());
         //Overwrite edited Terrs
         popPair.getValue().forEach(t->{
             Territory ter = territoryMap.replace(t.getLocation(),t);
             if(ter == null && SETTINGS.get("debug") != 0) {
-                System.out.println("WARNING: Territory " + t.getLocation() + " failed to overwrite!");
+                LOG.debug("WARNING: Territory " + t.getLocation() + " failed to overwrite!");
             }
         });
+        LOG.stats("Terrs Overwritten: " + popPair.getValue().size());
 
         if (SETTINGS.get("debug") != 0) {
-            System.out.println("Size: " + this.size + "x" + this.size);
-            System.out.println("Territories: " + this.size * this.size);
-            System.out.println("Regions: " + regions.size());
-            System.out.println("Groups: " + groups.size());
-            System.out.println("Terrs Overwritten: " + popPair.getValue().size());
-            //Debug count of territories by region
-            final int regionTerrs = regions.values().stream().map(r->r.getLocations().size()).reduce(0, Integer::sum);
-            System.out.println("Region territories: " + regionTerrs);
             //System.out.println(this.territoryMap.get("1|0"));
             //TODO: Reimplement
             //System.out.println("Biome to Region map: \n" + WorldManager.biomeDebugRender(generator.returnProduct(), this.regions, this.size));

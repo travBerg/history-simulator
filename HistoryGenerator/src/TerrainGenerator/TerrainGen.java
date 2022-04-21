@@ -1,5 +1,6 @@
 package TerrainGenerator;
 
+import Logger.Logger;
 import World.Territory.TerritoryManager;
 import javafx.util.Pair;
 
@@ -20,6 +21,8 @@ public class TerrainGen implements IGenerator{
     HashMap<String, String> csvMap;
     int seed;
     int size;
+
+    private static final Logger LOG = Logger.getLogger(TerrainGen.class);
 
     /**
      * This is the constructor with most settings for customizing terrain
@@ -134,7 +137,7 @@ public class TerrainGen implements IGenerator{
         //iterate through files, parsing them into the map. (height, rain, temp)
         for (String f:files) {
             String line = "";
-            System.out.println(workingDirectory + File.separator + f);
+            LOG.debug(workingDirectory + File.separator + f);
             try (BufferedReader br = new BufferedReader(new FileReader(workingDirectory + File.separator + f))) {
                 int rainNum = 0;
                 while ((line = br.readLine()) != null) {
@@ -146,7 +149,7 @@ public class TerrainGen implements IGenerator{
                     rainNum++;
                 }
             } catch (IOException e) {
-                System.out.println("Error");
+                LOG.debug("Error");
             }
             heightNum++;
             //System.out.println(heightNum);
@@ -167,7 +170,7 @@ public class TerrainGen implements IGenerator{
                 String key = Integer.toString(x) + "|" + Integer.toString(y);
                 out += terrain.get(key) + " ";
                 if(terrain.get(key) == null) {
-                    System.out.println("ERROR: " + key);
+                    LOG.debug("ERROR: " + key);
                 }
             }
             out += "\n";

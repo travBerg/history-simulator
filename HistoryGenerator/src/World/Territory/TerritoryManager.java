@@ -1,5 +1,6 @@
 package World.Territory;
 
+import Logger.Logger;
 import World.PointOfInterest.POI;
 import World.PointOfInterest.POIManager;
 import World.PointOfInterest.RiverSegment;
@@ -12,6 +13,8 @@ import javafx.util.Pair;
 import java.util.*;
 
 public class TerritoryManager {
+
+    private static final Logger LOG = Logger.getLogger(TerritoryManager.class);
 
     public static Pair<Integer, Integer> parseLocation(final String location) {
         String array[] = location.split("\\|");
@@ -192,7 +195,7 @@ public class TerritoryManager {
                 t = new Territory(location, rand, hrt, size, Biome.ALPINETUNDRA, rivers, locBased);
                 break;
             default:
-                System.out.println("WARNING: Territory tag defaulted");
+                LOG.debug("WARNING: Territory tag defaulted");
                 t = new Territory(location, rand, hrt, size, Biome.OCEAN, rivers, locBased);
         }
 
