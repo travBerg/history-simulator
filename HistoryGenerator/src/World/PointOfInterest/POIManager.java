@@ -1,5 +1,6 @@
 package World.PointOfInterest;
 
+import Logger.Logger;
 import World.Rivers.River;
 import World.Territory.Biome.Biome;
 import World.World;
@@ -11,6 +12,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class POIManager {
+
+    private static final Logger LOG = Logger.getLogger(POIManager.class);
 
     public static Set<POI> createWatersourcePOI(final Set<POI> pOI, final Biome biome, final Random rand, final String loc) {
         final HashSet<POI> watersources = new HashSet<>();
@@ -105,7 +108,7 @@ public class POIManager {
             out.put("name", wild.getName());
         }
         else {
-            System.out.println("WUH OH! LOOKS LIKE TROUBLE, BIG HOSS (toJSONPOI)");
+            LOG.debug("WUH OH! LOOKS LIKE TROUBLE, BIG HOSS (toJSONPOI)");
         }
         return out;
     }

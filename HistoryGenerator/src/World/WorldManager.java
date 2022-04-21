@@ -1,5 +1,6 @@
 package World;
 
+import Logger.Logger;
 import World.Groups.Group;
 import World.Groups.GroupManager;
 import World.Rivers.RiverManager;
@@ -15,6 +16,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class WorldManager {
+
+    private final static Logger LOG = Logger.getLogger(WorldManager.class);
 
     public static ArrayList<String> biomeSearch2(final HashMap<String, Territory> territoryMap, final String code,
                                                  final String root) {
@@ -199,7 +202,7 @@ public class WorldManager {
                                    final int size) {
         String out = "[WORLD DEBUG]------------------------------------------\n" +
                 "Region/Biome Map: (Note that index is off by one from number that will appear in explore view)\n";
-        System.out.println(mapTer);
+        LOG.stats(mapTer.toString());
         for (int x = size - 1; x >= 0; x--) {
             //This is for hex view
             if (x % 2 != 0) {
@@ -207,7 +210,7 @@ public class WorldManager {
             }
             for (int y = 0; y < size; y++) {
                 String key = Integer.toString(x) + "|" + Integer.toString(y);
-                System.out.println(key);
+                LOG.stats(key);
                 Region b = regions.get(mapTer.get(key));
                 String num;
                 if (b.getIndex() < 10) {
@@ -220,7 +223,7 @@ public class WorldManager {
                 }
                 out += "[" + num + "," + b.getType() + "]" + " ";
                 if(mapTer.get(key) == null) {
-                    System.out.println("ERROR: " + key);
+                    LOG.stats("ERROR: " + key);
                 }
             }
             out += "\n";
