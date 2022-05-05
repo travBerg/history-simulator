@@ -1,6 +1,7 @@
 package World;
 
 import Logger.Logger;
+import WordGenerator.LanguageModel;
 import World.Groups.Group;
 import World.Groups.GroupManager;
 import World.Rivers.RiverManager;
@@ -56,10 +57,13 @@ public class WorldManager {
      * Group master list becomes group list, territory master list is used to overwrite entries in territoryMap
      */
     public static Pair<HashMap<String, Group>, Set<Territory>> populate(final HashMap<String, Territory> terMap,
-                                                   final HashMap<Integer, Region> regions, final Random rand) {
-        //TODO: Random is broken here (or maybe in Resources?)
+                                                   final HashMap<Integer, Region> regions,
+                                                                        final Set<LanguageModel> langModels,
+                                                                        final Random rand) {
         //Accumulator set for the territories that are modified with a new Group
         final Set<Territory> nuTerr = new HashSet<>();
+        //convert to array so that it can be randomly selected from
+        final LanguageModel[] langArray = langModels.toArray(new LanguageModel[langModels.size()]);
         //This stream creates all the new groups (as map of id to Group) and adds modified terrs to above set as it goes along
         final Map<String, Group> groupResult = regions.values().stream().filter(r->r.getBiome() != Biome.OCEAN).map(r->{
             final Biome biome = r.getBiome();
@@ -70,7 +74,8 @@ public class WorldManager {
             //remove those with insufficient food and water roll for the rest
             final List<Group> groups = terrs.stream().filter(TerritoryManager::habitable).map(t->{
                 if(rand.nextFloat() * 100 < groupPerc) {
-                    final Optional<Group> gO = Optional.of(new Group(t, rand));
+                    final LanguageModel model = langArray[rand.nextInt(langModels.size())];
+                    final Optional<Group> gO = Optional.of(new Group(t, model, rand));
                     nuTerr.add(new Territory(t, gO.get(), rand));
                     return gO;
                 } else {

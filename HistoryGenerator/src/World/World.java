@@ -3,6 +3,8 @@ package World;
 import Logger.Logger;
 import TerrainGenerator.IGenerator;
 import TerrainGenerator.TerrainGen;
+import WordGenerator.LanguageModel;
+import WordGenerator.LanguageModelType;
 import World.Groups.Group;
 import World.Rivers.River;
 import World.Rivers.RiverManager;
@@ -29,12 +31,14 @@ public class World implements IWorld {
     private final HashMap<Integer, Region> regions;
     private final HashMap<Integer, River> rivers;
     private final HashMap<String, Group> groups;
+    private final Set<LanguageModel> languageModels;
 
     public World(final HashMap<String, Integer> settings, final HashMap<String, Double> resSettings,
-                 final HashMap<String, Float> groupMods) {
+                 final HashMap<String, Float> groupMods, final Set<LanguageModel> languageModels) {
         RESOURCE_MODS.putAll(resSettings);
         GROUP_MODS.putAll(groupMods);
         SETTINGS.putAll(settings);
+        this.languageModels = languageModels;
         //TODO: I think this is the only place we should save seed and once time begins to move we just add year/month
         // to it, make a random, and pass that random around
         this.seed = SETTINGS.get("seed");
@@ -68,7 +72,8 @@ public class World implements IWorld {
          * Output Pair<HashMap<String, Group>, Set<Territory>> - key is map of id to Group,
          * value is set of changed territories
          */
-        final Pair<HashMap<String, Group>, Set<Territory>> popPair = WorldManager.populate(territoryMap, regions, random);
+        final Pair<HashMap<String, Group>, Set<Territory>> popPair = WorldManager.populate(territoryMap, regions,
+                languageModels, random);
         this.groups = popPair.getKey();
         LOG.stats("Groups: " + groups.size());
         //Overwrite edited Terrs

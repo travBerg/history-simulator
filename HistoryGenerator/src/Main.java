@@ -3,6 +3,9 @@ import Controller.IController;
 import Logger.Logger;
 import View.DebugView.DebugView;
 import View.IView;
+import WordGenerator.LanguageModel;
+import WordGenerator.LanguageModelType;
+import WordGenerator.WordGenManager;
 import World.World;
 import World.IWorld;
 import World.WorldManager;
@@ -12,6 +15,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Set;
 
 public class Main {
 
@@ -20,13 +24,13 @@ public class Main {
         //Get resource modifiers
         final HashMap<String, Double> resSettings = SettingsManager.getResourceMods();
         final HashMap<String, Float> groupMods = SettingsManager.getGroupMods();
-
+        final Set<LanguageModel> languageModels = WordGenManager.createLangModelSet();
         //We can get to size 10 (over 1 mil territories, at least ~30,000 groups) but long render time and the json write fails
         // (more tiles than the largest world in Rimworld. Not bad.)
         final HashMap<String, Integer> settings = SettingsManager.getSettings(420, 5, 2, true);
 
         //poles: 0 = north pole, 1 = south pole, 2 = both poles
-        final IWorld world = new World(settings, resSettings, groupMods); //seed 7, size 2, poles 2
+        final IWorld world = new World(settings, resSettings, groupMods, languageModels); //seed 7, size 2, poles 2
 
         //Create json file
         try {
