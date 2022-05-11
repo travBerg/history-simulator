@@ -52,7 +52,7 @@ public class WordGenManager {
      */
     private static String selectNoun(final LanguageModel model, final int n, final int nCount, final Random rand) {
         //TODO: Placeholder, this should come from language model eventually
-        final String[] vowels = new String[]{"a", "e", "i", "o", "u", "y"};
+        final String[] vowels = model.getVowels();
         //Using an accumulator and while loop here; sorry functional programming gods
         final String wordRaw = genNounAttempt("$", model, rand);
         //clean off start and end characters
@@ -139,12 +139,18 @@ public class WordGenManager {
         });
     }
 
+    /**
+     * Initiate language model from a LangModelType, including parsing grams from file
+     * @param type
+     * @return
+     */
     private static LanguageModel initLangModel(final LanguageModelType type) {
         LOG.debug("Initiating language model: " + type);
         final Gram uniNounMap = createUniMap(FILE_EXT + type.getUniNounPath());
         final Map<String, Gram> biNounMap = createBiTrigramMap(FILE_EXT + type.getBiNounPath());
         final Map<String, Gram> triNounMap = createBiTrigramMap(FILE_EXT + type.getTriNounPath());
-        return new LanguageModel(type, uniNounMap, biNounMap, triNounMap);
+        final String[] vowels = type.getVowels();
+        return new LanguageModel(type, uniNounMap, biNounMap, triNounMap, vowels);
     }
 
     private static Map<String, Gram> createBiTrigramMap(final String filepath) {
@@ -183,7 +189,6 @@ public class WordGenManager {
         return resultMap;
     }
 
-    //TODO: Just make this return a single gram what is wrong with me lmao
     private static Gram createUniMap(final String filepath) {
         final JSONParser parser = new JSONParser();
         final List<String> debugOut = new ArrayList<>();

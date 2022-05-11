@@ -38,11 +38,10 @@ public class Group {
         //min population is 5 unless resources restrict it further
         this.population = (maxPop > 5) ? rand.nextInt(maxPop - 4) + 5 : maxPop;
         //create language
-        //TODO: Add rand to this so that we can make meta-rules for word ordering etc.
-        final Pair<String[], Map<String,String>> nameInfo = LanguageManager.initTrueGroupName(model, t, rand);
-        this.name = nameInfo.getKey()[0];
-        this.nameTranslation = nameInfo.getKey()[1];
-        this.language = LanguageManager.createLanguage(model, nameInfo.getKey()[2], nameInfo.getValue());
+        final Pair<String[], Language> langResult = LanguageManager.initGroupLanguage(model, t, rand);
+        this.name = langResult.getKey()[0];
+        this.nameTranslation = langResult.getKey()[1];
+        this.language = langResult.getValue();
         this.id = t.getLocation() + "." + population + "." + 0 + "." + name;
 
     }
