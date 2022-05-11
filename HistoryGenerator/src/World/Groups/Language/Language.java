@@ -2,7 +2,6 @@ package World.Groups.Language;
 
 import WordGenerator.LanguageModel;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class Language {
