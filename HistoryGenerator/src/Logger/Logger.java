@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 
 public class Logger {
     private final String name;
-    private static final File DEBUG = new File("debugLog.txt");
+    private static final File DEBUG = new File("debugLog");
     private static final File STATS = new File("statsLog.txt");
 
     private Logger(final String name) {
@@ -27,7 +27,7 @@ public class Logger {
 
     public static void clear(final boolean rmDebug, final boolean rmStats) {
         if(rmDebug && DEBUG.exists()){
-            if (DEBUG.delete()) {
+            if (deleteDir(DEBUG)) {
                 System.out.println("Deleted the file: " + DEBUG.getName());
             } else {
                 System.out.println("Failed to delete the file: " + DEBUG.getName());
@@ -56,10 +56,11 @@ public class Logger {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         try{
             if(!DEBUG.exists()){
-                System.out.println("Made a new file: DEBUG");
-                DEBUG.createNewFile();
+                System.out.println("Made a new dir: DEBUG");
+                DEBUG.mkdirs();
             }
-            PrintWriter out = new PrintWriter(new FileWriter(DEBUG, true));
+            final File debugFile = new File(DEBUG + "/" + name + ".txt");
+            PrintWriter out = new PrintWriter(new FileWriter(debugFile, true));
             out.append("\n" + this.name + ": Line " + cLN + ":\n");
             out.append("******* " + timestamp.toString() +"******* " + "\n");
             out.append(msg + "\n");
@@ -86,5 +87,16 @@ public class Logger {
         }catch(IOException e){
             System.out.println("COULD NOT WRITE TO STATS FILE");
         }
+    }
+
+    private static boolean deleteDir(final File dirToDelete) {
+        File[] allContents = dirToDelete.listFiles();
+        System.out.println("Dir to delete: " + dirToDelete);
+        if(allContents != null) {
+            for(File file : allContents) {
+                deleteDir(file);
+            }
+        }
+        return dirToDelete.delete();
     }
 }
