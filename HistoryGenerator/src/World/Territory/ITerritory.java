@@ -14,7 +14,7 @@ public interface ITerritory {
     public int getRow();
     public int getCol();
     //Determine if territory has been discovered
-    public boolean isDiscovered();
+    public String isDiscovered();
     //Get name of biome type
     public Biome getBiome();
     //Get the list of neighbors

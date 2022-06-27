@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 public class Lake extends POI {
     private final Optional<RiverSegment> river;
+    private final String nameMeaning;
     private final static Pair<Integer, Integer> WATER = new Pair<>(Integer.MAX_VALUE, 0);
     //Map of resource mean and std dev
     private final static Map<Resource, Pair<Integer, Integer>> RES = Stream.of(
@@ -26,12 +27,20 @@ public class Lake extends POI {
 
     private Lake(final String name, final Optional<RiverSegment> river, final Biome biome,
                  final Map<Resource, Pair<Integer, Integer>> res, final Map<Animal, Pair<Integer, Integer>> ani) {
-        super(name, res, ani);
+        super(name, res, ani, Optional.empty());
         this.river = river;
+        this.nameMeaning = "";
+    }
+
+    public Lake(final Lake oldLake, final String name, final String nameMeaning, final Optional<String> discoverer) {
+        super(name, oldLake.resources, oldLake.animals, discoverer);
+        this.river = oldLake.river;
+        this.nameMeaning = nameMeaning;
     }
 
     public final Optional<RiverSegment> getRiver() {
         return river;
     }
+    public final String getNameMeaning() { return nameMeaning; }
 
 }

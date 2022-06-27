@@ -18,7 +18,7 @@ import org.json.simple.JSONObject;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class Territory implements ITerritory {
+public class Territory {//implements ITerritory {
     //row|column
     private final String location;
     private final int row;
@@ -30,7 +30,8 @@ public class Territory implements ITerritory {
     private final int size;
     private final Biome biome;
     private final String name;
-    private final boolean discovered;
+    private final String nameMeaning;
+    private final Optional<String> discovered;
     private final Set<POI> pOI;
     //Resource to amount
     private final HashMap<Resource, Integer> resources;
@@ -49,9 +50,10 @@ public class Territory implements ITerritory {
         this.temp = Integer.parseInt(hrt.substring(2,3));
         this.neighbors = TerritoryManager.addNeighbors(location, size);
         this.size = size;
-        this.discovered = false;
+        this.discovered = Optional.empty();
         this.biome = biome;
         this.name = "Unnamed " + biome.getName();
+        this.nameMeaning = this.name;
         //Populate with POI
         this.pOI = new HashSet<>();
         //First add the wilderness POI to the territory
@@ -61,7 +63,7 @@ public class Territory implements ITerritory {
             //locBased is for rivers, check if this area has a river
             if(locBased.containsKey(location)) {
                 final int i = locBased.get(location);
-                POIManager.createRiverPOI(rivers.get(i), location, rand, locBased).map(r -> pOI.add(r));
+                POIManager.createRiverPOI(rivers.get(i), location, rand, locBased).map(pOI::add);
             }
             //Add watersource POI
             pOI.addAll(POIManager.createWatersourcePOI(pOI, biome, rand, location));
@@ -92,35 +94,41 @@ public class Territory implements ITerritory {
         this.size = old.size;
         this.biome = old.getBiome();
         //Have the group name it
-        this.name = old.getName();
-        this.discovered = old.isDiscovered();
-        this.pOI = old.getPOI();
+        final Pair<String, String> names = TerritoryManager.createTerName(old, group, rand);
+        this.name = names.getKey();
+        this.nameMeaning = names.getValue();
         this.resources = old.getResources();
         this.animals = old.animals;
         this.groups = new HashSet<>();
         this.groups.add(group);
+        this.discovered = Optional.of(group.getId());
+        //Name/discover poi
+        this.pOI = POIManager.discoverAllPOI(old.getPOI(), group, rand, this);
     }
 
-    @Override
-    public boolean isDiscovered() { return discovered; }
+    //@Override
+    public final String isDiscovered() { return discovered.orElse(""); }
 
-    @Override
+    //@Override
     public final int getRow() { return row; }
 
-    @Override
+    //@Override
     public final int getCol() { return col; }
 
-    @Override
+    //@Override
     public final String getName() { return name; }
 
-    @Override
+    public String getNameMeaning() { return nameMeaning; }
+
+    //@Override
     public final Biome getBiome() { return biome; }
 
-    @Override
+    //@Override
     public ArrayList<String> getNeighbors() { return neighbors; }
 
-    @Override @SuppressWarnings("unchecked")
+    //@Override @SuppressWarnings("unchecked")
     public JSONObject asJSON() {
+        //TODO: Move to manager class
         JSONObject territoryJSON = new JSONObject();
         //JSONArray neighborsJSON = new JSONArray();
 
@@ -136,6 +144,7 @@ public class Territory implements ITerritory {
             neighborsJSON.add(locationJSON);
         }*/
         territoryJSON.put("name", this.getName());
+        territoryJSON.put("nameMeaning", this.getNameMeaning());
         territoryJSON.put("location", this.location);
         territoryJSON.put("row", this.row);
         territoryJSON.put("col", this.col);
@@ -143,7 +152,7 @@ public class Territory implements ITerritory {
         territoryJSON.put("rain" , this.rain);
         territoryJSON.put("temp" , this.temp);
         territoryJSON.put("size" , this.size);
-        territoryJSON.put("discovered" , this.discovered);
+        territoryJSON.put("discovered" , this.discovered.orElse(""));
         //territoryJSON.put("neighbors" , neighborsJSON);
         //POI
         final JSONArray pOIArray = new JSONArray();
@@ -171,7 +180,7 @@ public class Territory implements ITerritory {
         return territoryJSON;
     }
 
-    @Override
+    //@Override
     public Set<POI> getPOI() {
         return pOI;
     }
@@ -180,7 +189,7 @@ public class Territory implements ITerritory {
         return resources;
     }
 
-    @Override
+    //@Override
     public String getLocation() {
         return location;
     }

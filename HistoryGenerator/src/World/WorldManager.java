@@ -4,6 +4,7 @@ import Logger.Logger;
 import WordGenerator.LanguageModel;
 import World.Groups.Group;
 import World.Groups.GroupManager;
+import World.Rivers.River;
 import World.Rivers.RiverManager;
 import World.Territory.Biome.Biome;
 import World.Territory.Territory;
@@ -46,7 +47,7 @@ public class WorldManager {
     /**
      * Groups
      * Input regions and territoryMap
-     * Output Pair<List<Groups>, territoryMap>
+     * Output Pair<HashMap<id, Group>, territryMap>
      * Okay we're gonna go region by region (filtering out Oceans) and then for each ter in group (filtering out
      * ters with no food or water) roll against that
      * Biome's chance of having a group to see if it does.
@@ -67,18 +68,21 @@ public class WorldManager {
         //This stream creates all the new groups (as map of id to Group) and adds modified terrs to above set as it goes along
         final Map<String, Group> groupResult = regions.values().stream().filter(r->r.getBiome() != Biome.OCEAN).map(r->{
             final Biome biome = r.getBiome();
-            //Calculate percent chance that a
+            //Calculate percent chance that there is a group in any given habitable ter
             final float groupPerc = 100 * biome.getGroupChance() * World.GROUP_MODS.get("pop_mod");
             //get list of terrs
             final List<Territory> terrs = r.getLocations().stream().map(terMap::get).collect(Collectors.toList());
             //remove those with insufficient food and water roll for the rest
             final List<Group> groups = terrs.stream().filter(TerritoryManager::habitable).map(t->{
                 if(rand.nextFloat() * 100 < groupPerc) {
+                    //Got a group
                     final LanguageModel model = langArray[rand.nextInt(langModels.size())];
                     final Optional<Group> gO = Optional.of(new Group(t, model, rand));
+                    //Create new territory from the old one in order to name it
                     nuTerr.add(new Territory(t, gO.get(), rand));
                     return gO;
                 } else {
+                    //No group
                     final Optional<Group> gO = Optional.empty();
                     return gO;
                 }
@@ -234,5 +238,13 @@ public class WorldManager {
             out += "\n";
         }
         return out;
+    }
+
+    public static Pair<Map<Integer, River>, Map<Integer, Region>> nameRiversAndRegions(Set<Territory> terrs,
+                                                                                       HashMap<Integer, River> rivers,
+                                                                                       HashMap<Integer, Region> regions) {
+        final HashMap<Integer, River> riverOver = new HashMap<Integer, River>();
+        final HashMap<Integer, Region> regionOver = new HashMap<Integer, Region>();
+        return new Pair<>(riverOver, regionOver);
     }
 }

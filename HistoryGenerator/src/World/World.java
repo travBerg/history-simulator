@@ -13,6 +13,7 @@ import World.Territory.Biome.Biome;
 import javafx.util.Pair;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -35,6 +36,7 @@ public class World implements IWorld {
 
     public World(final HashMap<String, Integer> settings, final HashMap<String, Double> resSettings,
                  final HashMap<String, Float> groupMods, final Set<LanguageModel> languageModels) {
+        //-------------INIT-------------------
         RESOURCE_MODS.putAll(resSettings);
         GROUP_MODS.putAll(groupMods);
         SETTINGS.putAll(settings);
@@ -47,25 +49,27 @@ public class World implements IWorld {
         final IGenerator generator = new TerrainGen(this.size, seed, SETTINGS.get("poles"));
         LOG.stats("Size: " + this.size + "x" + this.size);
         LOG.stats("Territories: " + this.size * this.size);
-        /**
-         * River plan
-         * Create rivers as map (riverid to River) and map of locations to list of rivers
-         * Save river map as a World parameter
-         * Send location to list of rivers map to createTerritoryMap so that individual terr can access the info when constructing
-         */
+
+        //-------------RIVERS-------------------
         final Pair<HashMap<Integer, River>, HashMap<String, Integer>> riverMaps = RiverManager.getRiverMaps(random,
                generator.returnProduct(), size);
+        //Get the map of river ids to River object
+        this.rivers = riverMaps.getKey();
+
+        //-----------TERRITORIES----------------
         //Create the territory map
         this.territoryMap = TerritoryManager.createTerritoryMap(random, generator.returnProduct(), riverMaps.getKey(),
                 riverMaps.getValue(), this.size);
-        //Get the map of river ids to River object
-        this.rivers = riverMaps.getKey();
+
+        //-------------REGIONS------------------
         //Create the regions based off the territory map
         this.regions = WorldManager.createRegions(this.territoryMap, SETTINGS.get("debug") != 0, size, random);
         LOG.stats("Regions: " + regions.size());
         //Debug count of territories by region
         final int regionTerrs = regions.values().stream().map(r->r.getLocations().size()).reduce(0, Integer::sum);
         LOG.stats("Region territories: " + regionTerrs);
+
+        //-----------GROUPS/DISCOVERY----------
         /**
          * Groups
          * Input regions and territoryMap
@@ -76,6 +80,8 @@ public class World implements IWorld {
                 languageModels, random);
         this.groups = popPair.getKey();
         LOG.stats("Groups: " + groups.size());
+        //TODO: Make this a function that not only overwrites edited Terrs, but also names Rivers based off discovered
+        // riverSegs and names completed Regions based off their Terr
         //Overwrite edited Terrs
         popPair.getValue().forEach(t->{
             Territory ter = territoryMap.replace(t.getLocation(),t);
@@ -83,8 +89,32 @@ public class World implements IWorld {
                 LOG.debug("WARNING: Territory " + t.getLocation() + " failed to overwrite!");
             }
         });
+        //Overwrite named Rivers and Regions
+        final Pair<Map<Integer, River>, Map<Integer,Region>> riverRegionRenames = WorldManager.nameRiversAndRegions(popPair.getValue(),
+                this.rivers, this.regions);
+        //Overwrite rivers
+        riverRegionRenames.getKey().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEach(r->{
+            final River riv = rivers.replace(r.getKey(), r.getValue());
+            if(riv == null && SETTINGS.get("debug") != 0) {
+                LOG.debug("WARNING: River " + r.getKey() + " failed to overwrite!");
+            }
+        });
+        //Overwrite regions
+        riverRegionRenames.getValue().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEach(r->{
+            final Region reg = regions.replace(r.getKey(), r.getValue());
+            if(reg == null && SETTINGS.get("debug") != 0) {
+                LOG.debug("WARNING: Region " + r.getKey() + " failed to overwrite!");
+            }
+        });
         LOG.stats("Terrs Overwritten: " + popPair.getValue().size());
+        LOG.stats("Rivers Overwritten: " + riverRegionRenames.getKey().size());
+        LOG.stats("Regions Overwritten: " + riverRegionRenames.getValue().size());
+        final String discoveredTerrDetails = popPair.getValue().stream().map(t->"\n" + t.getName() +
+                "\nMeaning: " + t.getNameMeaning() + "\nBiome: " + t.getBiome() + "\nDiscovered by: " + t.isDiscovered()
+                + "\n").collect(Collectors.joining());
+        LOG.stats("\n------------------------" + "\nDiscovered Terrs: " + discoveredTerrDetails);
 
+        //---------LEGACY DEBUG--------------
         if (SETTINGS.get("debug") != 0) {
             //System.out.println(this.territoryMap.get("1|0"));
             //TODO: Reimplement

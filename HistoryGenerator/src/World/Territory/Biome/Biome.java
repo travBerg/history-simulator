@@ -23,51 +23,51 @@ interface AniMapProducer<K,V> {
 
 public enum Biome implements MapProducer, AniMapProducer{
     ALPINETUNDRA(Biome.ALPTUNDRA_CODE, "Alpine Tundra", Biome::initTundraResMap,0.4f, Biome::initOceanAniMap, 0.1f,
-            TermConstants.ALPTUNDRA_TERMS),
+            TermConstants.ALPTUNDRA_TERMS, concatenate(SubBiomeConstants.MOUNTAIN_SUB, SubBiomeConstants.TUNDRA_SUB)),
     BADLANDS(Biome.BADLANDS_CODE, "Badlands", Biome::initAridResMap,0.5f, Biome::initOceanAniMap, 0.1f,
-            TermConstants.BADLANDS_TERMS),
+            TermConstants.BADLANDS_TERMS, concatenate(SubBiomeConstants.BADLANDS_SUB, SubBiomeConstants.ARID_SUB)),
     DECIDUOUSFOREST(Biome.DECFOREST_CODE, "Deciduous Forest", Biome::initDeciduousResMap,0.1f, Biome::initDefaultAnimalMap, 0.3f,
-            TermConstants.DECFOREST_TERMS),
+            TermConstants.DECFOREST_TERMS, SubBiomeConstants.FOREST_SUB),
     DECIDUOUSHILLS(Biome.DECHILLS_CODE, "Deciduous Hill", Biome::initDeciduousResMap, 0.2f, Biome::initDefaultAnimalMap, 0.3f,
-            TermConstants.DECHILLS_TERMS),
+            TermConstants.DECHILLS_TERMS, concatenate(SubBiomeConstants.FOREST_SUB, SubBiomeConstants.HILLS_SUB)),
     DECIDUOUSMOUNTAIN(Biome.DECMOUNTAIN_CODE, "Deciduous Mountain", Biome::initDeciduousResMap, 0.4f, Biome::initMountainAniMap, 0.1f,
-            TermConstants.DECMOUNTAIN_TERMS),
+            TermConstants.DECMOUNTAIN_TERMS, concatenate(SubBiomeConstants.FOREST_SUB, SubBiomeConstants.MOUNTAIN_SUB)),
     GLACIER(Biome.GLACIER_CODE, "Glacier", Biome::initGlacierResMap, 0.4f, Biome::initOceanAniMap, 0f,
-            TermConstants.GLACIER_TERMS),
+            TermConstants.GLACIER_TERMS, SubBiomeConstants.GLACIER_SUB),
     GRASSLAND(Biome.GRASSLAND_CODE, "Grassland", Biome::initGrassResMap, 0.1f, Biome::initGrasslandAniMap, 0.3f,
-            TermConstants.GRASSLAND_TERMS),
+            TermConstants.GRASSLAND_TERMS, SubBiomeConstants.GRASSLAND_SUB),
     GRASSHILLS(Biome.GRASSHILLS_CODE, "Grassy Hill", Biome::initGrassResMap, 0.2f, Biome::initGrasslandAniMap, 0.3f,
-            TermConstants.GRASSHILLS_TERMS),
+            TermConstants.GRASSHILLS_TERMS, SubBiomeConstants.HILLS_SUB),
     JUNGLE(Biome.JUNGLE_CODE, "Jungle", Biome::initJungleResMap, 0.2f, Biome::initDefaultAnimalMap, 0.2f,
-            TermConstants.JUNGLE_TERMS),
+            TermConstants.JUNGLE_TERMS, SubBiomeConstants.JUNGLE_SUB),
     JUNGLEHILLS(Biome.JUNGLEHILLS_CODE, "Jungle Hill", Biome::initJungleResMap, 0.3f, Biome::initDefaultAnimalMap, 0.2f,
-            TermConstants.JUNGLEHILLS_TERMS),
+            TermConstants.JUNGLEHILLS_TERMS, concatenate(SubBiomeConstants.JUNGLE_SUB, SubBiomeConstants.HILLS_SUB)),
     JUNGLEMOUNTAIN(Biome.JUNGLEMOUNTAIN_CODE, "Jungle Mountain", Biome::initJungleResMap, 0.4f, Biome::initDefaultAnimalMap, 0.2f,
-            TermConstants.JUNGLEMOUNTAIN_TERMS),
+            TermConstants.JUNGLEMOUNTAIN_TERMS, concatenate(SubBiomeConstants.JUNGLE_SUB, SubBiomeConstants.MOUNTAIN_SUB)),
     MOUNTAIN(Biome.MOUNTAIN_CODE, "Mountain", Biome::initDefaultResMap, 0.4f, Biome::initMountainAniMap, 0.1f,
-            TermConstants.MOUNTAIN_TERMS),
+            TermConstants.MOUNTAIN_TERMS, SubBiomeConstants.MOUNTAIN_SUB),
     MOUNTAINTAIGA(Biome.MOUNTAINTAIGA_CODE, "Mountain Taiga", Biome::initTaigaResMap, 0.4f, Biome::initMountainAniMap, 0.1f,
-            TermConstants.MOUNTAINTAIGA_TERMS),
+            TermConstants.MOUNTAINTAIGA_TERMS, concatenate(SubBiomeConstants.MOUNTAIN_SUB, SubBiomeConstants.TAIGA_SUB, SubBiomeConstants.FOREST_SUB)),
     OCEAN(Biome.OCEAN_CODE, "Ocean", Biome::initOceanResMap, 0f, Biome::initOceanAniMap, 0f,
-            TermConstants.OCEAN_TERMS),
+            TermConstants.OCEAN_TERMS, SubBiomeConstants.OCEAN_SUB),
     SANDYDESERT(Biome.SANDYDESERT_CODE, "Sandy Desert", Biome::initAridResMap, 0.1f, Biome::initOceanAniMap, 0.1f,
-            TermConstants.SANDYDESERT_TERMS),
+            TermConstants.SANDYDESERT_TERMS, concatenate(SubBiomeConstants.ARID_SUB, SubBiomeConstants.DESERT_SUB)),
     SAVANNA(Biome.SAVANNA_CODE, "Savanna", Biome::initAridResMap, 0.1f, Biome::initDefaultAnimalMap, 0.3f,
-            TermConstants.SAVANNA_TERMS),
+            TermConstants.SAVANNA_TERMS, concatenate(SubBiomeConstants.GRASSLAND_SUB, SubBiomeConstants.SAVANNA_SUB)),
     SHRUBLAND(Biome.SHRUBLAND_CODE, "Shrubland", Biome::initAridResMap, 0.1f, Biome::initMountainAniMap, 0.2f,
-            TermConstants.SHRUBLAND_TERMS),
+            TermConstants.SHRUBLAND_TERMS, concatenate(SubBiomeConstants.ARID_SUB, SubBiomeConstants.SHRUBLAND_SUB)),
     SHRUBLANDHILLS(Biome.SHRUBLANDHILLS_CODE, "Shrubland Hill", Biome::initAridResMap, 0.2f, Biome::initMountainAniMap, 0.2f,
-            TermConstants.SHRUBLANDHILLS_TERMS),
+            TermConstants.SHRUBLANDHILLS_TERMS, concatenate(SubBiomeConstants.ARID_SUB, SubBiomeConstants.SHRUBLAND_SUB, SubBiomeConstants.HILLS_SUB)),
     SWAMP(Biome.SWAMP_CODE, "Swamp", Biome::initSwampResMap, 0.05f, Biome::initDefaultAnimalMap, 0.2f,
-            TermConstants.SWAMP_TERMS),
+            TermConstants.SWAMP_TERMS, SubBiomeConstants.SWAMP_SUB),
     TAIGA(Biome.TAIGA_CODE, "Taiga", Biome::initTaigaResMap, 0.1f, Biome::initDefaultAnimalMap, 0.2f,
-            TermConstants.TAIGA_TERMS),
+            TermConstants.TAIGA_TERMS, concatenate(SubBiomeConstants.TAIGA_SUB, SubBiomeConstants.FOREST_SUB)),
     TAIGAHILLS(Biome.TAIGAHILLS_CODE, "Taiga Hill", Biome::initTaigaResMap, 0.2f, Biome::initDefaultAnimalMap, 0.2f,
-            TermConstants.TAIGAHILLS_TERMS),
+            TermConstants.TAIGAHILLS_TERMS, concatenate(SubBiomeConstants.TAIGA_SUB, SubBiomeConstants.FOREST_SUB, SubBiomeConstants.HILLS_SUB)),
     TUNDRA(Biome.TUNDRA_CODE, "Tundra", Biome::initTundraResMap, 0.1f, Biome::initOceanAniMap, 0.1f,
-            TermConstants.TUNDRA_TERMS),
+            TermConstants.TUNDRA_TERMS, SubBiomeConstants.TUNDRA_SUB),
     TUNDRAHILLS(Biome.TUNDRAHILLS_CODE, "Tundra Hill", Biome::initTundraResMap, 0.2f, Biome::initOceanAniMap, 0.1f,
-            TermConstants.TUNDRAHILLS_TERMS);
+            TermConstants.TUNDRAHILLS_TERMS, concatenate(SubBiomeConstants.TUNDRA_SUB, SubBiomeConstants.HILLS_SUB));
 
     public static final String ALPTUNDRA_CODE = "AT";
     public static final String BADLANDS_CODE = "BD";
@@ -94,6 +94,7 @@ public enum Biome implements MapProducer, AniMapProducer{
     public static final String TUNDRAHILLS_CODE = "UH";
 
     private static class TermConstants {
+        //TODO: Separate into nouns and adjectives
         public static final String[] ALPTUNDRA_TERMS = new String[]{"alpine", "mountain", "snow", "grey", "cloud", "cold"};
         public static final String[] BADLANDS_TERMS = new String[]{"rock", "sun", "shadow", "dust", "clay", "sand"};
         public static final String[] DECFOREST_TERMS = new String[]{"tree", "green", "leaf", "forest", "root", "wood"};
@@ -119,6 +120,28 @@ public enum Biome implements MapProducer, AniMapProducer{
         public static final String[] TUNDRAHILLS_TERMS = new String[]{"tundra", "hill", "snow", "frost", "cold", "wind"};
     }
 
+    private static class SubBiomeConstants {
+        public static final String[] MOUNTAIN_SUB = new String[]{"alps", "mountains", "peaks", "rise", "range", "valley",
+                "highlands", "summit", "slopes"};
+        public static final String[] BADLANDS_SUB = new String[]{"badlands"};
+        public static final String[] FOREST_SUB = new String[]{"woods", "woodland", "forest", "glade", "wilds",
+                "grove", "thicket"};
+        public static final String[] HILLS_SUB = new String[]{"hills", "bluffs", "valley", "slopes", "hillside"};
+        public static final String[] GLACIER_SUB = new String[]{"iceberg", "glacier", "icefield"};
+        public static final String[] GRASSLAND_SUB = new String[]{"plains", "grassland", "fields", "green", "flats",
+                "meadow", "pasture", "expanse", "prairie"};
+        public static final String[] JUNGLE_SUB = new String[]{"jungle", "rainforest", "wilds", "bush", "gardens", "paradise"};
+        public static final String[] TAIGA_SUB = new String[]{"pines", "taiga"};
+        public static final String[] OCEAN_SUB = new String[]{"waters", "expanse", "deep", "abyss", "trench", "domain",
+                "tides", "waves"};
+        public static final String[] DESERT_SUB = new String[]{"desert", "dunes", "flats", "expanse"};
+        public static final String[] ARID_SUB = new String[]{"basin", "wasteland", "wastes", "deadland", "barrens", "gulch"};
+        public static final String[] SAVANNA_SUB = new String[]{"savanna"};
+        public static final String[] SHRUBLAND_SUB = new String[]{"shrubland"};
+        public static final String[] SWAMP_SUB = new String[]{"marsh", "swamp", "wetlands", "bog", "rot"};
+        public static final String[] TUNDRA_SUB = new String[]{"tundra", "frostland", "icefield", "expanse", "desert"};
+    }
+
     private final String code;
     private final String nameText;
     private final float caveChance;
@@ -126,10 +149,11 @@ public enum Biome implements MapProducer, AniMapProducer{
     private final Map<Animal, Pair<Integer,Integer>> animals;
     private final float groupChance;
     private final String[] terms;
+    private final String[] subBiomes;
 
     Biome(final String code, final String name, final MapProducer<Resource, Pair<Integer,Integer>> resources,
           final float caveChance, final AniMapProducer<Animal, Pair<Integer, Integer>> animals, final float groupChance,
-          final String[] terms){
+          final String[] terms, final String[] sub){
         this.code = code;
         this.nameText = name;
         this.caveChance = caveChance;
@@ -137,6 +161,7 @@ public enum Biome implements MapProducer, AniMapProducer{
         this.animals = Collections.unmodifiableMap(animals.getAniMap());
         this.groupChance = groupChance;
         this.terms = terms;
+        this.subBiomes = sub;
     }
 
     public String getCode() { return this.code; }
@@ -146,6 +171,16 @@ public enum Biome implements MapProducer, AniMapProducer{
     public Map<Animal, Pair<Integer, Integer>> getAnimals() {return animals;}
     public float getGroupChance() { return groupChance; }
     public String[] getTerms() { return terms; }
+    public String[] getSubBiomes() { return subBiomes; }
+
+    /**
+     * Useful method for concatenating string arrays here
+     * @param arrays
+     * @return
+     */
+    private static String[] concatenate(String[] ...arrays) {
+        return Stream.of(arrays).flatMap(Stream::of).toArray(String[]::new);
+    }
 
     /**
      * Here are the functions for making the resource stat maps

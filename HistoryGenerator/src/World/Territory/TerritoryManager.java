@@ -1,6 +1,8 @@
 package World.Territory;
 
 import Logger.Logger;
+import World.Groups.Group;
+import World.Groups.Language.LanguageManager;
 import World.PointOfInterest.POI;
 import World.PointOfInterest.POIManager;
 import World.PointOfInterest.RiverSegment;
@@ -15,6 +17,10 @@ import java.util.*;
 public class TerritoryManager {
 
     private static final Logger LOG = Logger.getLogger(TerritoryManager.class);
+
+    public static Pair<String, String> createTerName(final Territory ter, final Group group, final Random rand) {
+        return LanguageManager.genTerName(ter.getBiome(), group.getLanguage(), rand);
+    }
 
     public static Pair<Integer, Integer> parseLocation(final String location) {
         String array[] = location.split("\\|");

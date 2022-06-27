@@ -17,7 +17,7 @@ public class LanguageModel {
         this.triNouns = triNouns;
         this.vowels = vowels;
         //TODO: Make a method for choosing a spec char based off what is most common in unigrams ( ' , " " , - )
-        this.specChar = " ";
+        this.specChar = "-";
     }
 
     public Map<String, Gram> getBiNouns() { return biNouns; }
