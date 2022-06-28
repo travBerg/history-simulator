@@ -153,6 +153,8 @@ public class POIManager {
     }
 
     public static JSONObject toJSONPOI(POI poi) {
+        //TODO: Maybe pass in river map so that we can reference river name without redundantly storing it in the
+        // Segment and having to deal with iterating through all segments to get the name stored
         JSONObject out = new JSONObject();
         out.put("discoverer", poi.getDiscovered());
         out.put("name", poi.getName());

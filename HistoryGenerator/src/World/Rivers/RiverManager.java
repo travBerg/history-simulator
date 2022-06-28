@@ -64,7 +64,7 @@ public class RiverManager {
         return constructRiverHelp(random,segments,next,size,terrain);
     }
 
-    //TODO: This is the method called by world
+    //This is the method called by world
     //Create rivers as map (riverid to River) and map of locations to list of rivers
     /**
      *

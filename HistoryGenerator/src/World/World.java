@@ -72,7 +72,7 @@ public class World implements IWorld {
         LOG.stats("Region territories: " + regionTerrs);
         LOG.stats("Prelim territories: " + prelimTers.size());
 
-        //-----------GROUPS/DISCOVERY----------
+        //---------------GROUPS----------------
         /**
          * Groups
          * Input regions and territoryMap
@@ -83,7 +83,9 @@ public class World implements IWorld {
                 languageModels, random);
         this.groups = popPair.getKey();
         LOG.stats("Groups: " + groups.size());
-        //TODO: Make this a function that not only overwrites edited Terrs, but also names Rivers based off discovered
+
+        //---------DISCOVERY/OVERWRITES--------
+        //This not only overwrites edited Terrs, but also names Rivers based off discovered
         // riverSegs and names completed Regions based off their Terr
         //Overwrite edited Terrs
         popPair.getValue().forEach(t->{
@@ -120,7 +122,6 @@ public class World implements IWorld {
         //---------LEGACY DEBUG--------------
         if (SETTINGS.get("debug") != 0) {
             //System.out.println(this.territoryMap.get("1|0"));
-            //TODO: Reimplement
             //System.out.println("Biome to Region map: \n" + WorldManager.biomeDebugRender(generator.returnProduct(), this.regions, this.size));
             System.out.println("Biome to hrt map:\n" + generator.render());
             System.out.println("--------------------------------------------------------");

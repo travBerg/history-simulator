@@ -25,7 +25,6 @@ public class Region implements IRegion {
         this.index = idx;
         this.type = ter.getBiome().getCode();
         this.biome = ter.getBiome();
-        //TODO: Placeholder
         this.name = "Unnamed " + ter.getBiome().getName() + " Region";
         this.nameMeaning = name;
         this.discoverer = Optional.empty();
