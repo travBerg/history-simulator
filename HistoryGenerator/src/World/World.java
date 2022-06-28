@@ -56,18 +56,21 @@ public class World implements IWorld {
         //Get the map of river ids to River object
         this.rivers = riverMaps.getKey();
 
-        //-----------TERRITORIES----------------
+        //--------TERRITORIES/REGIONS------------
         //Create the territory map
-        this.territoryMap = TerritoryManager.createTerritoryMap(random, generator.returnProduct(), riverMaps.getKey(),
+        final HashMap<String, Territory> prelimTers = TerritoryManager.createTerritoryMap(random, generator.returnProduct(), riverMaps.getKey(),
                 riverMaps.getValue(), this.size);
-
-        //-------------REGIONS------------------
         //Create the regions based off the territory map
-        this.regions = WorldManager.createRegions(this.territoryMap, SETTINGS.get("debug") != 0, size, random);
+        final Pair<HashMap<Integer, Region>, HashMap<String, Territory>> terRegPair =
+                WorldManager.createRegions(prelimTers, SETTINGS.get("debug") != 0, size, random);
+        this.regions = terRegPair.getKey();
+        this.territoryMap = terRegPair.getValue();
         LOG.stats("Regions: " + regions.size());
         //Debug count of territories by region
         final int regionTerrs = regions.values().stream().map(r->r.getLocations().size()).reduce(0, Integer::sum);
+        LOG.stats("Territories: " + territoryMap.size());
         LOG.stats("Region territories: " + regionTerrs);
+        LOG.stats("Prelim territories: " + prelimTers.size());
 
         //-----------GROUPS/DISCOVERY----------
         /**
@@ -90,8 +93,8 @@ public class World implements IWorld {
             }
         });
         //Overwrite named Rivers and Regions
-        final Pair<Map<Integer, River>, Map<Integer,Region>> riverRegionRenames = WorldManager.nameRiversAndRegions(popPair.getValue(),
-                this.rivers, this.regions);
+        final Pair<Map<Integer, River>, Map<Integer,Region>> riverRegionRenames =
+                WorldManager.nameRiversAndRegions(popPair.getValue(), this.rivers, this.regions);
         //Overwrite rivers
         riverRegionRenames.getKey().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEach(r->{
             final River riv = rivers.replace(r.getKey(), r.getValue());

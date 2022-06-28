@@ -37,6 +37,7 @@ public class Territory {//implements ITerritory {
     private final HashMap<Resource, Integer> resources;
     private final Set<Animal> animals;
     private final Set<Group> groups;
+    private final int region;
 
     //For creating new Territories
     public Territory(final String location, final Random rand, final String hrt, final int size, final Biome biome,
@@ -76,6 +77,7 @@ public class Territory {//implements ITerritory {
         this.resources = resAndAni.getKey();
         this.animals = resAndAni.getValue();
         this.groups = new HashSet<>();
+        this.region = -1;
     }
 
     /**
@@ -93,6 +95,7 @@ public class Territory {//implements ITerritory {
         this.temp = old.temp;
         this.size = old.size;
         this.biome = old.getBiome();
+        this.region = old.region;
         //Have the group name it
         final Pair<String, String> names = TerritoryManager.createTerName(old, group, rand);
         this.name = names.getKey();
@@ -106,8 +109,36 @@ public class Territory {//implements ITerritory {
         this.pOI = POIManager.discoverAllPOI(old.getPOI(), group, rand, this);
     }
 
+    /**
+     * Constructor for assigning a Region
+     * @param old old territory without region
+     * @param regionId region that this terr is a part of
+     */
+    public Territory(final Territory old, final int regionId) {
+        this.location = old.getLocation();
+        this.row = old.getRow();
+        this.col = old.getCol();
+        this.neighbors = old.getNeighbors();
+        this.height = old.height;
+        this.rain = old.rain;
+        this.temp = old.temp;
+        this.size = old.size;
+        this.biome = old.getBiome();
+        this.name = old.name;
+        this.nameMeaning = old.nameMeaning;
+        this.resources = old.getResources();
+        this.animals = old.animals;
+        this.groups = old.groups;
+        this.discovered = old.discovered;
+        //Name/discover poi
+        this.pOI = old.pOI;
+        this.region = regionId;
+    }
+
     //@Override
     public final String isDiscovered() { return discovered.orElse(""); }
+
+    public final Optional<String> getDiscovered() { return discovered; }
 
     //@Override
     public final int getRow() { return row; }
@@ -125,6 +156,8 @@ public class Territory {//implements ITerritory {
 
     //@Override
     public ArrayList<String> getNeighbors() { return neighbors; }
+
+    public final int getRegion() { return region; }
 
     //@Override @SuppressWarnings("unchecked")
     public JSONObject asJSON() {

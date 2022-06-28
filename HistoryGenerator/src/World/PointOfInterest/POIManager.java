@@ -50,11 +50,11 @@ public class POIManager {
             //River is head
             if(river.getSegments().size() > 1) {
                 //Should never be tributary on first segment
-                return Optional.of(new RiverSegment(locBased.get(loc), river.getName(), loc, river.getSegments().get(1),
+                return Optional.of(new RiverSegment(locBased.get(loc), river.getCommonName().getKey(), loc, river.getSegments().get(1),
                         new HashSet<Pair<String,Integer>>()));
             }
             //River is also mouth
-            return Optional.of(new RiverSegment(locBased.get(loc), river.getName(), loc, loc, new HashSet<>()));
+            return Optional.of(new RiverSegment(locBased.get(loc), river.getCommonName().getKey(), loc, loc, new HashSet<>()));
         }
         if(idx == river.getSegments().size() - 1) {
             //River is mouth
@@ -63,9 +63,9 @@ public class POIManager {
                 Set<Pair<String, Integer>> t = river.getTributaries().map(a -> a.stream().filter(p->p.getKey()
                         .equals(loc)).collect(Collectors.toSet())).get();
 
-                return Optional.of(new RiverSegment(locBased.get(loc), river.getName(), river.getSegments().get(idx - 1), loc, t));
+                return Optional.of(new RiverSegment(locBased.get(loc), river.getCommonName().getKey(), river.getSegments().get(idx - 1), loc, t));
             }
-            return Optional.of(new RiverSegment(locBased.get(loc), river.getName(), river.getSegments().get(idx - 1), loc,
+            return Optional.of(new RiverSegment(locBased.get(loc), river.getCommonName().getKey(), river.getSegments().get(idx - 1), loc,
                     new HashSet<>()));
         }
         //river is middle segment
@@ -74,11 +74,11 @@ public class POIManager {
             Set<Pair<String, Integer>> t = river.getTributaries().map(a -> a.stream().filter(p->p.getKey()
                     .equals(loc)).collect(Collectors.toSet())).get();
 
-            return Optional.of(new RiverSegment(locBased.get(loc), river.getName(), river.getSegments().get(idx - 1),
+            return Optional.of(new RiverSegment(locBased.get(loc), river.getCommonName().getKey(), river.getSegments().get(idx - 1),
                     river.getSegments().get(idx + 1), t));
         }
 
-        return Optional.of(new RiverSegment(locBased.get(loc), river.getName(), river.getSegments().get(idx - 1),
+        return Optional.of(new RiverSegment(locBased.get(loc), river.getCommonName().getKey(), river.getSegments().get(idx - 1),
                 river.getSegments().get(idx + 1), new HashSet<>()));
     }
 
@@ -160,7 +160,6 @@ public class POIManager {
             final RiverSegment riverSegment = (RiverSegment) poi;
             out.put("type", "riverSegment");
             out.put("riverId", riverSegment.getRiverId());
-            out.put("name", riverSegment.getName());
             out.put("in", riverSegment.getIn());
             out.put("out", riverSegment.getOut());
             JSONArray trib = new JSONArray();

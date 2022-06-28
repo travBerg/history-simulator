@@ -4,6 +4,8 @@ import Logger.Logger;
 import WordGenerator.LanguageModel;
 import World.Groups.Group;
 import World.Groups.GroupManager;
+import World.PointOfInterest.POI;
+import World.PointOfInterest.RiverSegment;
 import World.Rivers.River;
 import World.Rivers.RiverManager;
 import World.Territory.Biome.Biome;
@@ -21,28 +23,7 @@ public class WorldManager {
 
     private final static Logger LOG = Logger.getLogger(WorldManager.class);
 
-    public static ArrayList<String> biomeSearch2(final HashMap<String, Territory> territoryMap, final String code,
-                                                 final String root) {
-        final Queue<String> queue = new ArrayDeque();
-        final HashSet<String> explored = new HashSet();
-        final ArrayList<String> out = new ArrayList<>();
-        queue.add(root);
-        explored.add(root);
-        while (!queue.isEmpty()) {
-            String v = queue.poll();
-            Territory terV = territoryMap.get(v);
-            if(terV.getBiome().getCode().equals(code)) {
-                out.add(v);
-                for(String n:terV.getNeighbors()) {
-                    if(!explored.contains(n)) {
-                        explored.add(n);
-                        queue.add(n);
-                    }
-                }
-            }
-        }
-        return out;
-    }
+    //TODO: Reorganize this class cuz this does not all belong here
 
     /**
      * Groups
@@ -98,12 +79,15 @@ public class WorldManager {
         Return a hashmap with <integer, biome> (biome matched with key)
         function that takes in a territory map and returns a map of the biomes
      */
-    public static HashMap<Integer, Region> createRegions(final HashMap<String, Territory> territoryMap,
-                                                         final boolean debug, final int size, final Random random) {
+    public static Pair<HashMap<Integer, Region>, HashMap<String, Territory>> createRegions(final HashMap<String, Territory> territoryMap,
+                                                                                       final boolean debug, final int size,
+                                                                                       final Random random) {
         //Map index to biome
         final HashMap<Integer, Region> biomes = new HashMap<Integer, Region>();
         //Map ter location to biome index
         final HashMap<String, Integer> mapTer = new HashMap<String, Integer>();
+        //New map of territories with the region Ids stored in the terrs
+        final HashMap<String, Territory> nuTerMap = new HashMap<>();
         //Set of all of the r|c coords
         final HashSet<String> frontier = new HashSet<>();
         //TODO: This isnt the functional way to do this but I just want it to work so sort it out later
@@ -126,8 +110,10 @@ public class WorldManager {
             //final ArrayList<String> bResults = biomeSearch(territoryMap, t.getBiome().getCode(), frontier, res, t);
             //Remove all the found biome territories from frontier
             frontier.removeAll(bResults);
-            //Make new region
-            final Region nuBiome = new Region(t, count, bResults);
+            //Make new region and overwrite the affected terrs
+            final Pair<Region, Map<String, Territory>> regionPair = makeNewRegion(t, count, bResults, territoryMap);
+            final Region nuBiome = regionPair.getKey();
+            nuTerMap.putAll(regionPair.getValue());
             //This is for printing debug
             for (String r : bResults) {
                 mapTer.put(r, count);
@@ -136,7 +122,42 @@ public class WorldManager {
             biomes.put(count, nuBiome);
             count++;
         }
-        return biomes;
+        return new Pair(biomes, nuTerMap);
+    }
+
+    private static Pair<Region, Map<String, Territory>> makeNewRegion(final Territory t, final int id,
+                                                                     final ArrayList<String> terrs,
+                                                                     final Map<String, Territory> territoryMap) {
+        final HashMap<String, Territory> nuTerrs = new HashMap<>();
+        final Region nuRegion = new Region(t, id, terrs);
+        terrs.forEach(x->{
+            final Territory nu = new Territory(territoryMap.get(x), id);
+            nuTerrs.put(x, nu);
+        });
+        return new Pair<>(nuRegion, nuTerrs);
+    }
+
+    public static ArrayList<String> biomeSearch2(final HashMap<String, Territory> territoryMap, final String code,
+                                                 final String root) {
+        final Queue<String> queue = new ArrayDeque();
+        final HashSet<String> explored = new HashSet();
+        final ArrayList<String> out = new ArrayList<>();
+        queue.add(root);
+        explored.add(root);
+        while (!queue.isEmpty()) {
+            String v = queue.poll();
+            Territory terV = territoryMap.get(v);
+            if(terV.getBiome().getCode().equals(code)) {
+                out.add(v);
+                for(String n:terV.getNeighbors()) {
+                    if(!explored.contains(n)) {
+                        explored.add(n);
+                        queue.add(n);
+                    }
+                }
+            }
+        }
+        return out;
     }
 
     private static <E>
@@ -240,11 +261,39 @@ public class WorldManager {
         return out;
     }
 
-    public static Pair<Map<Integer, River>, Map<Integer, Region>> nameRiversAndRegions(Set<Territory> terrs,
-                                                                                       HashMap<Integer, River> rivers,
-                                                                                       HashMap<Integer, Region> regions) {
+    /**
+     * A function to name Rivers and Regions if something has changed with the terrs that were edited from discovery
+     * @param terrs the discovered and named terrs
+     * @param rivers all of the rivers in the World
+     * @param regions all of the regions in the World
+     * @return a pair of (map of river id to changed river) and (map of region id to changed region)
+     */
+    public static Pair<Map<Integer, River>, Map<Integer, Region>> nameRiversAndRegions(final Set<Territory> terrs,
+                                                                                       final HashMap<Integer, River> rivers,
+                                                                                       final HashMap<Integer, Region> regions) {
         final HashMap<Integer, River> riverOver = new HashMap<Integer, River>();
         final HashMap<Integer, Region> regionOver = new HashMap<Integer, Region>();
+        //Sort the set so it resolves in the same order every time
+        final LinkedHashSet<Territory> terrsSorted = new LinkedHashSet(terrs);
+        terrsSorted.forEach(t->{
+            //Check for fully discovered size 1 region
+            final Region r = regions.get(t.getRegion());
+            if(r.getLocations().size() == 1) {
+                regionOver.put(t.getRegion(), nameRegion(t, r));
+            }
+            //Check for river segment to add a name to River
+            final LinkedHashSet<POI> pois = new LinkedHashSet<>(t.getPOI());
+            pois.stream().filter(p->p instanceof RiverSegment).forEachOrdered(seg -> {
+                final RiverSegment rSeg = ((RiverSegment) seg);
+                riverOver.put(rSeg.getRiverId(), RiverManager.addRiverName(rivers.get(rSeg.getRiverId()), rSeg));
+                LOG.debug("New river named for riverId: " + rSeg.getRiverId());
+            });
+        });
         return new Pair<>(riverOver, regionOver);
+    }
+
+    private static Region nameRegion(final Territory t, final Region r) {
+        LOG.debug("Entire region has been named: " + t.getName());
+        return new Region(t.getName(), t.getNameMeaning(), t.isDiscovered(), r);
     }
 }

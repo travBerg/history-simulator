@@ -1,6 +1,8 @@
 package World.Rivers;
 
 import Logger.Logger;
+import World.Groups.Group;
+import World.Groups.Language.LanguageManager;
 import World.PointOfInterest.RiverSegment;
 import World.Territory.Territory;
 import World.Territory.TerritoryManager;
@@ -210,9 +212,31 @@ public class RiverManager {
         return tributaries;
     }
 
+    /**
+     * Add a name to a river from one of its named RiverSegments
+     * @param r old unnamed River
+     * @param seg named segment that the name comes from
+     * @return the old river with an additional name from the segment and group that named it
+     */
+    public static River addRiverName(final River r, final RiverSegment seg) {
+        LOG.debug("Adding a new river name from group " + seg.getDiscovered() + ": " + seg.getName() +
+                ", which means: " + seg.getNameMeaning());
+        return new River(r, new Pair(new Pair<String, String>(seg.getName(), seg.getNameMeaning()), seg.getDiscovered()));
+    }
+
     public static JSONObject riverToJSON(final River r) {
         JSONObject o = new JSONObject();
-        o.put("name", r.getName());
+        o.put("commonName", r.getCommonName().getKey());
+        o.put("nameMeaning", r.getCommonName().getValue());
+        JSONArray altNames = new JSONArray();
+        r.getName().stream().forEach(n->{
+            final JSONObject nObj = new JSONObject();
+            nObj.put("name", n.getKey().getKey());
+            nObj.put("nameMeaning", n.getKey().getValue());
+            nObj.put("namedBy", n.getValue());
+            altNames.add(nObj);
+        });
+        o.put("allNames", altNames);
         JSONArray segs = new JSONArray();
         r.getSegments().stream().forEach(s -> segs.add(s));
         o.put("segments", segs);
