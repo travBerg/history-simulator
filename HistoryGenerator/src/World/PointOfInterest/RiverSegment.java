@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 
 public class RiverSegment extends POI{
     final int riverId;
+    final String nameMeaning;
     //location of river source
     final String in;
     //location river flows to
@@ -31,15 +32,27 @@ public class RiverSegment extends POI{
     private RiverSegment(final int riverId, final String name, final String in, final String out,
                          final Set<Pair<String, Integer>> trib, final Map<Resource, Pair<Integer, Integer>> res,
                          final Map<Animal, Pair<Integer, Integer>> ani){
-        super(name, res, ani);
+        super(name, res, ani, Optional.empty());
         this.riverId = riverId;
         this.in = in;
         this.out = out;
         this.tributaries = trib;
+        this.nameMeaning = "";
     }
 
-    public int getRiverId() { return riverId; }
-    public String getIn() { return in; }
-    public String getOut() { return out; }
-    public Set<Pair<String, Integer>> getTributaries() { return tributaries; }
+    public RiverSegment(final RiverSegment oldSeg, final String name, final String nameMeaning,
+                        final Optional<String> discoverer) {
+        super(name, oldSeg.resources, oldSeg.animals, discoverer);
+        this.riverId = oldSeg.riverId;
+        this.in = oldSeg.in;
+        this.out = oldSeg.out;
+        this.tributaries = oldSeg.tributaries;
+        this.nameMeaning = nameMeaning;
+    }
+
+    public final int getRiverId() { return riverId; }
+    public final String getIn() { return in; }
+    public final String getOut() { return out; }
+    public final Set<Pair<String, Integer>> getTributaries() { return tributaries; }
+    public final String getNameMeaning() { return nameMeaning; }
 }

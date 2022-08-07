@@ -28,7 +28,7 @@ public class WordGenManager {
     }
 
     /**
-     * Function to actually generate a word
+     * Function to actually generate a word. DOES NOT add to lexicon
      * @param model language gram model to generate
      * @param seedWord english word this word will translate to
      * @param rand randomizer
