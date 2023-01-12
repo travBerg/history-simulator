@@ -2,6 +2,8 @@ package World.Groups;
 
 import Logger.Logger;
 import WordGenerator.LanguageModel;
+import World.Groups.Culture.Culture;
+import World.Groups.Culture.CultureManager;
 import World.Groups.Language.Language;
 import World.Groups.Language.LanguageManager;
 import World.Resources.Resource;
@@ -19,6 +21,8 @@ public class Group {
     final private Language language;
     final private String name;
     final private String nameTranslation;
+    final private Culture culture;
+    //TODO: Groups need a notion of origin and current location
 
     private static final Logger LOG = Logger.getLogger(Group.class);
 
@@ -43,7 +47,8 @@ public class Group {
         this.nameTranslation = langResult.getKey()[1];
         this.language = langResult.getValue();
         this.id = t.getLocation() + "." + population + "." + 0 + "." + name;
-
+        //TODO: Placeholder for testing
+        this.culture = CultureManager.createCulture(rand, name);
     }
 
     public String getId() { return id; }
@@ -51,4 +56,5 @@ public class Group {
     public Language getLanguage() { return language; }
     public String getName() { return name; }
     public String getNameTranslation() { return nameTranslation; }
+    public Culture getCulture() {return culture;}
 }
