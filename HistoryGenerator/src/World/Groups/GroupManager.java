@@ -21,6 +21,11 @@ public class GroupManager {
         groupObj.put("nameMeaning", group.getNameTranslation());
         groupObj.put("id", group.getId());
         groupObj.put("pop", group.getPopulation());
+        final JSONObject cultureObj = new JSONObject();
+        cultureObj.put("ethics", group.getCulture().getEthics().getType());
+        cultureObj.put("religionType", group.getCulture().getReligion().getCategory());
+        cultureObj.put("religionSubtype", group.getCulture().getReligion().getSubcategory());
+        groupObj.put("culture", cultureObj);
         return groupObj;
     }
 
