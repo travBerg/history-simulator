@@ -123,12 +123,20 @@ public class World implements IWorld {
         if (SETTINGS.get("debug") != 0) {
             //System.out.println(this.territoryMap.get("1|0"));
             //System.out.println("Biome to Region map: \n" + WorldManager.biomeDebugRender(generator.returnProduct(), this.regions, this.size));
-            System.out.println("Biome to hrt map:\n" + generator.render());
-            System.out.println("--------------------------------------------------------");
+            //System.out.println("Biome to hrt map:\n" + generator.render());
+            //System.out.println("--------------------------------------------------------");
         }
     }
 
-
+    public World (final World oldWorld, final HashMap<String, Group> groups) {
+        this.territoryMap = oldWorld.territoryMap;
+        this.regions = oldWorld.regions;
+        this.rivers = oldWorld.rivers;
+        this.groups = groups;
+        this.languageModels = oldWorld.languageModels;
+        this.size = oldWorld.size;
+        this.seed = oldWorld.seed;
+    }
 
     @Override
     //Return list of pair of region idx and name
