@@ -218,4 +218,14 @@ public class TerritoryManager {
                 t.getResources().keySet().stream().anyMatch(Resource::isPotable);
     }
 
+    public static Optional<Integer> getTotalEdibleFood(final Territory t) {
+        return t.getResources().entrySet().stream()
+                .filter(r->r.getKey().isEdible()).map(Map.Entry::getValue).reduce(Integer::sum);
+    }
+
+    public static Optional<Integer> getTotalPotableDrink(final Territory t) {
+        return t.getResources().entrySet().stream().filter(r->r.getKey().isPotable())
+                .map(Map.Entry::getValue).reduce(Integer::sum);
+    }
+
 }

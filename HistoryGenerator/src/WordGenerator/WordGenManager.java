@@ -185,7 +185,7 @@ public class WordGenManager {
             LOG.debug("Parse Exception: failed to parse json from file " + filepath + "\n" +
                     e.getMessage());
         }
-        LOG.debug("Final map for " + filepath + "\n" + debugOut);
+        //LOG.debug("Final map for " + filepath + "\n" + debugOut);
         return resultMap;
     }
 
@@ -205,7 +205,7 @@ public class WordGenManager {
                 debugOut.add("\nletter: " + k.toString() + "\ncount: " + val);
                 return new Pair<String, Integer>(k.toString(), val);
             }).collect(Collectors.toList());
-            LOG.debug("Final uni map: " + debugOut);
+            //LOG.debug("Final uni map: " + debugOut);
             return new Gram(total, list);
         } catch (FileNotFoundException e) {
             LOG.debug("Failed to find file: " + filepath);

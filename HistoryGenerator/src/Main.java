@@ -1,5 +1,6 @@
 import Controller.Controller;
 import Controller.IController;
+import History.HistoryManager;
 import Logger.Logger;
 import View.DebugView.DebugView;
 import View.IView;
@@ -20,6 +21,7 @@ import java.util.Set;
 public class Main {
 
     public static void main(String[] args) {
+        final long start = System.currentTimeMillis();
         Logger.clear(true, true);
         //Get resource modifiers
         final HashMap<String, Double> resSettings = SettingsManager.getResourceMods();
@@ -27,10 +29,12 @@ public class Main {
         final Set<LanguageModel> languageModels = WordGenManager.createLangModelSet();
         //We can get to size 10 (over 1 mil territories, at least ~30,000 groups) but long render time and the json write fails
         // (more tiles than the largest world in Rimworld. Not bad.)
-        final HashMap<String, Integer> settings = SettingsManager.getSettings(420, 5, 2, true);
-
         //poles: 0 = north pole, 1 = south pole, 2 = both poles
-        final IWorld world = new World(settings, resSettings, groupMods, languageModels); //seed 7, size 2, poles 2
+        System.out.println("Getting settings");
+        final HashMap<String, Integer> settings = SettingsManager.getSettings(420, 5, 2, true, 200);
+
+        final World world = HistoryManager.generateHistory(settings, resSettings, groupMods, languageModels);
+        //seed 7, size 2, poles 2
 
         //Create json file
         try {
@@ -55,7 +59,10 @@ public class Main {
             e.printStackTrace();
         }
 
-        
+        //At size 5 and 200 years we're looking at 48 seconds. That's ~8min for 2000 years
+        final long stop = System.currentTimeMillis();
+        System.out.println("Total run time: " + ((stop - start) / 1000) / 60 + " minutes and "
+                + ((stop - start) / 1000) % 60 + " seconds");
         final IView view = new DebugView();
         final IController controller = new Controller(world, view);
         controller.go();
