@@ -120,9 +120,9 @@ public class TerrainGen implements IGenerator{
     public HashMap<String,String> loadCSVs() {
         HashMap<String,String> map = new HashMap<>();
         //list of all csvs
-        String[] rawfiles = {"HistoryGenerator/src/TerrainGenerator/Resources/Height0.csv", "HistoryGenerator/src/TerrainGenerator/Resources/Height1.csv",
-                "HistoryGenerator/src/TerrainGenerator/Resources/Height2.csv", "HistoryGenerator/src/TerrainGenerator/Resources/Height3.csv",
-                "HistoryGenerator/src/TerrainGenerator/Resources/Height4.csv"};
+        String[] rawfiles = {"/src/TerrainGenerator/Resources/Height0.csv", "/src/TerrainGenerator/Resources/Height1.csv",
+                "/src/TerrainGenerator/Resources/Height2.csv", "/src/TerrainGenerator/Resources/Height3.csv",
+                "/src/TerrainGenerator/Resources/Height4.csv"};
 
         ArrayList<String> files = new ArrayList<>();
         for (String f:rawfiles) {

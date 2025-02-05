@@ -7,6 +7,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 public class WordGenManager {
 
     private final static Logger LOG = Logger.getLogger(WordGenManager.class);
-    private final static String FILE_EXT = "HistoryGenerator/src/WordGenerator/Resources/";
+    private final static String FILE_EXT = System.getProperty("user.dir") + "/src/WordGenerator/Resources/";
 
     public static Set<LanguageModel> createLangModelSet() {
         final Set<LanguageModel> result = new HashSet<>();
