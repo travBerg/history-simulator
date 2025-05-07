@@ -226,4 +226,6 @@ public class Territory {//implements ITerritory {
     public String getLocation() {
         return location;
     }
+
+    public Set<Group> getGroups() { return groups; }
 }

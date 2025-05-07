@@ -2,7 +2,9 @@ package WordGenerator;
 
 public enum LanguageModelType {
     TEST("unigram_nouns_test.json", "bigram_nouns_test.json", "trigram_nouns_test.json",
-            new String[]{"a", "e", "i", "o", "u", "y"});
+            new String[]{"a", "e", "i", "o", "u", "y"}),
+    HIGH_VALYRIAN("h_valyrian_noun_unigram.json", "h_valyrian_noun_bigram.json",
+            "h_valyrian_noun_trigram.json", new String[]{"ā", "a", "o", "i", "e", "u", "y"});
 
     private final String uniNounPath;
     private final String biNounPath;

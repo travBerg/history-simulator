@@ -89,7 +89,7 @@ public class Logger {
         }
     }
 
-    private static boolean deleteDir(final File dirToDelete) {
+    public static boolean deleteDir(final File dirToDelete) {
         File[] allContents = dirToDelete.listFiles();
         System.out.println("Dir to delete: " + dirToDelete);
         if(allContents != null) {
